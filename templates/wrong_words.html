@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>間違えた単語リスト</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>間違えた単語リスト</h1>
+
+      <div class="wrong-words-list">
+        {% if wrong_words %} {% for word, translation in wrong_words.items() %}
+        <div class="word-item">
+          <div class="english">{{ word }}</div>
+          <div class="japanese">{{ translation }}</div>
+        </div>
+        {% endfor %} {% else %}
+        <p>間違えた単語はありません。</p>
+        {% endif %}
+      </div>
+
+      <div class="buttons">
+        <button id="reset-btn" class="reset-btn">リセット</button>
+        <a href="{{ url_for('index') }}" class="button back-btn">戻る</a>
+      </div>
+    </div>
+
+    <script>
+      document
+        .getElementById("reset-btn")
+        .addEventListener("click", function () {
+          fetch("/reset_wrong_words", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              if (data.status === "success") {
+                window.location.href = "/";
+              }
+            });
+        });
+    </script>
+  </body>
+</html>

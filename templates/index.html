@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>英単語学習アプリ</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <h1>英単語学習</h1>
+
+      <div
+        class="word-card"
+        id="word-card"
+        data-word="{{ word }}"
+        data-translation="{{ translation }}"
+      >
+        <div class="word-front">{{ word }}</div>
+        <div class="word-back">{{ translation }}</div>
+      </div>
+
+      <div class="buttons">
+        <button id="correct-btn" class="correct-btn">○</button>
+        <button id="wrong-btn" class="wrong-btn">×</button>
+      </div>
+
+      <div class="wrong-words-counter">
+        間違えた単語:
+        <span id="wrong-count"
+          >{{ session.get('wrong_words', [])|length }}</span
+        >
+        / 10
+      </div>
+
+      <div
+        id="wrong-words-notification"
+        class="notification"
+        style="display: none"
+      >
+        10個の単語が貯まりました！
+        <a href="{{ url_for('wrong_words') }}" class="button">確認する</a>
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>
