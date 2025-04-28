@@ -23,7 +23,8 @@ words = {
     'orange': 'オレンジ',
     'tree':'木',
     'sea':'海',
-    'river':'川'
+    'river':'川',
+    'Yuito':'結人'
 }
 
 @app.route('/')
