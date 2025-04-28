@@ -20,7 +20,9 @@ words = {
     'lion': 'ライオン',
     'mountain': '山',
     'notebook': 'ノート',
-    'orange': 'オレンジ'
+    'orange': 'オレンジ',
+    'tree':'木',
+    'sea':'海'
 }
 
 @app.route('/')
