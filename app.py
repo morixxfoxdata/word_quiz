@@ -25,7 +25,8 @@ words = {
     'sea':'海',
     'river':'川',
     'Yuito':'結人',
-    'Komori':'小森'
+    'Komori':'小森',
+    'iwata':'岩田'
 }
 
 @app.route('/')
