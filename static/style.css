@@ -73,6 +73,18 @@ h1 {
   transform: rotateY(0deg);
 }
 
+/* ボタンを初期状態で非表示にする */
+.correct-btn,
+.wrong-btn {
+  display: none; /* 非表示 */
+}
+
+/* カードがflipped状態のときにボタンを表示 */
+.word-card.flipped ~ .buttons .correct-btn,
+.word-card.flipped ~ .buttons .wrong-btn {
+  display: inline-block; /* 表示 */
+}
+
 .buttons {
   display: flex;
   justify-content: center;
