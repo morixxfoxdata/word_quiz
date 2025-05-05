@@ -30,6 +30,8 @@ words = load_words_from_csv("TOEIC_words.csv")
 
 @app.route('/')
 def index():
+    #session['wrong_words'] = []  # ← 毎回リセット（開発用）
+
     # セッションの初期化
     if 'wrong_words' not in session:
         session['wrong_words'] = []

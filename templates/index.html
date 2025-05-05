@@ -45,14 +45,20 @@
         >
         / 10
       </div>
-
-      <div id="end-options" style="display: none">
-        <a href="/wrong_words" class="button">確認する</a>
-        <button id="reset-btn" class="button">リセット</button>
+      <div
+        id="wrong-words-notification"
+        class="notification"
+        style="display: none; margin-top: 1em;"
+      >
+        10個の単語が貯まりました！
+      </div>
+       <div id="end-options" style="display: none">
+        <a class="button" href="/wrong_words">確認する</a>
+        <button class="button" id="reset-btn">リセット</button>  
       </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='script_combined.js') }}"></script>
     <!-- jsファイルで定義した関数を用いている -->
   </body>
 </html>
