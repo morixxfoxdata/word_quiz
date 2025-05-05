@@ -1,4 +1,9 @@
+// document は「今表示しているページ」全体を指します。
+// 	•	DOMContentLoaded は「HTML の読み込みが終わったら」という意味。
+// 	•	ページの内容が読み込まれた後にこの中の関数（function () { ... }）が実行されます。
 document.addEventListener("DOMContentLoaded", function () {
+  // getElementById() で HTML 内のパーツを取得しています。
+	// •	const は「この変数は後から変更しない」という宣言。
   const wordCard = document.getElementById("word-card");
   const correctBtn = document.getElementById("correct-btn");
   const wrongBtn = document.getElementById("wrong-btn");
@@ -6,13 +11,18 @@ document.addEventListener("DOMContentLoaded", function () {
   const wrongWordsNotification = document.getElementById(
     "wrong-words-notification"
   );
+
+  // この変数で「カードが裏返っているかどうか」を記録します。
+	// •	最初は false（＝表側を表示中）。
   // フリップの初期値：boolean型
   let isFlipped = false;
 
   // カードをタップ/クリックしたときのフリップ機能
+  // !isFlipped は「true⇄false を反転する」記号。
+	// •	.classList.add() / .remove() は CSS のクラスを追加・削除する。
+	// •	つまり、CSSで「裏面表示」になるようにスタイルが切り替わります
   wordCard.addEventListener("click", function () {
     isFlipped = !isFlipped;
-
     if (isFlipped) {
       wordCard.classList.add("flipped");
     } else {
@@ -31,9 +41,10 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 
   // 回答処理
+  // カードに付いている data-word="apple" のような情報を取得。
+	// •	dataset.word は HTML 側の data-word 属性を読む方法。
   function handleAnswer(isCorrect) {
     const currentWord = wordCard.dataset.word;
-
     fetch("/mark_word", {
       method: "POST",
       headers: {
