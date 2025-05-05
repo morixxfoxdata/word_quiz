@@ -44,7 +44,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // カードに付いている data-word="apple" のような情報を取得。
 	// •	dataset.word は HTML 側の data-word 属性を読む方法。
   function handleAnswer(isCorrect) {
+    
+    if (parseInt(wrongCount.textContent) >= 10) {
+      // すでに10個以上なら無視
+      return;
+    }
+
     const currentWord = wordCard.dataset.word;
+
     fetch("/mark_word", {
       method: "POST",
       headers: {
@@ -73,9 +80,20 @@ document.addEventListener("DOMContentLoaded", function () {
         wrongCount.textContent = data.wrongWordsCount;
 
         // 10個たまったら通知を表示
-        if (data.showWrongWords) {
+        if (data.wrongWordsCount >= 10) {
+          correctBtn.disabled = true;
+          wrongBtn.disabled = true;
           wrongWordsNotification.style.display = "block";
+          // ここでリセット/確認ボタンを表示させるなど
+          showEndOptions();
         }
+
       });
   }
+  function showEndOptions() {
+    const endOptions = document.getElementById("end-options");
+    endOptions.style.display = "block";
+  }
+  
+
 });

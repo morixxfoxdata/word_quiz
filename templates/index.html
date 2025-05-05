@@ -46,13 +46,9 @@
         / 10
       </div>
 
-      <div
-        id="wrong-words-notification"
-        class="notification"
-        style="display: none"
-      >
-        10個の単語が貯まりました！
-        <a href="{{ url_for('wrong_words') }}" class="button">確認する</a>
+      <div id="end-options" style="display: none">
+        <a href="/wrong_words" class="button">確認する</a>
+        <button id="reset-btn" class="button">リセット</button>
       </div>
     </div>
 
