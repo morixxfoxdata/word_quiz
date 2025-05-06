@@ -14,6 +14,7 @@
       <h1>間違えた単語リスト</h1>
 
       <div class="wrong-words-list">
+        <!-- wrong_words という変数が「存在していて、中身が空じゃないか？」を調べています。 -->
         {% if wrong_words %} {% for word, translation in wrong_words.items() %}
         <div class="word-item">
           <div class="english">{{ word }}</div>
@@ -26,27 +27,18 @@
 
       <div class="buttons">
         <button id="reset-btn" class="reset-btn">リセット</button>
-        <a href="{{ url_for('index') }}" class="button back-btn">戻る</a>
+        <!-- <a href="{{ url_for('index') }}" class="button back-btn">戻る</a> -->
       </div>
     </div>
 
-    <script>
+    <!-- <script>
       document
+        // document は「今表示されている Webページ」のこと。
+        // .getElementById("reset-btn") は、ページの中から IDが”reset-btn”という要素（ボタン） を探します
         .getElementById("reset-btn")
+        // これは「ボタンがクリックされたときに、次の関数（function）を実行してください」という意味です
         .addEventListener("click", function () {
-          fetch("/reset_wrong_words", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.status === "success") {
-                window.location.href = "/";
-              }
-            });
-        });
-    </script>
+    </script> -->
+    <script src="{{ url_for('static', filename='script_combined.js') }}"></script>
   </body>
 </html>

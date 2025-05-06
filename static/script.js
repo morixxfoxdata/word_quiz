@@ -44,6 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function handleAnswer(isCorrect) {
     const currentWord = wordCard.dataset.word;
 
+
     // フリップを解除
     isFlipped = false;
     wordCard.classList.remove("flipped");

@@ -23,6 +23,8 @@
         <div class="word-back">{{ translation }}</div>
       </div>
 
+      <!-- id="correct-btn" → JavaScript から「○ボタン」だけを正確に探して使う（1つしかない） -->
+      <!-- class="correct-btn" → CSS で「○ボタンの色や大きさ」を見た目として設定 -->
       <div class="buttons">
         <button id="correct-btn" class="correct-btn">○</button>
         <button id="wrong-btn" class="wrong-btn">×</button>
@@ -30,22 +32,33 @@
 
       <div class="wrong-words-counter">
         間違えた単語:
+        <!-- span はインライン（文章中）に小さな範囲を指定できるタグ -->
+         <!-- ここがJinja2（Flask）ならではの書き方で、重要ポイントです 
+	       •	session.get('wrong_words', []) は、Flask のセッション（ユーザーごとの一時保存領域）から wrong_words というデータを取得しています。
+	       •	例: wrong_words = [("apple", "りんご"), ("dog", "いぬ")]
+	       •	もし存在しなければ []（空のリスト）を使う、という意味の保険付きです。
+	       •	|length はそのリストの「長さ（要素数）」を調べるフィルターです。
+	       •	つまり、「今、何個の単語が間違いリストに入ってるか」を数字で出す。 -->
         <span id="wrong-count"
+
           >{{ session.get('wrong_words', [])|length }}</span
         >
         / 10
       </div>
-
       <div
         id="wrong-words-notification"
         class="notification"
-        style="display: none"
+        style="display: none; margin-top: 1em;"
       >
         10個の単語が貯まりました！
-        <a href="{{ url_for('wrong_words') }}" class="button">確認する</a>
+      </div>
+       <div id="end-options" style="display: none">
+        <a class="button" href="/wrong_words">確認する</a>
+        <button class="button" id="reset-btn">リセット</button>  
       </div>
     </div>
 
-    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='script_combined.js') }}"></script>
+    <!-- jsファイルで定義した関数を用いている -->
   </body>
 </html>
