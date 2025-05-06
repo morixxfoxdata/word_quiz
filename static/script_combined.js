@@ -1,40 +1,92 @@
-// 正誤処理関数（既存の handleAnswer を前提にする）
 function handleAnswer(isCorrect) {
   const currentWord = wordCard.dataset.word;
 
-  fetch("/mark_word", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      word: currentWord,
-      isCorrect: isCorrect,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      const wrongs = data.wrongWordsCount;
-      wrongCount.textContent = wrongs;
+  // フリップを解除
+  isFlipped = false;
+  wordCard.classList.remove("flipped");
 
-      if (wrongs >= 10) {
-        correctBtn.disabled = true;
-        wrongBtn.disabled = true;
-        const notification = document.getElementById("wrong-words-notification");
-        if (notification) notification.style.display = "block";
-        const endOptions = document.getElementById("end-options");
-        if (endOptions) endOptions.style.display = "block";
-        return;
-      }
+  // ボタンを無効化
+  correctBtn.disabled = true;
+  wrongBtn.disabled = true;
 
-      wordCard.dataset.word = data.nextWord;
-      wordCard.dataset.translation = data.translation;
-      wordCard.querySelector(".word-front").textContent = data.nextWord;
-      wordCard.querySelector(".word-back").textContent = data.translation;
-      isFlipped = false;
-      wordCard.classList.remove("flipped");
-    });
+  // アニメーション終了後にfetchを実行
+  wordCard.addEventListener(
+    "transitionend",
+    function onTransitionEnd() {
+      // アニメーション終了後にfetchを実行
+      const currentWord = wordCard.dataset.word;
+
+      fetch("/mark_word", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          word: currentWord,
+          isCorrect: isCorrect,
+        }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          // 次の単語を表示
+          wordCard.dataset.word = data.nextWord;
+          wordCard.dataset.translation = data.translation;
+
+          // カードのテキストを更新
+          wordCard.querySelector(".word-front").textContent = data.nextWord;
+          wordCard.querySelector(".word-back").textContent = data.translation;
+
+          // 間違えた単語の数を更新
+          wrongCount.textContent = data.wrongWordsCount;
+
+          // 10個たまったら通知を表示
+          if (data.showWrongWords) {
+            wrongWordsNotification.style.display = "block";
+          }
+        });
+
+      // イベントリスナーを削除（複数回実行されないようにする）
+      wordCard.removeEventListener("transitionend", onTransitionEnd);
+    }
+  );
 }
+// // 正誤処理関数（既存の handleAnswer を前提にする）
+// function handleAnswer(isCorrect) {
+//   const currentWord = wordCard.dataset.word;
+
+//   fetch("/mark_word", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify({
+//       word: currentWord,
+//       isCorrect: isCorrect,
+//     }),
+//   })
+//     .then((response) => response.json())
+//     .then((data) => {
+//       const wrongs = data.wrongWordsCount;
+//       wrongCount.textContent = wrongs;
+
+//       if (wrongs >= 10) {
+//         correctBtn.disabled = true;
+//         wrongBtn.disabled = true;
+//         const notification = document.getElementById("wrong-words-notification");
+//         if (notification) notification.style.display = "block";
+//         const endOptions = document.getElementById("end-options");
+//         if (endOptions) endOptions.style.display = "block";
+//         return;
+//       }
+
+//       wordCard.dataset.word = data.nextWord;
+//       wordCard.dataset.translation = data.translation;
+//       wordCard.querySelector(".word-front").textContent = data.nextWord;
+//       wordCard.querySelector(".word-back").textContent = data.translation;
+//       isFlipped = false;
+//       wordCard.classList.remove("flipped");
+//     });
+// }
 
 // 🔁 リセット処理関数
 function handleReset() {
