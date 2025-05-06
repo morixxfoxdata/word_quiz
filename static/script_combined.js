@@ -2,38 +2,66 @@
 // 正誤処理関数（既存の handleAnswer を前提にする）
 function handleAnswer(isCorrect) {
   const currentWord = wordCard.dataset.word;
+  // フリップを解除
+  // isFlipped: 日本語面を表示しているときは true
+  isFlipped = false;
+  // wordCard: カードの要素のDOM
+  // wordCardに対して、flipped というクラスを外す
+  wordCard.classList.remove("flipped");
+  // ボタンを無効化
+  // correctBtn.disabled = true;
+  // wrongBtn.disabled = true;
+  // wordCardのイベントリスナーを追加
+  // transitionend: CSSのトランジションが終わったときに発火するイベント
+  wordCard.addEventListener(
+    "transitionend",
+    function onTransitionEnd() {
+      // currentWord: wordCardのデータ属性から取得した単語
+      const currentWord = wordCard.dataset.word;
+    // mark_word: サーバに「/mark_word という場所へアクセスしてね」と言っています。
+    // 「ページを移動する」のではなく、裏でこっそり通信しています（これを「非同期通信」と言います）。
+    fetch("/mark_word", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      // body: サーバに送るデータを JSON 形式で指定
+      // 例えば、サーバに { "word": "apple", "isCorrect": true } のようなデータを送る
+      body: JSON.stringify({
+        word: currentWord,
+        isCorrect: isCorrect,
+      }),
+    })
+      .then((response) => response.json())
+      // JSON に変換したデータを、data という名前で受け取る
+      // 例えば、サーバから { "nextWord": "banana", "translation": "バナナ" , "wrongWordsCount": 4, "showWrongWords": false} のようなデータを受け取る
+      .then((data) => {
+        // wrongsに、サーバから受け取ったデータの wrongWordsCount を代入
+        // 例えば、サーバから受け取ったデータが { "wrongWordsCount": 4 } の場合、wrongs は 4 になる
+        const wrongs = data.wrongWordsCount;
+        // wrongCount: DOMの要素を取得
+        wrongCount.textContent = wrongs;
+        // 間違い回数が10回以上の場合
+        if (wrongs >= 10) {
+          correctBtn.disabled = true;
+          wrongBtn.disabled = true;
+          const notification = document.getElementById("wrong-words-notification");
+          if (notification) notification.style.display = "block";
+          const endOptions = document.getElementById("end-options");
+          if (endOptions) endOptions.style.display = "block";
+          return;
+        }
 
-  fetch("/mark_word", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      word: currentWord,
-      isCorrect: isCorrect,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      const wrongs = data.wrongWordsCount;
-      wrongCount.textContent = wrongs;
-
-      if (wrongs >= 10) {
-        correctBtn.disabled = true;
-        wrongBtn.disabled = true;
-        const notification = document.getElementById("wrong-words-notification");
-        if (notification) notification.style.display = "block";
-        const endOptions = document.getElementById("end-options");
-        if (endOptions) endOptions.style.display = "block";
-        return;
-      }
-
-      wordCard.dataset.word = data.nextWord;
-      wordCard.dataset.translation = data.translation;
-      wordCard.querySelector(".word-front").textContent = data.nextWord;
-      wordCard.querySelector(".word-back").textContent = data.translation;
-      isFlipped = false;
-      wordCard.classList.remove("flipped");
+        wordCard.dataset.word = data.nextWord;
+        wordCard.dataset.translation = data.translation;
+        wordCard.querySelector(".word-front").textContent = data.nextWord;
+        wordCard.querySelector(".word-back").textContent = data.translation;
+        // 10個たまったら通知を表示
+        if (data.showWrongWords) {
+          wrongWordsNotification.style.display = "block";
+        }
+      });
+      wordCard.removeEventListener("transitionend", onTransitionEnd);
     });
 }
 
