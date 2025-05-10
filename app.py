@@ -26,7 +26,7 @@ def load_words_from_csv(path):
 
 # 英単語と日本語訳の辞書
 # アプリの単語リストとして使う
-words = load_words_from_csv("TOEIC_words.csv")
+words = load_words_from_csv("TOEIC_words01.csv")
 
 @app.route('/')
 def index():
