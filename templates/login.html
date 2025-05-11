@@ -2,18 +2,34 @@
 <html lang="ja">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ログイン</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
   </head>
   <body>
-    <h1>ログイン</h1>
-    <form method="post">
-      <label>ユーザー名: <input type="text" name="username" required /></label
-      ><br />
-      <label
-        >パスワード: <input type="password" name="password" required /></label
-      ><br />
-      <button type="submit">ログイン</button>
-    </form>
-    <a href="/register">新規登録はこちら</a>
+    <div class="container">
+      <header>
+        <h1>ログイン</h1>
+      </header>
+
+      <form method="post" class="auth-form">
+        <div class="form-group">
+          <label
+            >ユーザー名: <input type="text" name="username" required
+          /></label>
+          <label
+            >パスワード: <input type="password" name="password" required
+          /></label>
+          <button type="submit" class="button">ログイン</button>
+        </div>
+      </form>
+
+      <div class="auth-links">
+        <a href="/register">新規登録はこちら</a>
+      </div>
+    </div>
   </body>
 </html>
