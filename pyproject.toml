@@ -9,7 +9,8 @@ dependencies = [
     "Flask-Login>=0.6.3",
     "Flask-SQLAlchemy>=3.1.1"
 ]
-# ここが重要！単体モジュール app.py を指定
+
+[tool.setuptools]
 py-modules = ["app"]
 
 [build-system]
