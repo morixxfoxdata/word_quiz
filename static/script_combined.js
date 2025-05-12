@@ -110,9 +110,17 @@ document.addEventListener("DOMContentLoaded", function () {
   const wordCard = document.getElementById("word-card");
   if (wordCard) {
     wordCard.addEventListener("click", function () {
+      const flipSound = document.getElementById("flip-sound");
+
+      if (!isFlipped && flipSound) {
+        flipSound.currentTime = 0;
+        flipSound.play();
+      }
+
       wordCard.classList.toggle("flipped");
       isFlipped = !isFlipped;
     });
+
   }
 
   // ボタン取得
@@ -128,4 +136,28 @@ document.addEventListener("DOMContentLoaded", function () {
   if (correctBtn) correctBtn.addEventListener("click", () => handleAnswer(true));
   if (wrongBtn) wrongBtn.addEventListener("click", () => handleAnswer(false));
   if (resetBtn) resetBtn.addEventListener("click", handleReset);
+});
+
+// 音声
+document.addEventListener("DOMContentLoaded", function () {
+  const sound = document.getElementById("trans-sound");
+  const buttons = document.querySelectorAll(".play-sound00");
+
+  buttons.forEach(btn => {
+    btn.addEventListener("click", function (e) {
+      if (sound) {
+        sound.currentTime = 0;
+        sound.play();
+      }
+
+      // 遷移処理：button の親要素（<a href="/test">）を取得して遷移
+      const parentLink = btn.closest("a");
+      if (parentLink && parentLink.href) {
+        e.preventDefault();
+        setTimeout(() => {
+          window.location.href = parentLink.href;
+        }, 300);
+      }
+    });
+  });
 });

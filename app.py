@@ -29,6 +29,10 @@ def load_words_from_csv(path):
 words = load_words_from_csv("TOEIC_words01.csv")
 
 @app.route('/')
+def start():
+    return render_template('start.html')
+
+@app.route('/test')
 def index():
     #session['wrong_words'] = []  # ← 毎回リセット（開発用）
 

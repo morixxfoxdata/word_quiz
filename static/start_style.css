@@ -1,0 +1,23 @@
+:root{
+    --text_main:#e6f0ff
+}
+
+.start-button {
+  background-color: #000;
+  color: var(--text_main);
+  padding: 15px 30px;
+  font-size: 1.5rem;
+  border: 2px solid #ffffff;  /* ← 白い枠線を追加 */
+  border-radius: 8px;
+  cursor: pointer;
+  margin-top: 30px;
+  transition: background-color 0.3s, border-color 0.3s;
+}
+.start-button:hover {
+background-color: #717175;
+}
+
+.start-title{
+    color: var(--text_main);
+    font-size: 4rem;
+}

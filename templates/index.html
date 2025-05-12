@@ -10,8 +10,13 @@
     />
   </head>
   <body>
-    <div class="container">
-      <h1>英単語学習</h1>
+    <nav class="navbar">
+      <div class="nav_container">
+        <a class="play-sound00 nav_button" href="{{url_for('start')}}">トップへ</a>
+      </div>
+    </nav>
+
+      <h1 class="test-title">英単語テスト</h1>
 
       <div
         class="word-card"
@@ -53,16 +58,19 @@
         10個の単語が貯まりました！
       </div>
        <div id="end-options" style="display: none">
-        <a class="button" href="/wrong_words">確認する</a>
-        <button class="button" id="reset-btn">リセット</button>  
+        <a class="play-sound00 button" href="/wrong_words">確認する</a>
+        <button class="play-sound00 button" id="reset-btn">トップへ</button>  
       </div>
-    </div>
+
 
     <script src="{{ url_for('static', filename='script_combined.js') }}"></script>
     <!-- jsファイルで定義した関数を用いている -->
     <!-- 音声再生用 -->
     <audio id="correct-sound" src="{{ url_for('static', filename='sounds/correct.mp3') }}"></audio>
     <audio id="wrong-sound" src="{{ url_for('static', filename='sounds/wrong.mp3') }}"></audio>
+    <audio id="trans-sound" src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"></audio>
+    <audio id="flip-sound" src="{{ url_for('static', filename='sounds/flip.mp3') }}"></audio>
+
 
   </body>
 </html>

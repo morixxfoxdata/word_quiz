@@ -26,7 +26,7 @@
       </div>
 
       <div class="buttons">
-        <button id="reset-btn" class="reset-btn">リセット</button>
+        <button id="reset-btn" class="play-sound00 reset-btn">トップへ</button>
         <!-- <a href="{{ url_for('index') }}" class="button back-btn">戻る</a> -->
       </div>
     </div>
@@ -40,5 +40,6 @@
         .addEventListener("click", function () {
     </script> -->
     <script src="{{ url_for('static', filename='script_combined.js') }}"></script>
+    <audio id="trans-sound" src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"></audio>
   </body>
 </html>
