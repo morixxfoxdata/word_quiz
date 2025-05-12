@@ -60,5 +60,9 @@
 
     <script src="{{ url_for('static', filename='script_combined.js') }}"></script>
     <!-- jsファイルで定義した関数を用いている -->
+    <!-- 音声再生用 -->
+    <audio id="correct-sound" src="{{ url_for('static', filename='sounds/correct.mp3') }}"></audio>
+    <audio id="wrong-sound" src="{{ url_for('static', filename='sounds/wrong.mp3') }}"></audio>
+
   </body>
 </html>

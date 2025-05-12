@@ -13,6 +13,18 @@ function handleAnswer(isCorrect) {
   // wrongBtn.disabled = true;
   // wordCardのイベントリスナーを追加
   // transitionend: CSSのトランジションが終わったときに発火するイベント
+  
+  //効果音の再生
+  const correctSound = document.getElementById("correct-sound");
+  const wrongSound = document.getElementById("wrong-sound");
+  if (isCorrect) {
+    correctSound.currentTime = 0; // ←連打対応（最初から）
+    correctSound.play();
+  } else {
+    wrongSound.currentTime = 0;
+    wrongSound.play();
+  }
+  
   wordCard.addEventListener(
     "transitionend",
     function onTransitionEnd() {
