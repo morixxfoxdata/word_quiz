@@ -42,6 +42,7 @@ app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
+# ログイン管理（ログインしていない場合はログイン画面にリダイレクト）
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
@@ -162,6 +163,7 @@ def register():
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
+        # ログインフォームからユーザー名とパスワードを取得
         username = request.form["username"]
         password = request.form["password"]
         user = User.query.filter_by(username=username).first()

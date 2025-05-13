@@ -229,3 +229,15 @@ h1 {
   text-decoration: underline;
   font-size: 1rem;
 }
+.flash-messages {
+  margin: 1rem 0;
+}
+
+.flash-message {
+  padding: 0.75rem;
+  margin-bottom: 0.5rem;
+  border-radius: 4px;
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}

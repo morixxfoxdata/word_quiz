@@ -15,6 +15,16 @@
         <h1>ログイン</h1>
       </header>
 
+      {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <div class="flash-messages">
+            {% for message in messages %}
+              <div class="flash-message">{{ message }}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+
       <form method="post" class="auth-form">
         <div class="form-group">
           <label
