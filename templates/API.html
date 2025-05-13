@@ -5,6 +5,12 @@
   <title>英語例文生成結果</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <style>
+    :root{
+    --text_main:#e6f0ff;
+    --btn_back:#000;
+    --btn_border:#ffff;
+    }
+
     body {
       font-family: "Helvetica Neue", sans-serif;
       padding: 2em;
@@ -31,14 +37,17 @@
 
     .label {
       font-weight: bold;
+      color: var(--text_main);
+      border-color: var(--btn_border);
       margin-bottom: 0.5em;
       display: block;
-      color: #444;
     }
 
     .word-list,
     .sentence-box {
-      background: #f0f0f5;
+      background: var(--btn_back);
+      border-color: var(--btn_border);
+      color: var(--text_main);
       padding: 1em;
       border-radius: 8px;
       font-size: 1.1em;
@@ -52,7 +61,7 @@
   </style>
 </head>
 <body>
-  <div class="container">
+<!-- <div class="container"> --> 
     <h1>例文が生成されました</h1>
 
     <div class="section">
@@ -64,6 +73,6 @@
       <span class="label">テスト例文：</span>
       <div class="sentence-box">{{ sentence }}</div>
     </div>
-  </div>
+  <!-- </div> -->
 </body>
 </html>
