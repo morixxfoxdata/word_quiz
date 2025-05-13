@@ -49,6 +49,21 @@ body {
   margin-top: 70px;
 } */
 
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+
+
+
 h1 {
   margin-bottom: 30px;
   color: var(--text_main);
@@ -57,7 +72,11 @@ h1 {
 
 .word-card {
   position: relative;
+/* <<<<<<< HEAD */
   width: 35%;
+/* =======
+  width: 105%;
+>>>>>>> origin/Ito_test */
   height: 200px;
   margin: 0 auto 30px;
   perspective: 1000px;
