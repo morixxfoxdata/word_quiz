@@ -1,15 +1,36 @@
-# •	Flask：アプリ本体
-# 	•	render_template：HTMLファイルを表示するため
-# 	•	request：ユーザーから送られてきたデータを受け取る
-# 	•	jsonify：PythonのデータをJSON形式で返す
-#　 ・	session：ユーザーごとに情報を一時的に保存する仕組み（ここでは間違えた単語）
-
 from flask import Flask, render_template, request, jsonify, session
 import random
 import csv
+from dotenv import load_dotenv
+import os
+import requests  # すでに import していなければ
+import google.generativeai as genai
+
+load_dotenv()
+api_key = os.getenv("GEMINI_API_KEY")
+
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'  # セッション用のシークレットキー
+
+
+
+
+
+def generate_sentence_from_words(words):
+    load_dotenv()
+    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+    genai.configure(api_key=GOOGLE_API_KEY)
+
+    gemini_pro = genai.GenerativeModel("gemini-1.5-flash")
+
+    prompt = f"Please write a sentence using all of: {', '.join(words)}."
+    try:
+        response = gemini_pro.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print("❌ Geminiエラー:", e)
+        return "❗ Gemini APIの呼び出しに失敗しました。"
 
 
 def load_words_from_csv(path):
@@ -24,14 +45,11 @@ def load_words_from_csv(path):
     return words
 
 
-# 英単語と日本語訳の辞書
-# アプリの単語リストとして使う
 words = load_words_from_csv("TOEIC_words.csv")
 
 @app.route('/')
 def index():
-    #session['wrong_words'] = []  # ← 毎回リセット（開発用）
-
+    session['wrong_words'] = []  # ← 毎回リセット（開発用）
     # セッションの初期化
     if 'wrong_words' not in session:
         session['wrong_words'] = []
@@ -82,6 +100,23 @@ def reset_wrong_words():
 	# {"status": "success"} を返して、JS側で「トップに戻る」などの処理ができる
     session['wrong_words'] = []
     return jsonify({'status': 'success'})
+
+
+@app.route("/generate_sentence", methods=["GET"])
+def generate_sentence():
+    wrong_words = session.get("wrong_words", [])
+    word_list = wrong_words
+
+    # 🟢 Gemini APIで例文生成
+    example_sentence = generate_sentence_from_words(word_list)
+
+    # 🟢 プロンプトも表示用に生成
+    prompt = f"Please write short and natural English some sentences using all of the following words: {', '.join(word_list)}."
+
+    return render_template("API.html",
+                           word_list=word_list,
+                           sentence=example_sentence,
+                           prompt=prompt)
 
 if __name__ == '__main__':
     app.run(debug=True)
