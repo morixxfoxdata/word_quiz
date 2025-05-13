@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>自分の単語リスト</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>自分の単語リスト</h1>
+        <nav>
+          <a href="/">トップへ戻る</a> |
+          <a href="/logout">ログアウト</a>
+        </nav>
+      </header>
+
+      <form method="post" action="/add_word" class="add-word-form">
+        <div class="form-group">
+          <label>単語: <input type="text" name="entry" required /></label>
+          <label>意味: <input type="text" name="meaning" required /></label>
+          <button type="submit" class="button">追加</button>
+        </div>
+      </form>
+
+      <div class="word-list">
+        {% for word in words %}
+        <div class="word-item">
+          <div class="english">{{ word.entry }}</div>
+          <div class="japanese">{{ word.meaning }}</div>
+          <form
+            method="post"
+            action="/delete_word/{{ word.id }}"
+            style="display: inline"
+          >
+            <button type="submit" class="wrong-btn">削除</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>
