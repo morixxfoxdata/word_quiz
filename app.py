@@ -3,7 +3,7 @@ import random
 import csv
 from dotenv import load_dotenv
 import os
-import requests  # すでに import していなければ
+import requests  
 import google.generativeai as genai
 
 load_dotenv()
