@@ -5,18 +5,18 @@
   <title>英語例文生成結果</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
   <style>
-    :root{
-    --text_main:#e6f0ff;
-    --btn_back:#000;
-    --btn_border:#ffff;
+    :root {
+      --text_main: #e6f0ff;
+      --btn_back: #000;
+      --btn_border: #ffff;
     }
-
+  
     body {
       font-family: "Helvetica Neue", sans-serif;
       padding: 2em;
       background-color: #f9f9f9;
     }
-
+  
     .container {
       max-width: 700px;
       margin: 0 auto;
@@ -25,44 +25,43 @@
       border-radius: 12px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
-
+  
     h1 {
       text-align: center;
-      color: #333;
+      color: white;
     }
-
+  
     .section {
       margin-top: 1.5em;
     }
-
+  
     .label {
       font-weight: bold;
       color: var(--text_main);
-      border-color: var(--btn_border);
       margin-bottom: 0.5em;
       display: block;
     }
-
+  
     .word-list,
     .sentence-box {
       background: var(--btn_back);
-      border-color: var(--btn_border);
       color: var(--text_main);
       padding: 1em;
-      border-radius: 8px;
-      font-size: 1.1em;
+      border-radius: 10px;
+      font-size: 2rem;
+      font-weight: bold;
+      border: 2px solid #00ffff;
+      box-shadow: 0 0 20px #00ffff80;
     }
-
+  
     .sentence-box {
-      background: #fff8dc;
-      border: 1px solid #f0c36d;
-      font-size: 1.3em;
+      background: #000000;
     }
   </style>
 </head>
 <body>
 <!-- <div class="container"> --> 
-    <h1>例文が生成されました</h1>
+    <h1 style="color: white;">例文が生成されました</h1>
 
     <div class="section">
       <span class="label">あなたが間違えた英単語：</span>
@@ -70,8 +69,13 @@
     </div>
 
     <div class="section">
-      <span class="label">テスト例文：</span>
+      <span class="label">例文（英語）：</span>
       <div class="sentence-box">{{ sentence }}</div>
+    </div>
+
+    <div class="section">
+      <span class="label">例文（日本語訳）：</span>
+      <div class="sentence-box">{{ translation }}</div>
     </div>
   <!-- </div> -->
 </body>

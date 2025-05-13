@@ -19,6 +19,13 @@
         </nav>
       </header>
 
+      <form method="post" action="/upload_csv" enctype="multipart/form-data" class="csv-upload-form">
+        <div class="form-group">
+          <label>CSVファイルから単語を登録: <input type="file" name="csv_file" accept=".csv" required /></label>
+          <button type="submit" class="button">CSVから登録</button>
+        </div>
+      </form>
+
       <form method="post" action="/add_word" class="add-word-form">
         <div class="form-group">
           <label>単語: <input type="text" name="entry" required /></label>

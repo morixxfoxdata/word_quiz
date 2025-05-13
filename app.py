@@ -7,6 +7,7 @@
 
 import random
 import os
+import csv
 from dotenv import load_dotenv
 
 from flask import (
@@ -78,20 +79,31 @@ class User(UserMixin, db.Model):
 # =======
 
 
-
 def generate_sentence_from_words(words):
-    # load_dotenv()
+    load_dotenv()
     # GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
     # genai.configure(api_key=api_key)
 
     # gemini_pro = genai.GenerativeModel("gemini-1.5-flash")
-    prompt = f"Please write a sentence using all of: {', '.join(words)}."
+
+    prompt = f"以下の単語をすべて含む、文章として自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。: {', '.join(words)}."
     try:
-        response = client.models.generate_content(model="gemini-1.5-flash", contents=prompt)
-        return response.text
+        # response = gemini_pro.generate_content(prompt)
+        response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+        
+        # 改行で英文と訳文を分ける
+        response_text = response.text.strip()
+        if '\n' in response_text:
+            sentence, translation = response_text.split('\n', 1)  # 英文と日本語を分ける
+        else:
+            sentence = response_text
+            translation = ""
+        
+        return sentence, translation
     except Exception as e:
         print("❌ Geminiエラー:", e)
-        return "❗ Gemini APIの呼び出しに失敗しました。"
+        return "❗ Gemini APIの呼び出しに失敗しました。", ""
+    
 
 
 # def load_words_from_csv(path):
@@ -287,15 +299,61 @@ def generate_sentence():
     word_list = wrong_words
 
     # 🟢 Gemini APIで例文生成
-    example_sentence = generate_sentence_from_words(word_list)
+    sentence, translation = generate_sentence_from_words(word_list)
 
-    # 🟢 プロンプトも表示用に生成
-    prompt = f"Please write short and natural English some sentences using all of the following words: {', '.join(word_list)}."
 
     return render_template("API.html",
                            word_list=word_list,
-                           sentence=example_sentence,
-                           prompt=prompt)
+                           sentence=sentence,
+                           translation=translation)
+    
+
+@app.route("/upload_csv", methods=["POST"])
+@login_required
+def upload_csv():
+    if 'csv_file' not in request.files:
+        flash('ファイルが選択されていません')
+        return redirect(url_for('my_words'))
+    
+    file = request.files['csv_file']
+    if file.filename == '':
+        flash('ファイルが選択されていません')
+        return redirect(url_for('my_words'))
+    
+    if not file.filename.endswith('.csv'):
+        flash('CSVファイルを選択してください')
+        return redirect(url_for('my_words'))
+    
+    try:
+        # CSVファイルを読み込む
+        stream = file.stream.read().decode("utf-8")
+        csv_reader = csv.DictReader(stream.splitlines())
+        
+        # 単語を登録
+        words_added = 0
+        for row in csv_reader:
+            entry = row.get('entry', '').strip()
+            meaning = row.get('meaning', '').strip()
+            
+            if entry and meaning:
+                # 既に同じ単語が登録されていないか確認
+                existing_word = Word.query.filter_by(
+                    user_id=current_user.id,
+                    entry=entry
+                ).first()
+                
+                if not existing_word:
+                    word = Word(entry=entry, meaning=meaning, user_id=current_user.id)
+                    db.session.add(word)
+                    words_added += 1
+        
+        db.session.commit()
+        flash(f'{words_added}個の単語を登録しました')
+    except Exception as e:
+        flash('CSVファイルの処理中にエラーが発生しました')
+        print(f"CSV処理エラー: {e}")
+    
+    return redirect(url_for('my_words'))
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
