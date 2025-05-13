@@ -27,8 +27,9 @@ from flask_login import (
     login_user,
     logout_user,
 )
-import requests
-import google.generativeai as genai
+# import requests
+# import google.generativeai as genai
+from google import genai
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -43,9 +44,9 @@ load_dotenv()
 # import os
 
 
-# load_dotenv()
-# api_key = os.getenv("GEMINI_API_KEY")
-
+load_dotenv()
+api_key = os.getenv("GEMINI_API_KEY")
+client = genai.Client(api_key=api_key)
 # >>>>>>> origin/Ito_test
 
 app = Flask(__name__)
@@ -79,15 +80,14 @@ class User(UserMixin, db.Model):
 
 
 def generate_sentence_from_words(words):
-    load_dotenv()
-    GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
-    genai.configure(api_key=GOOGLE_API_KEY)
+    # load_dotenv()
+    # GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
+    # genai.configure(api_key=api_key)
 
-    gemini_pro = genai.GenerativeModel("gemini-1.5-flash")
-
+    # gemini_pro = genai.GenerativeModel("gemini-1.5-flash")
     prompt = f"Please write a sentence using all of: {', '.join(words)}."
     try:
-        response = gemini_pro.generate_content(prompt)
+        response = client.models.generate_content(model="gemini-1.5-flash", contents=prompt)
         return response.text
     except Exception as e:
         print("❌ Geminiエラー:", e)
@@ -298,8 +298,8 @@ def generate_sentence():
                            prompt=prompt)
 
 if __name__ == '__main__':
-# >>>>>>> origin/Ito_test
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5001))
+    app.run(host='0.0.0.0', port=port)
     # このファイルがメインで実行された場合（python app.py）
 # •	サーバを起動する
 # •	debug=True にするとエラー表示がわかりやすくなる（開発モード）

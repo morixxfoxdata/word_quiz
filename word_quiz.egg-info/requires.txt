@@ -3,3 +3,7 @@ Flask-Login>=0.6.3
 Flask-SQLAlchemy>=3.1.1
 psycopg2-binary>=2.9.10
 python-dotenv>=1.1.0
+flask-migrate>=4.1.0
+requests>=2.32.3
+google>=3.0.0
+google-genai>=1.14.0

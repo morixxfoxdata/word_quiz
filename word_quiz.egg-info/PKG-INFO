@@ -9,6 +9,10 @@ Requires-Dist: Flask-Login>=0.6.3
 Requires-Dist: Flask-SQLAlchemy>=3.1.1
 Requires-Dist: psycopg2-binary>=2.9.10
 Requires-Dist: python-dotenv>=1.1.0
+Requires-Dist: flask-migrate>=4.1.0
+Requires-Dist: requests>=2.32.3
+Requires-Dist: google>=3.0.0
+Requires-Dist: google-genai>=1.14.0
 
 # word_quiz
 
