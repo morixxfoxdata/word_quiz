@@ -5,6 +5,8 @@
 # ・	session：ユーザーごとに情報を一時的に保存する仕組み（ここでは間違えた単語）
 
 import random
+import os
+from dotenv import load_dotenv
 
 from flask import (
     Flask,
@@ -25,12 +27,21 @@ from flask_login import (
     logout_user,
 )
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 from werkzeug.security import check_password_hash, generate_password_hash
 
+# 環境変数の読み込み
+load_dotenv()
+
 app = Flask(__name__)
-app.secret_key = "your_secret_key"  # セッション用のシークレットキー
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///word_quiz.db"
+app.secret_key = os.getenv("SECRET_KEY", "your_secret_key")  # セッション用のシークレットキー
+
+# PostgreSQLの接続設定
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
