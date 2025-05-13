@@ -59,9 +59,9 @@ class User(UserMixin, db.Model):
 # # アプリの単語リストとして使う
 # words = load_words_from_csv("TOEIC_words01.csv")
 
-# @app.route('/')
-# def start():
-#     return render_template('start.html')
+@app.route('/')
+def start():
+    return render_template('start.html')
 
 # @app.route('/test')
 # =======
@@ -77,7 +77,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-@app.route("/")
+@app.route("/word")
 @login_required
 
 def index():
