@@ -118,6 +118,30 @@ def generate_sentence_from_words(words):
         return "❗ Gemini APIの呼び出しに失敗しました。", ""
 
 
+def create_default_deck(user_id):
+    """デフォルトのTOEICデッキを作成する"""
+    deck = Deck(name="TOEIC_words01", description="TOEIC頻出単語集", user_id=user_id)
+    db.session.add(deck)
+    db.session.commit()
+
+    # CSVファイルから単語を読み込む
+    try:
+        with open("TOEIC_words01.csv", "r", encoding="utf-8") as f:
+            csv_reader = csv.DictReader(f)
+            for row in csv_reader:
+                entry = row.get("entry", "").strip()
+                meaning = row.get("meaning", "").strip()
+                if entry and meaning:
+                    word = Word(entry=entry, meaning=meaning, deck_id=deck.id)
+                    db.session.add(word)
+        db.session.commit()
+    except Exception as e:
+        print(f"デフォルトデッキの作成中にエラーが発生しました: {e}")
+
+
+# ---------------- ルーティング ----------------
+
+
 @app.route("/start")
 def start():
     return render_template("start.html")
@@ -307,6 +331,7 @@ def register():
         user = User(username=username, password=hashed_pw)
         db.session.add(user)
         db.session.commit()
+        create_default_deck(user.id)
         flash("登録が完了しました。ログインしてください。")
         return redirect(url_for("login"))
     return render_template("register.html")
@@ -418,6 +443,37 @@ def upload_csv():
         flash("CSVファイルの処理中にエラーが発生しました")
         print(f"CSV処理エラー: {e}")
     return redirect(url_for("my_words"))
+
+
+@app.route("/deck/<int:deck_id>/delete", methods=["GET"])
+@login_required
+def delete_deck(deck_id):
+    deck = Deck.query.get_or_404(deck_id)
+    if deck.user_id != current_user.id:
+        flash("削除権限がありません。")
+        return redirect(url_for("decks"))
+
+    try:
+        # デッキに属する単語を取得
+        words = Word.query.filter_by(deck_id=deck_id).all()
+
+        # 各単語に関連するWrongWordレコードを削除
+        for word in words:
+            WrongWord.query.filter_by(word_id=word.id).delete()
+
+        # 単語を削除
+        Word.query.filter_by(deck_id=deck_id).delete()
+
+        # デッキを削除
+        db.session.delete(deck)
+        db.session.commit()
+        flash("デッキを削除しました。")
+    except Exception as e:
+        db.session.rollback()
+        flash("デッキの削除中にエラーが発生しました。")
+        print(f"デッキ削除エラー: {e}")
+
+    return redirect(url_for("decks"))
 
 
 if __name__ == "__main__":

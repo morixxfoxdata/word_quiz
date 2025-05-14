@@ -4,10 +4,26 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>デッキ一覧</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='deck.css') }}" />
-</head>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='deck.css') }}"
+    />
+  </head>
   <body>
+    <nav class="navbar">
+      <div class="nav_container">
+        <!-- <a class="play-sound00 nav_button" href="{{url_for('start')}}"
+          >トップへ</a
+        > -->
+        <!-- <a class="play-sound00 nav_button" href="/my_words">単語リスト</a> | -->
+        <a class="play-sound00 nav_button" href="/logout">ログアウト</a>
+      </div>
+    </nav>
+
     <h1 class="start-title">デッキ一覧</h1>
     <!-- デッキ作成フォーム -->
     <form action="{{ url_for('create_deck') }}" method="POST">
@@ -21,17 +37,34 @@
       </div>
       <button type="submit">デッキを作成</button>
     </form>
-    
+
     <div class="deck-list">
       {% for deck in decks %}
       <div class="deck-item">
         <a href="{{ url_for('deck_test', deck_id=deck.id) }}" class="deck-link">
           {{ deck.name }} (単語数: {{ deck.words|length }})
         </a>
-        <a href="{{ url_for('deck_detail', deck_id=deck.id) }}" class="edit-btn">編集</a>
+        <div class="deck-actions">
+          <a
+            href="{{ url_for('deck_detail', deck_id=deck.id) }}"
+            class="edit-btn"
+            >編集</a
+          >
+          <a
+            href="{{ url_for('delete_deck', deck_id=deck.id) }}"
+            class="delete-btn"
+            onclick="return confirm('このデッキを削除してもよろしいですか？')"
+            >削除</a
+          >
+        </div>
       </div>
       {% endfor %}
     </div>
-    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <audio
+      id="trans-sound"
+      src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"
+    ></audio>
   </body>
 </html>
