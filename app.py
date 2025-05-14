@@ -120,13 +120,13 @@ def generate_sentence_from_words(words):
 
 def create_default_deck(user_id):
     """デフォルトのTOEICデッキを作成する"""
-    deck = Deck(name="TOEIC_words01", description="TOEIC頻出単語集", user_id=user_id)
+    deck = Deck(name="TOEIC単語集2500", description="TOEIC頻出単語集", user_id=user_id)
     db.session.add(deck)
     db.session.commit()
 
     # CSVファイルから単語を読み込む
     try:
-        with open("TOEIC_words01.csv", "r", encoding="utf-8") as f:
+        with open("TOEIC_full.csv", "r", encoding="utf-8") as f:
             csv_reader = csv.DictReader(f)
             for row in csv_reader:
                 entry = row.get("entry", "").strip()
@@ -400,49 +400,49 @@ def generate_sentence():
     )
 
 
-@app.route("/upload_csv", methods=["POST"])
-@login_required
-def upload_csv():
-    if "csv_file" not in request.files:
-        flash("ファイルが選択されていません")
-        return redirect(url_for("my_words"))
+# @app.route("/upload_csv", methods=["POST"])
+# @login_required
+# def upload_csv():
+#     if "csv_file" not in request.files:
+#         flash("ファイルが選択されていません")
+#         return redirect(url_for("my_words"))
 
-    file = request.files["csv_file"]
-    if file.filename == "":
-        flash("ファイルが選択されていません")
-        return redirect(url_for("my_words"))
+#     file = request.files["csv_file"]
+#     if file.filename == "":
+#         flash("ファイルが選択されていません")
+#         return redirect(url_for("my_words"))
 
-    if not file.filename.endswith(".csv"):
-        flash("CSVファイルを選択してください")
-        return redirect(url_for("my_words"))
+#     if not file.filename.endswith(".csv"):
+#         flash("CSVファイルを選択してください")
+#         return redirect(url_for("my_words"))
 
-    try:
-        # CSVファイルを読み込む
-        stream = file.stream.read().decode("utf-8")
-        csv_reader = csv.DictReader(stream.splitlines())
+#     try:
+#         # CSVファイルを読み込む
+#         stream = file.stream.read().decode("utf-8")
+#         csv_reader = csv.DictReader(stream.splitlines())
 
-        # 単語を登録
-        words_added = 0
-        for row in csv_reader:
-            entry = row.get("entry", "").strip()
-            meaning = row.get("meaning", "").strip()
+#         # 単語を登録
+#         words_added = 0
+#         for row in csv_reader:
+#             entry = row.get("entry", "").strip()
+#             meaning = row.get("meaning", "").strip()
 
-            if entry and meaning:
-                # 既に同じ単語が登録されていないか確認
-                existing_word = Word.query.filter_by(
-                    user_id=current_user.id, entry=entry
-                ).first()
+#             if entry and meaning:
+#                 # 既に同じ単語が登録されていないか確認
+#                 existing_word = Word.query.filter_by(
+#                     user_id=current_user.id, entry=entry
+#                 ).first()
 
-                if not existing_word:
-                    word = Word(entry=entry, meaning=meaning, user_id=current_user.id)
-                    db.session.add(word)
-                    words_added += 1
-        db.session.commit()
-        flash(f"{words_added}個の単語を登録しました")
-    except Exception as e:
-        flash("CSVファイルの処理中にエラーが発生しました")
-        print(f"CSV処理エラー: {e}")
-    return redirect(url_for("my_words"))
+#                 if not existing_word:
+#                     word = Word(entry=entry, meaning=meaning, user_id=current_user.id)
+#                     db.session.add(word)
+#                     words_added += 1
+#         db.session.commit()
+#         flash(f"{words_added}個の単語を登録しました")
+#     except Exception as e:
+#         flash("CSVファイルの処理中にエラーが発生しました")
+#         print(f"CSV処理エラー: {e}")
+#     return redirect(url_for("my_words"))
 
 
 @app.route("/deck/<int:deck_id>/delete", methods=["GET"])
