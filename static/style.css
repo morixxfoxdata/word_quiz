@@ -85,7 +85,8 @@ h1 {
 }
 
 .word-front,
-.word-back {
+.question-word {
+  margin-top: 20px;
   position: absolute;
   width: 100%;
   height: 100%;
@@ -357,3 +358,41 @@ background-color: #717175;
 .container {
   margin-top: 80px;   /* ナビバーの高さより少し余裕を持たせる */
 }
+
+.choice-container {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:16px;
+  margin:20px auto;
+  max-width:500px;
+  justify-content: center; 
+}
+
+.choice-btn{
+  padding:15px;
+  width:300px;
+  height:120px;
+  font-size:1.8rem;
+  border-radius:8px;
+  background: var(--btn_back);
+  color: var(--text_main);
+  border:1px solid var(--btn_border);
+  transition:.2s;
+}
+.choice-btn:hover{
+  background-color:  #717175;
+}
+
+.choice-btn.correct {
+  background:#304d30;    /* 元の背景色をキープ */
+  color: var(--text_main);        /* 元の文字色もそのまま */
+  border: 2px solid #6aff6a;      /* 緑色の光るっぽい枠 */
+  box-shadow: 0 0 8px #4cff4c, 0 0 16px #4cff4c; /* 外側だけ光る */
+  transition: box-shadow 0.2s ease;
+}
+
+.choice-btn.wrong {
+  background: #723636;
+}
+
+

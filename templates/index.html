@@ -21,20 +21,19 @@
       <h1 class="test-title">英単語テスト</h1>
       <p>ようこそ、{{ current_user.username }}さん！</p>
 
-      <div
-        class="word-card"
-        id="word-card"
-        data-word="{{ word }}"
-        data-translation="{{ translation }}"
-      >
-        <div class="word-front">{{ word }}</div>
-        <div class="word-back">{{ translation }}</div>
+      <div class="word-card">
+        <div class="question-word">{{ word }}</div>
       </div>
 
-      <div class="buttons">
-        <button id="correct-btn" class="correct-btn">○</button>
-        <button id="wrong-btn" class="wrong-btn">×</button>
+      <!-- 4 択ボタン -->
+      <div id="choice-container" class="choice-container">
+        {% for jp, is_ok in choices %}
+          <!-- data-correct に True/False を埋め込む(正解は1他は0) -->
+          <button class="choice-btn"
+                  data-correct="{{ '1' if is_ok else '0' }}">{{ jp }}</button>
+        {% endfor %}
       </div>
+
 
       <div class="wrong-words-counter">
         間違えた単語:
@@ -59,7 +58,6 @@
     <audio id="correct-sound" src="{{ url_for('static', filename='sounds/correct.mp3') }}"></audio>
     <audio id="wrong-sound" src="{{ url_for('static', filename='sounds/wrong.mp3') }}"></audio>
     <audio id="trans-sound" src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"></audio>
-    <audio id="flip-sound" src="{{ url_for('static', filename='sounds/flip.mp3') }}"></audio>
 
 
   </body>

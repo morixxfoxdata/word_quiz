@@ -12,7 +12,7 @@
   <body>
     <nav class="navbar">
       <div class="nav_container">
-        <button id="reset-btn" class="play-sound00 reset-btn">トップへ</button>
+      <a class="play-sound00 nav_button" id="reset-btn" href="{{url_for('start')}}">トップへ</a>
         <a class="play-sound00 nav_button" href="/logout">ログアウト</a>
       </div>
     </nav>
@@ -22,7 +22,7 @@
       <form method="post" action="/upload_csv" enctype="multipart/form-data" class="csv-upload-form">
         <div class="form-group">
           <label>CSVファイルから単語を登録: <input type="file" name="csv_file" accept=".csv" required /></label>
-          <button type="submit" class="button">CSVから登録</button>
+          <button type="submit" class="play-sound00 button">CSVから登録</button>
         </div>
       </form>
 
@@ -30,7 +30,7 @@
         <div class="form-group">
           <label>単語: <input type="text" name="entry" required /></label>
           <label>意味: <input type="text" name="meaning" required /></label>
-          <button type="submit" class="button">追加</button>
+          <button type="submit" class="play-sound00 button">追加</button>
         </div>
       </form>
 
@@ -44,11 +44,13 @@
             action="/delete_word/{{ word.id }}"
             style="display: inline"
           >
-            <button type="submit" class="wrong-btn">削除</button>
+            <button type="submit" class="play-sound00 wrong-btn">削除</button>
           </form>
         </div>
         {% endfor %}
       </div>
     </div>
+    <audio id="trans-sound" src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"></audio>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
   </body>
 </html>

@@ -10,3 +10,5 @@
 
 ### pgAdminからrender上のクラウドDBを参照するためのTips
 https://zenn.dev/nyaru_tech/articles/2336d629c7828f
+
+API無効にしてあるから、使う時はapp.pyの該当箇所を参照。

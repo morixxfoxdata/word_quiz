@@ -1,63 +1,3 @@
-// 正誤処理関数（既存の handleAnswer を前提にする）
-function handleAnswer(isCorrect) {
-  const currentWord = wordCard.dataset.word;
-  isFlipped = false;
-  wordCard.classList.remove("flipped");
-  
-  //効果音の再生
-  const correctSound = document.getElementById("correct-sound");
-  const wrongSound = document.getElementById("wrong-sound");
-  if (isCorrect) {
-    correctSound.currentTime = 0; // ←連打対応（最初から）
-    correctSound.play();
-  } else {
-    wrongSound.currentTime = 0;
-    wrongSound.play();
-  }
-  
-  wordCard.addEventListener(
-    "transitionend",
-    function onTransitionEnd() {
-      // currentWord: wordCardのデータ属性から取得した単語
-      const currentWord = wordCard.dataset.word;
-    fetch("/mark_word", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        word: currentWord,
-        isCorrect: isCorrect,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        const wrongs = data.wrongWordsCount;
-        wrongCount.textContent = wrongs;
-        if (wrongs >= 10) {
-          correctBtn.disabled = true;
-          wrongBtn.disabled = true;
-          const notification = document.getElementById(
-            "wrong-words-notification"
-          );
-          if (notification) notification.style.display = "block";
-          const endOptions = document.getElementById("end-options");
-          if (endOptions) endOptions.style.display = "block";
-          return;
-        }
-
-        wordCard.dataset.word = data.nextWord;
-        wordCard.dataset.translation = data.translation;
-        wordCard.querySelector(".word-front").textContent = data.nextWord;
-        wordCard.querySelector(".word-back").textContent = data.translation;
-        if (data.showWrongWords) {
-          wrongWordsNotification.style.display = "block";
-        }
-      });
-    wordCard.removeEventListener("transitionend", onTransitionEnd);
-  });
-}
-
 // 🔁 リセット処理関数
 function handleReset() {
   fetch("/reset_wrong_words", {
@@ -74,40 +14,94 @@ function handleReset() {
     });
 }
 
+// 音声を安定させる
+function safePlay(audioElement) {
+  if (!audioElement) return;
 
-
-document.addEventListener("DOMContentLoaded", function () {
-  // カードクリック処理
-  const wordCard = document.getElementById("word-card");
-  if (wordCard) {
-    wordCard.addEventListener("click", function () {
-      const flipSound = document.getElementById("flip-sound");
-
-      if (!isFlipped && flipSound) {
-        flipSound.currentTime = 0;
-        flipSound.play();
-      }
-
-      wordCard.classList.toggle("flipped");
-      isFlipped = !isFlipped;
+  try {
+    audioElement.pause();           // 途中再生中なら一旦止める
+    audioElement.currentTime = 0;   // 必ず先頭から
+    audioElement.play().catch((e) => {
+      console.warn("効果音再生エラー:", e);
     });
-
+  } catch (e) {
+    console.warn("効果音処理エラー:", e);
   }
+}
 
-  // ボタン取得
-  const correctBtn = document.getElementById("correct-btn");
-  const wrongBtn = document.getElementById("wrong-btn");
-  const resetBtn = document.getElementById("reset-btn");
-  window.wordCard = wordCard;
-  window.correctBtn = correctBtn;
-  window.wrongBtn = wrongBtn;
+// --- 選択肢クリック処理 ---
+function attachChoiceHandlers() {
+  const correctSound = document.getElementById("correct-sound");//★追加
+  const wrongSound   = document.getElementById("wrong-sound"); //★追加
+
+  document.querySelectorAll(".choice-btn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      // 再度おせないよう
+      document.querySelectorAll(".choice-btn").forEach(b=>b.disabled = true);
+
+      const isCorrect = btn.dataset.correct === "1";
+
+      // ボタンにクラスを追加
+      btn.classList.add(isCorrect ? "correct" : "wrong");
+
+      // 効果音
+      safePlay(isCorrect ? correctSound : wrongSound);
+      
+      // 正解の選択肢を強調表示    
+      document
+        .querySelectorAll('.choice-btn[data-correct="1"]')
+        .forEach(b=> b.classList.add("correct"));
+
+      // サーバへ送信
+      fetch("/mark_word", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          word:document.querySelector(".question-word").textContent,
+          isCorrect:isCorrect
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        // 10問終わり判定
+        wrongCount.textContent = data.wrongWordsCount;
+        if(data.showWrongWords){
+          setTimeout(()=>{ window.location.href = "/wrong_words"; }, 1000);
+          return;
+        }
+        // １秒待って次問セット
+        setTimeout(()=>{ updateQuestion(data); }, 1000);
+      });
+    });
+  });
+}
+
+// --- 次問へ差し替える ---
+function updateQuestion(data){
+  document.querySelector(".question-word").textContent = data.nextWord;
+
+  const container = document.getElementById("choice-container");
+  container.innerHTML = "";   // 既存ボタン消す
+  data.translationList.forEach((txt,idx)=>{
+    const btn = document.createElement("button");
+    btn.className="choice-btn";
+    btn.dataset.correct = data.correctnessList[idx] ? "1":"0";
+    btn.textContent = txt;
+    container.appendChild(btn);
+  });
+  attachChoiceHandlers();
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  // ① ← ここで取得してグローバル変数にする
   window.wrongCount = document.getElementById("wrong-count");
-  window.isFlipped = false;
 
-  if (correctBtn)
-    correctBtn.addEventListener("click", () => handleAnswer(true));
-  if (wrongBtn) wrongBtn.addEventListener("click", () => handleAnswer(false));
-  if (resetBtn) resetBtn.addEventListener("click", handleReset);
+  attachChoiceHandlers();
+
+  const resetBtn = document.getElementById("reset-btn");
+  if(resetBtn) resetBtn.addEventListener("click", handleReset);
+
+  // ページ遷移SE（省略）
 });
 
 // 音声
@@ -119,7 +113,7 @@ document.addEventListener("DOMContentLoaded", function () {
     btn.addEventListener("click", function (e) {
       if (sound) {
         sound.currentTime = 0;
-        sound.play();
+        safePlay(sound);
       }
 
       // 遷移処理：button の親要素（<a href="/test">）を取得して遷移

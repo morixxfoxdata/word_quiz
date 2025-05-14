@@ -10,7 +10,7 @@ from flask import (
     redirect,
     render_template,
     request,
-    session,
+    session, # ユーザ情報を一時的に保存
     url_for,
 )
 from flask_login import (
@@ -76,7 +76,7 @@ def generate_sentence_from_words(words):
     prompt = f"以下の単語をすべて含む、文章として自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。: {', '.join(words)}."
     try:
         # response = gemini_pro.generate_content(prompt)
-        response = client.models.generate_content(model="", contents=prompt)
+        response = client.models.generate_content(model="", contents=prompt) #model:gemini-2.0-flash
         
         # 改行で英文と訳文を分ける
         response_text = response.text.strip()
@@ -91,9 +91,20 @@ def generate_sentence_from_words(words):
         print("❌ Geminiエラー:", e)
         return "❗ Gemini APIの呼び出しに失敗しました。", ""
 
-
-
-
+def choose_question_and_choices(user_id, k=4):
+    all_words = Word.query.filter_by(user_id=user_id).all()
+    if not all_words:
+        flash("単語を登録してください。")
+        return redirect(url_for("my_words"))
+    correct = random.choice(all_words)
+    # ダミー候補（意味が被らないように重複除外）
+    other_words = [w for w in all_words if w.id != correct.id]
+    distractors = random.sample(other_words,k-1) if len(other_words)>k-1 else other_words
+    
+    #合わせてシャッフル
+    choices = [(w.meaning, w.id == correct.id) for w in distractors + [correct]]
+    random.shuffle(choices)
+    return correct.entry, choices 
 
 @app.route('/start')
 def start():
@@ -103,24 +114,25 @@ def start():
 @app.route("/word")
 @login_required
 def index():
-    user_words = Word.query.filter_by(user_id=current_user.id).all()
-    if not user_words:
-        flash("単語を登録してください。")
-        return redirect(url_for("my_words"))
+    word_entry, choices = choose_question_and_choices(current_user.id)
     if "current_test_wrong_words" not in session:
         session["current_test_wrong_words"] = []
-    word = random.choice(user_words)
-    return render_template("index.html", word=word.entry, translation=word.meaning, wrong_words_count=len(session.get("current_test_wrong_words", []))
+    return render_template(
+        "index.html",
+        word=word_entry,
+        choices=choices,       # ← 追加
+        wrong_words_count=len(session["current_test_wrong_words"])
     )
+
 
 @app.route("/mark_word", methods=["POST"])
 @login_required
 def mark_word():
     data = request.json
-    word_entry = data.get("word")
-    is_correct = data.get("isCorrect")
+    word_entry = data["word"]
+    selected_ok = data["isCorrect"]
     
-    if not is_correct:
+    if not selected_ok:
         # 現在のテストセッションの間違えた単語をセッションに追加
         current_test_wrong_words = session.get("current_test_wrong_words", [])
         if word_entry not in current_test_wrong_words:
@@ -137,22 +149,17 @@ def mark_word():
                     wrong_word = WrongWord(word_id=word.id, user_id=current_user.id, count=1)
                     db.session.add(wrong_word)
                 db.session.commit()
-    
+
     # ユーザーの単語から次の単語をランダムに選択
-    user_words = Word.query.filter_by(user_id=current_user.id).all()
-    next_word = random.choice(user_words)
-    
-    # 現在のテストセッションでの間違えた単語数
-    current_wrong_words_count = len(session.get("current_test_wrong_words", []))
-    show_wrong_words = current_wrong_words_count >= 10
+    next_entry, choices = choose_question_and_choices(current_user.id)
+    wrong_cnt = len(session["current_test_wrong_words"])
     
     return jsonify(
-        {
-            "nextWord": next_word.entry,
-            "translation": next_word.meaning,
-            "wrongWordsCount": current_wrong_words_count,
-            "showWrongWords": show_wrong_words,
-        }
+        nextWord=next_entry,
+        translationList=[c[0] for c in choices],   # 日本語4件
+        correctnessList=[c[1] for c in choices],   # True/False4件
+        wrongWordsCount=wrong_cnt,
+        showWrongWords=wrong_cnt >= 10
     )
 
 
@@ -193,7 +200,6 @@ def register():
         flash("登録が完了しました。ログインしてください。")
         return redirect(url_for("login"))
     return render_template("register.html")
-
 
 @app.route("/", methods=["GET", "POST"])#トップ画面（ログイン）
 def login():
