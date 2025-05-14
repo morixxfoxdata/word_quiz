@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>自分の単語リスト</title>
+    <title>{{ deck.name }} - デッキ詳細</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
@@ -12,21 +12,23 @@
   <body>
     <nav class="navbar">
       <div class="nav_container">
-        <button id="reset-btn" class="play-sound00 reset-btn">トップへ</button>
+        <a
+          class="play-sound00 nav_button"
+          id="reset-btn"
+          href="{{url_for('decks')}}"
+          >デッキ一覧へ</a
+        >
         <a class="play-sound00 nav_button" href="/logout">ログアウト</a>
       </div>
     </nav>
-    <h1>自分の単語リスト</h1>
+    <h1>{{ deck.name }}</h1>
+    <p>{{ deck.description }}</p>
     <div class="container">
-
-      <form method="post" action="/upload_csv" enctype="multipart/form-data" class="csv-upload-form">
-        <div class="form-group">
-          <label>CSVファイルから単語を登録: <input type="file" name="csv_file" accept=".csv" required /></label>
-          <button type="submit" class="button">CSVから登録</button>
-        </div>
-      </form>
-
-      <form method="post" action="/add_word" class="add-word-form">
+      <form
+        method="post"
+        action="{{ url_for('add_word_to_deck', deck_id=deck.id) }}"
+        class="add-word-form"
+      >
         <div class="form-group">
           <label>単語: <input type="text" name="entry" required /></label>
           <label>意味: <input type="text" name="meaning" required /></label>
@@ -41,7 +43,7 @@
           <div class="japanese">{{ word.meaning }}</div>
           <form
             method="post"
-            action="/delete_word/{{ word.id }}"
+            action="{{ url_for('delete_word', word_id=word.id) }}"
             style="display: inline"
           >
             <button type="submit" class="wrong-btn">削除</button>
@@ -49,6 +51,10 @@
         </div>
         {% endfor %}
       </div>
+
+      <a href="{{ url_for('deck_test', deck_id=deck.id) }}" class="button"
+        >このデッキでテストを開始</a
+      >
     </div>
   </body>
 </html>

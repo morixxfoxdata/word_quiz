@@ -3,7 +3,7 @@ function handleAnswer(isCorrect) {
   const currentWord = wordCard.dataset.word;
   isFlipped = false;
   wordCard.classList.remove("flipped");
-  
+
   //効果音の再生
   const correctSound = document.getElementById("correct-sound");
   const wrongSound = document.getElementById("wrong-sound");
@@ -14,12 +14,10 @@ function handleAnswer(isCorrect) {
     wrongSound.currentTime = 0;
     wrongSound.play();
   }
-  
-  wordCard.addEventListener(
-    "transitionend",
-    function onTransitionEnd() {
-      // currentWord: wordCardのデータ属性から取得した単語
-      const currentWord = wordCard.dataset.word;
+
+  wordCard.addEventListener("transitionend", function onTransitionEnd() {
+    // currentWord: wordCardのデータ属性から取得した単語
+    const currentWord = wordCard.dataset.word;
     fetch("/mark_word", {
       method: "POST",
       headers: {
@@ -69,12 +67,10 @@ function handleReset() {
     .then((response) => response.json())
     .then((data) => {
       if (data.status === "success") {
-        window.location.href = "/start";
+        window.location.href = "/decks";
       }
     });
 }
-
-
 
 document.addEventListener("DOMContentLoaded", function () {
   // カードクリック処理
@@ -91,7 +87,6 @@ document.addEventListener("DOMContentLoaded", function () {
       wordCard.classList.toggle("flipped");
       isFlipped = !isFlipped;
     });
-
   }
 
   // ボタン取得
@@ -115,7 +110,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const sound = document.getElementById("trans-sound");
   const buttons = document.querySelectorAll(".play-sound00");
 
-  buttons.forEach(btn => {
+  buttons.forEach((btn) => {
     btn.addEventListener("click", function (e) {
       if (sound) {
         sound.currentTime = 0;
