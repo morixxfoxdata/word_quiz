@@ -67,7 +67,7 @@ class WrongWord(db.Model):
     word_id = db.Column(db.Integer, db.ForeignKey("word.id"), nullable=False)
     count = db.Column(db.Integer, default=0)
     # relationship
-    user = db.relationship("User", backref="wrong_words")
+    # user = db.relationship("User", backref="wrong_words")
     word = db.relationship("Word", backref="wrong_words")
 
 # ---------------- 関数 ----------------
@@ -105,11 +105,11 @@ def index():
     if not user_words:
         flash("単語を登録してください。")
         return redirect(url_for("my_words"))
-    if "wrong_words" not in session:
-        session["wrong_words"] = []
+    if "current_test_wrong_words" not in session:
+        session["current_test_wrong_words"] = []
     word = random.choice(user_words)
-    return render_template("index.html", word=word.entry, translation=word.meaning)
-
+    return render_template("index.html", word=word.entry, translation=word.meaning, wrong_words_count=len(session.get("current_test_wrong_words", []))
+    )
 
 @app.route("/mark_word", methods=["POST"])
 @login_required
@@ -117,23 +117,38 @@ def mark_word():
     data = request.json
     word_entry = data.get("word")
     is_correct = data.get("isCorrect")
+    
     if not is_correct:
-        # 間違えた単語をセッションに追加
-        wrong_words = session.get("wrong_words", [])
-        # 既に追加されていなければ追加
-        if word_entry not in wrong_words:
-            wrong_words.append(word_entry)
-            session["wrong_words"] = wrong_words
+        # 現在のテストセッションの間違えた単語をセッションに追加
+        current_test_wrong_words = session.get("current_test_wrong_words", [])
+        if word_entry not in current_test_wrong_words:
+            current_test_wrong_words.append(word_entry)
+            session["current_test_wrong_words"] = current_test_wrong_words
+            
+            # データベースにも記録
+            word = Word.query.filter_by(user_id=current_user.id, entry=word_entry).first()
+            if word:
+                wrong_word = WrongWord.query.filter_by(user_id=current_user.id, word_id=word.id).first()
+                if wrong_word:
+                    wrong_word.count += 1
+                else:
+                    wrong_word = WrongWord(word_id=word.id, user_id=current_user.id, count=1)
+                    db.session.add(wrong_word)
+                db.session.commit()
+    
     # ユーザーの単語から次の単語をランダムに選択
     user_words = Word.query.filter_by(user_id=current_user.id).all()
     next_word = random.choice(user_words)
-    # 間違えた単語が10個貯まったら通知
-    show_wrong_words = len(session.get("wrong_words", [])) >= 10
+    
+    # 現在のテストセッションでの間違えた単語数
+    current_wrong_words_count = len(session.get("current_test_wrong_words", []))
+    show_wrong_words = current_wrong_words_count >= 10
+    
     return jsonify(
         {
             "nextWord": next_word.entry,
             "translation": next_word.meaning,
-            "wrongWordsCount": len(session.get("wrong_words", [])),
+            "wrongWordsCount": current_wrong_words_count,
             "showWrongWords": show_wrong_words,
         }
     )
@@ -142,21 +157,21 @@ def mark_word():
 @app.route("/wrong_words")
 @login_required
 def wrong_words():
-    wrong_words_list = session.get("wrong_words", [])
+    wrong_words_list = WrongWord.query.filter_by(user_id=current_user.id).all()
     wrong_words_with_translation = {}
     # 間違えた単語の意味を取得
-    for word_entry in wrong_words_list:
-        word = Word.query.filter_by(user_id=current_user.id, entry=word_entry).first()
+    for wrong_word in wrong_words_list:
+        word = Word.query.get(wrong_word.word_id)
         if word:
-            wrong_words_with_translation[word_entry] = word.meaning
+            wrong_words_with_translation[word.entry] = word.meaning
     return render_template("wrong_words.html", wrong_words=wrong_words_with_translation)
 
 
 @app.route("/reset_wrong_words", methods=["POST"])
+@login_required
 def reset_wrong_words():
-    # JavaScript 側から POST されたら wrong_words を空にする
-    # {"status": "success"} を返して、JS側で「トップに戻る」などの処理ができる
-    session["wrong_words"] = []
+    # セッションのクリア
+    session["current_test_wrong_words"] = []
     return jsonify({"status": "success"})
 
 
