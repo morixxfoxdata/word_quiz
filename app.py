@@ -37,7 +37,7 @@ app.secret_key = os.getenv("SECRET_KEY", "your_secret_key")  # セッション�
 # PostgreSQLの接続設定
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
+print("DB URL:", app.config["SQLALCHEMY_DATABASE_URI"])
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 # ログイン管理（ログインしていない場合はログイン画面にリダイレクト）
@@ -54,12 +54,21 @@ class User(UserMixin, db.Model):
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     words = db.relationship("Word", backref="user", lazy=True)
-
+    wrong_words = db.relationship("WrongWord", backref="user", lazy=True)
 class Word(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     entry = db.Column(db.String(100), nullable=False)
     meaning = db.Column(db.String(200), nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+
+class WrongWord(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    word_id = db.Column(db.Integer, db.ForeignKey("word.id"), nullable=False)
+    count = db.Column(db.Integer, default=0)
+    # relationship
+    user = db.relationship("User", backref="wrong_words")
+    word = db.relationship("Word", backref="wrong_words")
 
 # ---------------- 関数 ----------------
 
