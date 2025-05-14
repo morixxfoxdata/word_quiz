@@ -22,7 +22,7 @@ from flask_login import (
     logout_user,
 )
 # import requests
-# import google.generativeai as genai
+#import google.generativeai as genai
 from google import genai
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -92,8 +92,10 @@ def generate_sentence_from_words(words):
         return "❗ Gemini APIの呼び出しに失敗しました。", ""
 
 
-# ---------------- ルーティング ----------------
-@app.route('/')
+
+
+
+@app.route('/start')
 def start():
     return render_template('start.html')
 
@@ -192,7 +194,7 @@ def register():
     return render_template("register.html")
 
 
-@app.route("/login", methods=["GET", "POST"])
+@app.route("/", methods=["GET", "POST"])#トップ画面（ログイン）
 def login():
     if request.method == "POST":
         # ログインフォームからユーザー名とパスワードを取得
@@ -201,7 +203,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and check_password_hash(user.password, password):
             login_user(user)
-            return redirect(url_for("index"))
+            return redirect(url_for("start"))
         flash("ユーザー名またはパスワードが間違っています。")
     return render_template("login.html")
 
