@@ -73,11 +73,6 @@ class User(UserMixin, db.Model):
 
 
 
-# # 英単語と日本語訳の辞書
-# # アプリの単語リストとして使う
-# words = load_words_from_csv("TOEIC_words01.csv")
-# =======
-
 
 def generate_sentence_from_words(words):
     load_dotenv()
