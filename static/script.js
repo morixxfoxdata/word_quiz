@@ -97,7 +97,7 @@ function handleReset() {
     // それに / を代入すると、トップページに移動
     .then((data) => {
       if (data.status === "success") {
-        window.location.href = "/";
+        window.location.href = "/start";
       }
     });
 }

@@ -10,14 +10,14 @@
     />
   </head>
   <body>
+    <nav class="navbar">
+      <div class="nav_container">
+        <a class="play-sound00 nav_button" href="{{url_for('start')}}">トップへ</a>
+        <a class="play-sound00 nav_button" href="/logout">ログアウト</a>
+      </div>
+    </nav>
+    <h1>自分の単語リスト</h1>
     <div class="container">
-      <header>
-        <h1>自分の単語リスト</h1>
-        <nav>
-          <a href="/">トップへ戻る</a> |
-          <a href="/logout">ログアウト</a>
-        </nav>
-      </header>
 
       <form method="post" action="/upload_csv" enctype="multipart/form-data" class="csv-upload-form">
         <div class="form-group">
