@@ -1,8 +1,8 @@
-"""add wrongword
+"""hi
 
-Revision ID: 91ca755dbd03
-Revises: cd6c87272e55
-Create Date: 2025-05-14 12:35:33.885404
+Revision ID: 750e16fa31f4
+Revises: 
+Create Date: 2025-05-14 14:19:12.093812
 
 """
 from alembic import op
@@ -10,8 +10,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '91ca755dbd03'
-down_revision = 'cd6c87272e55'
+revision = '750e16fa31f4'
+down_revision = None
 branch_labels = None
 depends_on = None
 

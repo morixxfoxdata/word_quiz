@@ -76,7 +76,7 @@ def generate_sentence_from_words(words):
     prompt = f"以下の単語をすべて含む、文章として自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。: {', '.join(words)}."
     try:
         # response = gemini_pro.generate_content(prompt)
-        response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+        response = client.models.generate_content(model="", contents=prompt)
         
         # 改行で英文と訳文を分ける
         response_text = response.text.strip()
@@ -159,11 +159,12 @@ def mark_word():
 @app.route("/wrong_words")
 @login_required
 def wrong_words():
-    wrong_words_list = WrongWord.query.filter_by(user_id=current_user.id).all()
+    # wrong_words_list_all = WrongWord.query.filter_by(user_id=current_user.id).all()
+    wrong_words_list = session["current_test_wrong_words"]
     wrong_words_with_translation = {}
     # 間違えた単語の意味を取得
     for wrong_word in wrong_words_list:
-        word = Word.query.get(wrong_word.word_id)
+        word = Word.query.filter_by(user_id=current_user.id, entry=wrong_word).first()
         if word:
             wrong_words_with_translation[word.entry] = word.meaning
     return render_template("wrong_words.html", wrong_words=wrong_words_with_translation)
