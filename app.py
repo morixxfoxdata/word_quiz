@@ -1,10 +1,3 @@
-# <<<<<<< HEAD
-# •	Flask：アプリ本体
-# 	•	render_template：HTMLファイルを表示するため
-# 	•	request：ユーザーから送られてきたデータを受け取る
-# 	•	jsonify：PythonのデータをJSON形式で返す
-# ・	session：ユーザーごとに情報を一時的に保存する仕組み（ここでは間違えた単語）
-
 import random
 import os
 import csv
@@ -35,57 +28,51 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.security import check_password_hash, generate_password_hash
 
-# 環境変数の読み込み
-load_dotenv()
-# =======
-# from flask import Flask, render_template, request, jsonify, session
-# import random
-# import csv
-# from dotenv import load_dotenv
-# import os
-
-
 load_dotenv()
 api_key = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
-# >>>>>>> origin/Ito_test
-
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "your_secret_key")  # セッション用のシークレットキー
 
 # PostgreSQLの接続設定
 app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
+print("DB URL:", app.config["SQLALCHEMY_DATABASE_URI"])
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 # ログイン管理（ログインしていない場合はログイン画面にリダイレクト）
 login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
 
-# <<<<<<< HEAD
+# ---------------- SQLAlchemyのモデル ----------------
 class User(UserMixin, db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     words = db.relationship("Word", backref="user", lazy=True)
+    wrong_words = db.relationship("WrongWord", backref="user", lazy=True)
+class Word(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    entry = db.Column(db.String(100), nullable=False)
+    meaning = db.Column(db.String(200), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
 
+class WrongWord(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    word_id = db.Column(db.Integer, db.ForeignKey("word.id"), nullable=False)
+    count = db.Column(db.Integer, default=0)
+    # relationship
+    # user = db.relationship("User", backref="wrong_words")
+    word = db.relationship("Word", backref="wrong_words")
 
-
-# # 英単語と日本語訳の辞書
-# # アプリの単語リストとして使う
-# words = load_words_from_csv("TOEIC_words01.csv")
-# =======
-
+# ---------------- 関数 ----------------
 
 def generate_sentence_from_words(words):
-    load_dotenv()
-    # GOOGLE_API_KEY = os.getenv('GOOGLE_API_KEY')
-    # genai.configure(api_key=api_key)
-
-    # gemini_pro = genai.GenerativeModel("gemini-1.5-flash")
-
     prompt = f"以下の単語をすべて含む、文章として自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。: {', '.join(words)}."
     try:
         # response = gemini_pro.generate_content(prompt)
@@ -103,67 +90,28 @@ def generate_sentence_from_words(words):
     except Exception as e:
         print("❌ Geminiエラー:", e)
         return "❗ Gemini APIの呼び出しに失敗しました。", ""
-    
 
 
-# def load_words_from_csv(path):
-#     words = {}
-#     with open(path, newline='', encoding="utf-8") as csvfile:
-#         reader = csv.DictReader(csvfile)
-#         for row in reader:
-#             entry = row.get("entry", "").strip()
-#             meaning = row.get("meaning", "").strip()
-#             if entry and meaning:
-#                 words[entry] = meaning
-#     return words
 
 
-# words = load_words_from_csv("TOEIC_words.csv")
-# >>>>>>> origin/Ito_test
 
 @app.route('/start')
 def start():
     return render_template('start.html')
 
-# @app.route('/test')
-# =======
-class Word(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    entry = db.Column(db.String(100), nullable=False)
-    meaning = db.Column(db.String(200), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-
-
-@login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
-
 
 @app.route("/word")
 @login_required
-
 def index():
-# <<<<<<< HEAD
-    # ユーザーの単語リストを取得
     user_words = Word.query.filter_by(user_id=current_user.id).all()
-
-    # ユーザーの単語が登録されていない場合
     if not user_words:
         flash("単語を登録してください。")
         return redirect(url_for("my_words"))
-
-# =======
-#     session['wrong_words'] = []  # ← 毎回リセット（開発用）
-# >>>>>>> origin/Ito_test
-    # セッションの初期化
-    if "wrong_words" not in session:
-        session["wrong_words"] = []
-
-    # ユーザーの単語からランダムに選択
+    if "current_test_wrong_words" not in session:
+        session["current_test_wrong_words"] = []
     word = random.choice(user_words)
-
-    return render_template("index.html", word=word.entry, translation=word.meaning)
-
+    return render_template("index.html", word=word.entry, translation=word.meaning, wrong_words_count=len(session.get("current_test_wrong_words", []))
+    )
 
 @app.route("/mark_word", methods=["POST"])
 @login_required
@@ -171,28 +119,38 @@ def mark_word():
     data = request.json
     word_entry = data.get("word")
     is_correct = data.get("isCorrect")
-
+    
     if not is_correct:
-        # 間違えた単語をセッションに追加
-        wrong_words = session.get("wrong_words", [])
-
-        # 既に追加されていなければ追加
-        if word_entry not in wrong_words:
-            wrong_words.append(word_entry)
-            session["wrong_words"] = wrong_words
-
+        # 現在のテストセッションの間違えた単語をセッションに追加
+        current_test_wrong_words = session.get("current_test_wrong_words", [])
+        if word_entry not in current_test_wrong_words:
+            current_test_wrong_words.append(word_entry)
+            session["current_test_wrong_words"] = current_test_wrong_words
+            
+            # データベースにも記録
+            word = Word.query.filter_by(user_id=current_user.id, entry=word_entry).first()
+            if word:
+                wrong_word = WrongWord.query.filter_by(user_id=current_user.id, word_id=word.id).first()
+                if wrong_word:
+                    wrong_word.count += 1
+                else:
+                    wrong_word = WrongWord(word_id=word.id, user_id=current_user.id, count=1)
+                    db.session.add(wrong_word)
+                db.session.commit()
+    
     # ユーザーの単語から次の単語をランダムに選択
     user_words = Word.query.filter_by(user_id=current_user.id).all()
     next_word = random.choice(user_words)
-
-    # 間違えた単語が10個貯まったら通知
-    show_wrong_words = len(session.get("wrong_words", [])) >= 10
-
+    
+    # 現在のテストセッションでの間違えた単語数
+    current_wrong_words_count = len(session.get("current_test_wrong_words", []))
+    show_wrong_words = current_wrong_words_count >= 10
+    
     return jsonify(
         {
             "nextWord": next_word.entry,
             "translation": next_word.meaning,
-            "wrongWordsCount": len(session.get("wrong_words", [])),
+            "wrongWordsCount": current_wrong_words_count,
             "showWrongWords": show_wrong_words,
         }
     )
@@ -201,27 +159,24 @@ def mark_word():
 @app.route("/wrong_words")
 @login_required
 def wrong_words():
-    wrong_words_list = session.get("wrong_words", [])
+    wrong_words_list = WrongWord.query.filter_by(user_id=current_user.id).all()
     wrong_words_with_translation = {}
-
     # 間違えた単語の意味を取得
-    for word_entry in wrong_words_list:
-        word = Word.query.filter_by(user_id=current_user.id, entry=word_entry).first()
+    for wrong_word in wrong_words_list:
+        word = Word.query.get(wrong_word.word_id)
         if word:
-            wrong_words_with_translation[word_entry] = word.meaning
-
+            wrong_words_with_translation[word.entry] = word.meaning
     return render_template("wrong_words.html", wrong_words=wrong_words_with_translation)
 
 
 @app.route("/reset_wrong_words", methods=["POST"])
+@login_required
 def reset_wrong_words():
-    # JavaScript 側から POST されたら wrong_words を空にする
-    # {"status": "success"} を返して、JS側で「トップに戻る」などの処理ができる
-    session["wrong_words"] = []
+    # セッションのクリア
+    session["current_test_wrong_words"] = []
     return jsonify({"status": "success"})
 
 
-# <<<<<<< HEAD
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -292,21 +247,16 @@ def delete_word(word_id):
     return redirect(url_for("my_words"))
 
 
-
 @app.route("/generate_sentence", methods=["GET"])
 def generate_sentence():
     wrong_words = session.get("wrong_words", [])
     word_list = wrong_words
-
-    # 🟢 Gemini APIで例文生成
     sentence, translation = generate_sentence_from_words(word_list)
-
-
     return render_template("API.html",
-                           word_list=word_list,
-                           sentence=sentence,
-                           translation=translation)
-    
+                            word_list=word_list,
+                            sentence=sentence,
+                            translation=translation)
+
 
 @app.route("/upload_csv", methods=["POST"])
 @login_required
@@ -314,7 +264,7 @@ def upload_csv():
     if 'csv_file' not in request.files:
         flash('ファイルが選択されていません')
         return redirect(url_for('my_words'))
-    
+
     file = request.files['csv_file']
     if file.filename == '':
         flash('ファイルが選択されていません')
@@ -346,18 +296,14 @@ def upload_csv():
                     word = Word(entry=entry, meaning=meaning, user_id=current_user.id)
                     db.session.add(word)
                     words_added += 1
-        
         db.session.commit()
         flash(f'{words_added}個の単語を登録しました')
     except Exception as e:
         flash('CSVファイルの処理中にエラーが発生しました')
         print(f"CSV処理エラー: {e}")
-    
     return redirect(url_for('my_words'))
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
     app.run(host='0.0.0.0', port=port)
-    # このファイルがメインで実行された場合（python app.py）
-# •	サーバを起動する
-# •	debug=True にするとエラー表示がわかりやすくなる（開発モード）
+

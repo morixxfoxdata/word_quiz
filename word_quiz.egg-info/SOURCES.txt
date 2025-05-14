@@ -1,8 +1,0 @@
-README.md
-app.py
-pyproject.toml
-word_quiz.egg-info/PKG-INFO
-word_quiz.egg-info/SOURCES.txt
-word_quiz.egg-info/dependency_links.txt
-word_quiz.egg-info/requires.txt
-word_quiz.egg-info/top_level.txt

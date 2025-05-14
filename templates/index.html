@@ -20,17 +20,6 @@
 
       <h1 class="test-title">英単語テスト</h1>
       <p>ようこそ、{{ current_user.username }}さん！</p>
-<!-- =======
-    <div class="container">
-      <header>
-        <h1>英単語学習アプリ</h1>
-        <p>ようこそ、{{ current_user.username }}さん！</p>
-        <nav>
-          <a href="/my_words">単語リスト</a> |
-          <a href="/logout">ログアウト</a>
-        </nav>
-      </header>
->>>>>>> origin/login -->
 
       <div
         class="word-card"
@@ -49,16 +38,7 @@
 
       <div class="wrong-words-counter">
         間違えた単語:
-        <!-- span はインライン（文章中）に小さな範囲を指定できるタグ -->
-        <!-- ここがJinja2（Flask）ならではの書き方で、重要ポイントです 
-	       •	session.get('wrong_words', []) は、Flask のセッション（ユーザーごとの一時保存領域）から wrong_words というデータを取得しています。
-	       •	例: wrong_words = [("apple", "りんご"), ("dog", "いぬ")]
-	       •	もし存在しなければ []（空のリスト）を使う、という意味の保険付きです。
-	       •	|length はそのリストの「長さ（要素数）」を調べるフィルターです。
-	       •	つまり、「今、何個の単語が間違いリストに入ってるか」を数字で出す。 -->
-        <span id="wrong-count"
-          >{{ session.get('wrong_words', [])|length }}</span
-        >
+        <span id="wrong-count">{{ wrong_words_count }}</span>
         / 10
       </div>
       <div
