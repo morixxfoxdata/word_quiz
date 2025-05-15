@@ -102,7 +102,7 @@ def generate_sentence_from_words(words):
     prompt = f"以下の単語をすべて含む、文章として自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。: {', '.join(words)}."
     try:
         # response = gemini_pro.generate_content(prompt)
-        response = client.models.generate_content(model="", contents=prompt)
+        response = client.models.generate_content(model="gemini-1.5-flash", contents=prompt)
 
         # 改行で英文と訳文を分ける
         response_text = response.text.strip()
@@ -340,7 +340,7 @@ def wrong_words():
         word = Word.query.filter_by(entry=wrong_word).first()
         if word:
             wrong_words_with_translation[word.entry] = word.meaning
-
+    print(wrong_words_with_translation)
     return render_template("wrong_words.html", wrong_words=wrong_words_with_translation)
 
 
@@ -427,13 +427,12 @@ def delete_word(word_id):
 # Generate sentence routes ------------------------------------------------------------
 @app.route("/generate_sentence", methods=["GET"])
 def generate_sentence():
-    wrong_words = session.get("wrong_words", [])
+    wrong_words = session.get("current_test_wrong_words", [])  # 正しいキーを使用
     word_list = wrong_words
     sentence, translation = generate_sentence_from_words(word_list)
     return render_template(
         "API.html", word_list=word_list, sentence=sentence, translation=translation
     )
-
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))

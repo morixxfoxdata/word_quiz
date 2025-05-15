@@ -16,10 +16,6 @@
   <body>
     <nav class="navbar">
       <div class="nav_container">
-        <!-- <a class="play-sound00 nav_button" href="{{url_for('start')}}"
-          >トップへ</a
-        > -->
-        <!-- <a class="play-sound00 nav_button" href="/my_words">単語リスト</a> | -->
         <a class="play-sound00 nav_button" href="/logout">ログアウト</a>
       </div>
     </nav>
@@ -41,7 +37,7 @@
     <div class="deck-list">
       {% for deck in decks %}
       <div class="deck-item">
-        <a href="{{ url_for('deck_test', deck_id=deck.id) }}" class="deck-link">
+        <a href="{{ url_for('deck_test', deck_id=deck.id) }}" class="deck-link button">
           {{ deck.name }} (単語数: {{ deck.words|length }})
         </a>
         <div class="deck-actions">
