@@ -17,23 +17,11 @@
     <nav class="navbar">
       <div class="nav_container">
         <a class="play-sound00 nav_button" href="/logout">ログアウト</a>
+        <a class="play-sound00 nav_button" href="/deck_add">デッキ追加</a>
       </div>
     </nav>
 
     <h1 class="start-title">デッキ一覧</h1>
-    <!-- デッキ作成フォーム -->
-    <form action="{{ url_for('create_deck') }}" method="POST">
-      <div>
-        <label for="name">デッキ名:</label>
-        <input type="text" id="name" name="name" required />
-      </div>
-      <div>
-        <label for="description">説明:</label>
-        <textarea id="description" name="description"></textarea>
-      </div>
-      <button type="submit">デッキを作成</button>
-    </form>
-
     <div class="deck-list">
       {% for deck in decks %}
       <div class="deck-item">

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>デッキ追加</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='deck.css') }}"
+    />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="nav_container">
+        <a class="play-sound00 nav_button" href="/logout">ログアウト</a>
+        <a class="play-sound00 nav_button" href="/decks">デッキ一覧へ</a>
+      </div>
+    </nav>
+
+    <h1 class="start-title">デッキ作成</h1>
+    <!-- デッキ作成フォーム -->
+    <form action="{{ url_for('create_deck') }}" method="POST">
+      <div>
+        <label for="name">デッキ名:</label>
+        <input type="text" id="name" name="name" required />
+      </div>
+      <div>
+        <label for="description">説明:</label>
+        <textarea id="description" name="description"></textarea>
+      </div>
+      <button type="submit">デッキを作成</button>
+    </form>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <audio
+      id="trans-sound"
+      src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"
+    ></audio>
+  </body>
+</html>

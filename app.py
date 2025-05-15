@@ -391,6 +391,10 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
+@app.route("/deck_add")
+@login_required
+def deck_add():
+    return render_template("deck_add.html")
 
 # My words routes ------------------------------------------------------------
 @app.route("/my_words")
