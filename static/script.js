@@ -16,8 +16,6 @@ function handleAnswer(isCorrect) {
   }
 }
 
-
-
 // 🔁 リセット処理関数
 function handleReset() {
   fetch("/reset_wrong_words", {
@@ -39,26 +37,27 @@ function safePlay(audioElement) {
   if (!audioElement) return;
 
   try {
-    audioElement.pause();           // 途中再生中なら一旦止める
-    audioElement.currentTime = 0;   // 必ず先頭から
+    audioElement.pause(); // 途中再生中なら一旦止める
+    audioElement.currentTime = 0; // 必ず先頭から
     audioElement.play().catch((e) => {
       console.warn("効果音再生エラー:", e);
     });
   } catch (e) {
     console.warn("効果音処理エラー:", e);
-
   }
 }
 
 // --- 選択肢クリック処理 ---
 function attachChoiceHandlers() {
-  const correctSound = document.getElementById("correct-sound");//★追加
-  const wrongSound   = document.getElementById("wrong-sound"); //★追加
+  const correctSound = document.getElementById("correct-sound"); //★追加
+  const wrongSound = document.getElementById("wrong-sound"); //★追加
 
-  document.querySelectorAll(".choice-btn").forEach(btn => {
+  document.querySelectorAll(".choice-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       // 再度おせないよう
-      document.querySelectorAll(".choice-btn").forEach(b=>b.disabled = true);
+      document
+        .querySelectorAll(".choice-btn")
+        .forEach((b) => (b.disabled = true));
 
       const isCorrect = btn.dataset.correct === "1";
 
@@ -67,60 +66,64 @@ function attachChoiceHandlers() {
 
       // 効果音
       safePlay(isCorrect ? correctSound : wrongSound);
-      
-      // 正解の選択肢を強調表示    
+
+      // 正解の選択肢を強調表示
       document
         .querySelectorAll('.choice-btn[data-correct="1"]')
-        .forEach(b=> b.classList.add("correct"));
+        .forEach((b) => b.classList.add("correct"));
 
       // サーバへ送信
       fetch("/mark_word", {
-        method:"POST",
-        headers:{"Content-Type":"application/json"},
-        body:JSON.stringify({
-          word:document.querySelector(".question-word").textContent,
-          isCorrect:isCorrect
-        })
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          word: document.querySelector(".question-word").textContent,
+          isCorrect: isCorrect,
+        }),
       })
-      .then(res => res.json())
-      .then(data => {
-        // 10問終わり判定
-        wrongCount.textContent = data.wrongWordsCount;
-        if(data.showWrongWords){
-          setTimeout(()=>{ window.location.href = "/wrong_words"; }, 1000);
-          return;
-        }
-        // １秒待って次問セット
-        setTimeout(()=>{ updateQuestion(data); }, 1000);
-      });
+        .then((res) => res.json())
+        .then((data) => {
+          // 10問終わり判定
+          wrongCount.textContent = data.wrongWordsCount;
+          if (data.showWrongWords || data.isTestComplete) {
+            setTimeout(() => {
+              window.location.href = "/wrong_words";
+            }, 1000);
+            return;
+          }
+          // １秒待って次問セット
+          setTimeout(() => {
+            updateQuestion(data);
+          }, 1000);
+        });
     });
   });
 }
 
 // --- 次問へ差し替える ---
-function updateQuestion(data){
+function updateQuestion(data) {
   document.querySelector(".question-word").textContent = data.nextWord;
 
   const container = document.getElementById("choice-container");
-  container.innerHTML = "";   // 既存ボタン消す
-  data.translationList.forEach((txt,idx)=>{
+  container.innerHTML = ""; // 既存ボタン消す
+  data.translationList.forEach((txt, idx) => {
     const btn = document.createElement("button");
-    btn.className="choice-btn";
-    btn.dataset.correct = data.correctnessList[idx] ? "1":"0";
+    btn.className = "choice-btn";
+    btn.dataset.correct = data.correctnessList[idx] ? "1" : "0";
     btn.textContent = txt;
     container.appendChild(btn);
   });
   attachChoiceHandlers();
 }
 
-document.addEventListener("DOMContentLoaded",()=>{
+document.addEventListener("DOMContentLoaded", () => {
   // ① ← ここで取得してグローバル変数にする
   window.wrongCount = document.getElementById("wrong-count");
 
   attachChoiceHandlers();
 
   const resetBtn = document.getElementById("reset-btn");
-  if(resetBtn) resetBtn.addEventListener("click", handleReset);
+  if (resetBtn) resetBtn.addEventListener("click", handleReset);
 
   // ページ遷移SE（省略）
 });

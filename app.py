@@ -11,7 +11,7 @@ from flask import (
     redirect,
     render_template,
     request,
-    session, # ユーザ情報を一時的に保存
+    session,  # ユーザ情報を一時的に保存
     url_for,
 )
 from flask_login import (
@@ -102,7 +102,9 @@ def generate_sentence_from_words(words):
     prompt = f"以下の単語をすべて含む、文章として自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。: {', '.join(words)}."
     try:
         # response = gemini_pro.generate_content(prompt)
-        response = client.models.generate_content(model="", contents=prompt)#gemini-1.5-flash
+        response = client.models.generate_content(
+            model="", contents=prompt
+        )  # gemini-1.5-flash
 
         # 改行で英文と訳文を分ける
         response_text = response.text.strip()
@@ -123,15 +125,34 @@ def choose_question_and_choices(deck_id, k=4):
     if not all_words:
         flash("単語を登録してください。")
         return redirect(url_for("my_words"))
-    correct = random.choice(all_words)
+
+    # 使用済み単語の管理
+    used_words = session.get("used_words", [])
+    if not used_words:
+        used_words = []
+
+    # 未使用の単語を選択
+    available_words = [w for w in all_words if w.entry not in used_words]
+    if not available_words:
+        # すべての単語を使用済みの場合、リセット
+        used_words = []
+        available_words = all_words
+
+    correct = random.choice(available_words)
+    used_words.append(correct.entry)
+    session["used_words"] = used_words
+
     # ダミー候補（意味が被らないように重複除外）
     other_words = [w for w in all_words if w.id != correct.id]
-    distractors = random.sample(other_words,k-1) if len(other_words)>k-1 else other_words
-    
-    #合わせてシャッフル
+    distractors = (
+        random.sample(other_words, k - 1) if len(other_words) > k - 1 else other_words
+    )
+
+    # 合わせてシャッフル
     choices = [(w.meaning, w.id == correct.id) for w in distractors + [correct]]
     random.shuffle(choices)
-    return correct.entry, choices 
+    return correct.entry, choices
+
 
 def create_default_deck(user_id):
     """デフォルトのTOEICデッキを作成する"""
@@ -156,7 +177,8 @@ def create_default_deck(user_id):
 
 # ---------------- ルーティング ----------------
 
-@app.route("/", methods=["GET", "POST"])#トップ画面（ログイン）
+
+@app.route("/", methods=["GET", "POST"])  # トップ画面（ログイン）
 def login():
     if request.method == "POST":
         # ログインフォームからユーザー名とパスワードを取得
@@ -168,6 +190,7 @@ def login():
             return redirect(url_for("decks"))
         flash("ユーザー名またはパスワードが間違っています。")
     return render_template("login.html")
+
 
 @app.route("/decks")
 @login_required
@@ -237,6 +260,7 @@ def add_word_to_deck(deck_id):
     flash("単語を追加しました。")
     return redirect(url_for("deck_detail", deck_id=deck_id))
 
+
 @app.route("/deck/<int:deck_id>/delete", methods=["GET"])
 @login_required
 def delete_deck(deck_id):
@@ -267,7 +291,9 @@ def delete_deck(deck_id):
 
     return redirect(url_for("decks"))
 
+
 # Test routes ------------------------------------------------------------
+
 
 @app.route("/word")
 @login_required
@@ -275,7 +301,6 @@ def index():
     deck_id = session.get("current_deck_id")
     word_entry, choices = choose_question_and_choices(deck_id)
 
-    
     if deck_id:
         user_words = Word.query.filter_by(deck_id=deck_id).all()
     else:
@@ -290,8 +315,8 @@ def index():
     return render_template(
         "index.html",
         word=word_entry,
-        choices=choices,       # ← 追加
-        wrong_words_count=len(session["current_test_wrong_words"])
+        choices=choices,  # ← 追加
+        wrong_words_count=len(session["current_test_wrong_words"]),
     )
 
 
@@ -299,15 +324,16 @@ def index():
 @login_required
 def mark_word():
     data = request.json
-# <<<<<<< HEAD
+    # <<<<<<< HEAD
     word_entry = data["word"]
     selected_ok = data["isCorrect"]
-    
-    if not selected_ok:
-#     word_entry = data.get("word")
-#     is_correct = data.get("isCorrect")
+    deck_id = session["current_deck_id"]
 
-#     if not is_correct:
+    if not selected_ok:
+        #     word_entry = data.get("word")
+        #     is_correct = data.get("isCorrect")
+
+        #     if not is_correct:
         # 現在のテストセッションの間違えた単語をセッションに追加
         current_test_wrong_words = session.get("current_test_wrong_words", [])
         if word_entry not in current_test_wrong_words:
@@ -329,17 +355,23 @@ def mark_word():
                     db.session.add(wrong_word)
                 db.session.commit()
 
+    all_words = Word.query.filter_by(deck_id=deck_id).all()
+    used_words = session["used_words"]
+    # テスト終了条件の判定
+    is_test_complete = False
+    if len(all_words) < 10 and len(used_words) >= len(all_words):
+        is_test_complete = True
     # ユーザーの単語から次の単語をランダムに選択
-    next_entry, choices = choose_question_and_choices(current_user.id)
+    next_entry, choices = choose_question_and_choices(deck_id)
     wrong_cnt = len(session["current_test_wrong_words"])
-    
 
     return jsonify(
         nextWord=next_entry,
-        translationList=[c[0] for c in choices],   # 日本語4件
-        correctnessList=[c[1] for c in choices],   # True/False4件
+        translationList=[c[0] for c in choices],  # 日本語4件
+        correctnessList=[c[1] for c in choices],  # True/False4件
         wrongWordsCount=wrong_cnt,
-        showWrongWords=wrong_cnt >= 10
+        showWrongWords=wrong_cnt >= 10,
+        isTestComplete=is_test_complete,
     )
 
 
@@ -366,6 +398,7 @@ def reset_wrong_words():
     session["current_test_wrong_words"] = []
     return jsonify({"status": "success"})
 
+
 # Auth routes ------------------------------------------------------------
 @app.route("/register", methods=["GET", "POST"])
 def register():
@@ -391,10 +424,12 @@ def logout():
     logout_user()
     return redirect(url_for("login"))
 
+
 @app.route("/deck_add")
 @login_required
 def deck_add():
     return render_template("deck_add.html")
+
 
 # My words routes ------------------------------------------------------------
 @app.route("/my_words")
@@ -416,17 +451,32 @@ def add_word():
     return redirect(url_for("my_words"))
 
 
-@app.route("/delete_word/<int:word_id>", methods=["POST"])
+@app.route("/deck/<int:deck_id>/word/<int:word_id>/delete", methods=["POST"])
 @login_required
-def delete_word(word_id):
-    word = Word.query.get_or_404(word_id)
-    if word.user_id != current_user.id:
+def delete_word_from_deck(deck_id, word_id):
+    deck = Deck.query.get_or_404(deck_id)
+    if deck.user_id != current_user.id:
         flash("削除権限がありません。")
-        return redirect(url_for("my_words"))
-    db.session.delete(word)
-    db.session.commit()
-    flash("単語を削除しました。")
-    return redirect(url_for("my_words"))
+        return redirect(url_for("decks"))
+
+    word = Word.query.get_or_404(word_id)
+    if word.deck_id != deck_id:
+        flash("この単語は指定されたデッキに属していません。")
+        return redirect(url_for("deck_detail", deck_id=deck_id))
+
+    try:
+        # 関連するWrongWordレコードも削除
+        WrongWord.query.filter_by(word_id=word_id).delete()
+        db.session.delete(word)
+        db.session.commit()
+        flash("単語を削除しました。")
+    except Exception as e:
+        db.session.rollback()
+        flash("単語の削除中にエラーが発生しました。")
+        print(f"単語削除エラー: {e}")
+
+    return redirect(url_for("deck_detail", deck_id=deck_id))
+
 
 # Generate sentence routes ------------------------------------------------------------
 @app.route("/generate_sentence", methods=["GET"])
@@ -437,6 +487,7 @@ def generate_sentence():
     return render_template(
         "API.html", word_list=word_list, sentence=sentence, translation=translation
     )
+
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5001))

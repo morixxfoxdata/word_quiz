@@ -12,7 +12,6 @@
   <body>
     <nav class="navbar">
       <div class="nav_container">
-
         <a
           class="play-sound00 nav_button"
           id="reset-btn"
@@ -25,7 +24,6 @@
     <h1>{{ deck.name }}</h1>
     <p>{{ deck.description }}</p>
     <div class="container">
-
       <form
         method="post"
         action="{{ url_for('add_word_to_deck', deck_id=deck.id) }}"
@@ -48,16 +46,19 @@
           <div class="japanese">{{ word.meaning }}</div>
           <form
             method="post"
-            action="{{ url_for('delete_word', word_id=word.id) }}"
-            style="display: inline"
+            action="{{ url_for('delete_word_from_deck', deck_id=deck.id, word_id=word.id) }}"
+            style="margin: 0"
           >
-            <button type="submit" class="play-sound00 wrong-btn">削除</button>
+            <button type="submit" class="play-sound00">削除</button>
           </form>
         </div>
         {% endfor %}
       </div>
     </div>
-    <audio id="trans-sound" src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"></audio>
+    <audio
+      id="trans-sound"
+      src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"
+    ></audio>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
   </body>
 </html>

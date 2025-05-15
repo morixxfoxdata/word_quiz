@@ -4,10 +4,10 @@
   padding: 0;
 }
 
-:root{
-    --text_main:#e6f0ff;
-    --btn_back:#000;
-    --btn_border:#ffff;
+:root {
+  --text_main: #e6f0ff;
+  --btn_back: #000;
+  --btn_border: #ffff;
 }
 
 body {
@@ -36,8 +36,6 @@ body {
   }
 }
 
-
-
 /* .container {
   width: 100%;
   max-width: 500px;
@@ -61,9 +59,6 @@ body {
   }
 }
 
-
-
-
 h1 {
   margin-top: 80px;
   margin-bottom: 30px;
@@ -73,9 +68,9 @@ h1 {
 
 .word-card {
   position: relative;
-/* <<<<<<< HEAD */
+  /* <<<<<<< HEAD */
   width: 35%;
-/* =======
+  /* =======
   width: 105%;
 >>>>>>> origin/Ito_test */
   height: 200px;
@@ -106,14 +101,14 @@ h1 {
 /* front面 */
 .word-front {
   background-color: transparent; /* 上のgradientが活きるように */
-  color: 	#00ffff; /* サイバー感ある水色 */
+  color: #00ffff; /* サイバー感ある水色 */
   transform: rotateY(0deg);
 }
 
 /* back面 */
 .word-back {
   background-color: transparent;
-  color: #00ffff;; 
+  color: #00ffff;
   transform: rotateY(180deg);
 }
 
@@ -158,44 +153,42 @@ h1 {
 
 .correct-btn {
   background-color: var(--btn_back);
-  color: var(--text_main);        
+  color: var(--text_main);
   border: 1px solid var(--btn_border);
   border-radius: 10px;
 }
 .correct-btn:hover {
-background-color: #717175;
+  background-color: #717175;
 }
 
 .wrong-btn {
   background-color: var(--btn_back);
-  color: var(--text_main);        
+  color: var(--text_main);
   border: 1px solid var(--btn_border);
   border-radius: 10px;
 }
 .wrong-btn:hover {
-background-color: #717175;
+  background-color: #717175;
 }
 
 .reset-btn {
-  background-color: #223344;  /* グレーがかった青 */
-  color: #dfe6e9;             /* 落ち着いた白寄りの灰色 */
+  background-color: #223344; /* グレーがかった青 */
+  color: #dfe6e9; /* 落ち着いた白寄りの灰色 */
   border: 1px solid #fff;
   box-shadow: 0 0 5px #22334455;
 }
 
 .button {
-  background-color: #1a2636;  /* 暗めの青黒系 */
-  color: #cfd8dc;             /* ソフトグレー */
+  background-color: #1a2636; /* 暗めの青黒系 */
+  color: #cfd8dc; /* ソフトグレー */
   border: 1px solid #ffff;
   box-shadow: 0 0 5px #1a263644;
   text-decoration: none;
   display: inline-block;
 }
 .button:hover {
-background-color: #717175;
+  background-color: #717175;
 }
-
-
 
 .correct-btn:hover,
 .wrong-btn:hover,
@@ -235,8 +228,8 @@ background-color: #717175;
   max-height: 600px;
   overflow-y: auto;
   padding-right: 5px;
-  width: 60%;  
-  margin-left: auto; 
+  width: 60%;
+  margin-left: auto;
   margin-right: auto;
 }
 
@@ -244,7 +237,7 @@ background-color: #717175;
   display: flex;
   justify-content: space-between;
   padding: 10px 15px;
-  background-color: #1c1f26;         /* 黒に近い深グレー */
+  background-color: #1c1f26; /* 黒に近い深グレー */
   border-radius: 5px;
   border: 1px solid #2c3e50;
   box-shadow: 0 0 6px #0d111730;
@@ -252,15 +245,14 @@ background-color: #717175;
 
 .english {
   font-weight: 600;
-  color: #00ffff;           
+  color: #00ffff;
   font-size: 1rem;
 }
 
 .japanese {
-  color: #c0cbdc;                     /* ソフトグレー */
+  color: #c0cbdc; /* ソフトグレー */
   font-size: 0.95rem;
 }
-
 
 .back-btn {
   margin-top: 10px;
@@ -291,13 +283,13 @@ background-color: #717175;
   text-decoration: none;
   font-size: 1rem;
   background-color: #000;
-  border: 2px solid #ffffff; 
+  border: 2px solid #ffffff;
   padding: 8px 16px;
   border-radius: 5px;
-  transition: background-color 0.3s,border-color 0.3s;
+  transition: background-color 0.3s, border-color 0.3s;
 }
 .nav_button:hover {
-  background-color:  #717175;
+  background-color: #717175;
 }
 /* ログイン・登録フォーム用のスタイル */
 .auth-form {
@@ -356,37 +348,37 @@ background-color: #717175;
 }
 
 .container {
-  margin-top: 80px;   /* ナビバーの高さより少し余裕を持たせる */
+  margin-top: 80px; /* ナビバーの高さより少し余裕を持たせる */
 }
 
 .choice-container {
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:16px;
-  margin:20px auto;
-  max-width:500px;
-  justify-content: center; 
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin: 20px auto;
+  max-width: 500px;
+  justify-content: center;
 }
 
-.choice-btn{
-  padding:15px;
-  width:300px;
-  height:120px;
-  font-size:1.8rem;
-  border-radius:8px;
+.choice-btn {
+  padding: 15px;
+  width: 300px;
+  height: 120px;
+  font-size: 1.8rem;
+  border-radius: 8px;
   background: var(--btn_back);
   color: var(--text_main);
-  border:1px solid var(--btn_border);
-  transition:.2s;
+  border: 1px solid var(--btn_border);
+  transition: 0.2s;
 }
-.choice-btn:hover{
-  background-color:  #717175;
+.choice-btn:hover {
+  background-color: #717175;
 }
 
 .choice-btn.correct {
-  background:#304d30;    /* 元の背景色をキープ */
-  color: var(--text_main);        /* 元の文字色もそのまま */
-  border: 2px solid #6aff6a;      /* 緑色の光るっぽい枠 */
+  background: #304d30; /* 元の背景色をキープ */
+  color: var(--text_main); /* 元の文字色もそのまま */
+  border: 2px solid #6aff6a; /* 緑色の光るっぽい枠 */
   box-shadow: 0 0 8px #4cff4c, 0 0 16px #4cff4c; /* 外側だけ光る */
   transition: box-shadow 0.2s ease;
 }
@@ -394,5 +386,3 @@ background-color: #717175;
 .choice-btn.wrong {
   background: #723636;
 }
-
-
