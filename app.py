@@ -142,10 +142,11 @@ def create_default_deck(user_id):
 # ---------------- ルーティング ----------------
 
 
-@app.route("/start")
-def start():
-    return render_template("start.html")
+# @app.route("/start")
+# def start():
+#     return render_template("start.html")
 
+# Deck routes ------------------------------------------------------------
 
 @app.route("/decks")
 @login_required
@@ -215,6 +216,37 @@ def add_word_to_deck(deck_id):
     flash("単語を追加しました。")
     return redirect(url_for("deck_detail", deck_id=deck_id))
 
+@app.route("/deck/<int:deck_id>/delete", methods=["GET"])
+@login_required
+def delete_deck(deck_id):
+    deck = Deck.query.get_or_404(deck_id)
+    if deck.user_id != current_user.id:
+        flash("削除権限がありません。")
+        return redirect(url_for("decks"))
+
+    try:
+        # デッキに属する単語を取得
+        words = Word.query.filter_by(deck_id=deck_id).all()
+
+        # 各単語に関連するWrongWordレコードを削除
+        for word in words:
+            WrongWord.query.filter_by(word_id=word.id).delete()
+
+        # 単語を削除
+        Word.query.filter_by(deck_id=deck_id).delete()
+
+        # デッキを削除
+        db.session.delete(deck)
+        db.session.commit()
+        flash("デッキを削除しました。")
+    except Exception as e:
+        db.session.rollback()
+        flash("デッキの削除中にエラーが発生しました。")
+        print(f"デッキ削除エラー: {e}")
+
+    return redirect(url_for("decks"))
+
+# Test routes ------------------------------------------------------------
 
 @app.route("/word")
 @login_required
@@ -296,6 +328,7 @@ def mark_word():
     )
 
 
+# Wrong words routes ------------------------------------------------------------
 @app.route("/wrong_words")
 @login_required
 def wrong_words():
@@ -318,7 +351,7 @@ def reset_wrong_words():
     session["current_test_wrong_words"] = []
     return jsonify({"status": "success"})
 
-
+# Auth routes ------------------------------------------------------------
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -335,6 +368,7 @@ def register():
         flash("登録が完了しました。ログインしてください。")
         return redirect(url_for("login"))
     return render_template("register.html")
+
 
 
 @app.route("/", methods=["GET", "POST"])  # トップ画面（ログイン）
@@ -358,6 +392,7 @@ def logout():
     return redirect(url_for("login"))
 
 
+# My words routes ------------------------------------------------------------
 @app.route("/my_words")
 @login_required
 def my_words():
@@ -389,7 +424,7 @@ def delete_word(word_id):
     flash("単語を削除しました。")
     return redirect(url_for("my_words"))
 
-
+# Generate sentence routes ------------------------------------------------------------
 @app.route("/generate_sentence", methods=["GET"])
 def generate_sentence():
     wrong_words = session.get("wrong_words", [])
@@ -398,82 +433,6 @@ def generate_sentence():
     return render_template(
         "API.html", word_list=word_list, sentence=sentence, translation=translation
     )
-
-
-# @app.route("/upload_csv", methods=["POST"])
-# @login_required
-# def upload_csv():
-#     if "csv_file" not in request.files:
-#         flash("ファイルが選択されていません")
-#         return redirect(url_for("my_words"))
-
-#     file = request.files["csv_file"]
-#     if file.filename == "":
-#         flash("ファイルが選択されていません")
-#         return redirect(url_for("my_words"))
-
-#     if not file.filename.endswith(".csv"):
-#         flash("CSVファイルを選択してください")
-#         return redirect(url_for("my_words"))
-
-#     try:
-#         # CSVファイルを読み込む
-#         stream = file.stream.read().decode("utf-8")
-#         csv_reader = csv.DictReader(stream.splitlines())
-
-#         # 単語を登録
-#         words_added = 0
-#         for row in csv_reader:
-#             entry = row.get("entry", "").strip()
-#             meaning = row.get("meaning", "").strip()
-
-#             if entry and meaning:
-#                 # 既に同じ単語が登録されていないか確認
-#                 existing_word = Word.query.filter_by(
-#                     user_id=current_user.id, entry=entry
-#                 ).first()
-
-#                 if not existing_word:
-#                     word = Word(entry=entry, meaning=meaning, user_id=current_user.id)
-#                     db.session.add(word)
-#                     words_added += 1
-#         db.session.commit()
-#         flash(f"{words_added}個の単語を登録しました")
-#     except Exception as e:
-#         flash("CSVファイルの処理中にエラーが発生しました")
-#         print(f"CSV処理エラー: {e}")
-#     return redirect(url_for("my_words"))
-
-
-@app.route("/deck/<int:deck_id>/delete", methods=["GET"])
-@login_required
-def delete_deck(deck_id):
-    deck = Deck.query.get_or_404(deck_id)
-    if deck.user_id != current_user.id:
-        flash("削除権限がありません。")
-        return redirect(url_for("decks"))
-
-    try:
-        # デッキに属する単語を取得
-        words = Word.query.filter_by(deck_id=deck_id).all()
-
-        # 各単語に関連するWrongWordレコードを削除
-        for word in words:
-            WrongWord.query.filter_by(word_id=word.id).delete()
-
-        # 単語を削除
-        Word.query.filter_by(deck_id=deck_id).delete()
-
-        # デッキを削除
-        db.session.delete(deck)
-        db.session.commit()
-        flash("デッキを削除しました。")
-    except Exception as e:
-        db.session.rollback()
-        flash("デッキの削除中にエラーが発生しました。")
-        print(f"デッキ削除エラー: {e}")
-
-    return redirect(url_for("decks"))
 
 
 if __name__ == "__main__":

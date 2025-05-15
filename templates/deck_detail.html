@@ -29,6 +29,9 @@
         action="{{ url_for('add_word_to_deck', deck_id=deck.id) }}"
         class="add-word-form"
       >
+        <a href="{{ url_for('deck_test', deck_id=deck.id) }}" class="button"
+          >このデッキでテストを開始</a
+        >
         <div class="form-group">
           <label>単語: <input type="text" name="entry" required /></label>
           <label>意味: <input type="text" name="meaning" required /></label>
@@ -51,10 +54,6 @@
         </div>
         {% endfor %}
       </div>
-
-      <a href="{{ url_for('deck_test', deck_id=deck.id) }}" class="button"
-        >このデッキでテストを開始</a
-      >
     </div>
   </body>
 </html>
