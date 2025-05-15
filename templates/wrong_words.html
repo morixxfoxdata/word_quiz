@@ -14,7 +14,6 @@
       <h1>間違えた単語リスト</h1>
 
       <div class="wrong-words-list">
-        <!-- wrong_words という変数が「存在していて、中身が空じゃないか？」を調べています。 -->
         {% if wrong_words %} {% for word, translation in wrong_words.items() %}
         <div class="word-item">
           <div class="english">{{ word }}</div>
@@ -26,13 +25,10 @@
       </div>
 
       <div class="buttons">
-<!-- <<<<<<< HEAD -->
         <button id="reset-btn" class="play-sound00 reset-btn">トップへ</button>
-        <!-- <a href="{{ url_for('index') }}" class="button back-btn">戻る</a> -->
-<!-- ======= -->
-        <!-- <button id="reset-btn" class="reset-btn">リセット</button> -->
+
         <a href="/generate_sentence" class="button">例文生成</a> 
-<!-- >>>>>>> origin/Ito_test -->
+
       </div>
     </div>
 

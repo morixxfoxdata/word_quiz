@@ -1,3 +1,23 @@
+// 正誤処理関数（既存の handleAnswer を前提にする）
+function handleAnswer(isCorrect) {
+  const currentWord = wordCard.dataset.word;
+  isFlipped = false;
+  wordCard.classList.remove("flipped");
+
+  //効果音の再生
+  const correctSound = document.getElementById("correct-sound");
+  const wrongSound = document.getElementById("wrong-sound");
+  if (isCorrect) {
+    correctSound.currentTime = 0; // ←連打対応（最初から）
+    correctSound.play();
+  } else {
+    wrongSound.currentTime = 0;
+    wrongSound.play();
+  }
+}
+
+
+
 // 🔁 リセット処理関数
 function handleReset() {
   fetch("/reset_wrong_words", {
@@ -9,7 +29,7 @@ function handleReset() {
     .then((response) => response.json())
     .then((data) => {
       if (data.status === "success") {
-        window.location.href = "/start";
+        window.location.href = "/decks";
       }
     });
 }
@@ -26,6 +46,7 @@ function safePlay(audioElement) {
     });
   } catch (e) {
     console.warn("効果音処理エラー:", e);
+
   }
 }
 
@@ -109,7 +130,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const sound = document.getElementById("trans-sound");
   const buttons = document.querySelectorAll(".play-sound00");
 
-  buttons.forEach(btn => {
+  buttons.forEach((btn) => {
     btn.addEventListener("click", function (e) {
       if (sound) {
         sound.currentTime = 0;

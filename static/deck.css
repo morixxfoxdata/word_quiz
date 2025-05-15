@@ -1,0 +1,137 @@
+/* デッキ一覧のコンテナ */
+.deck-list {
+  margin-top: 2rem;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* デッキアイテム */
+.deck-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  margin-bottom: 1rem;
+  background-color: #1c1f26;
+  border-radius: 5px;
+  border: 1px solid #2c3e50;
+  box-shadow: 0 0 6px #0d111730;
+}
+
+/* デッキリンク */
+.deck-link {
+  flex-grow: 1;
+  text-decoration: none;
+  color: #00ffff;
+  font-size: 1.2rem;
+  font-weight: 600;
+  transition: color 0.3s;
+}
+
+.deck-link:hover {
+  color: #717175;
+}
+
+/* 編集ボタン */
+.edit-btn {
+  margin-left: 1rem;
+  padding: 8px 16px;
+  background-color: var(--btn_back);
+  color: var(--text_main);
+  text-decoration: none;
+  border: 1px solid var(--btn_border);
+  border-radius: 10px;
+  transition: background-color 0.3s;
+}
+
+.edit-btn:hover {
+  background-color: #717175;
+}
+
+/* デッキ作成フォーム */
+form {
+  width: 60%;
+  margin: 2rem auto;
+  padding: 20px;
+  background-color: #1c1f26;
+  border-radius: 5px;
+  border: 1px solid #2c3e50;
+  box-shadow: 0 0 6px #0d111730;
+}
+
+form div {
+  margin-bottom: 1rem;
+}
+
+form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text_main);
+}
+
+form input[type="text"],
+form textarea {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: #2c3e50;
+  border: 1px solid #00ffff;
+  border-radius: 4px;
+  color: var(--text_main);
+  font-size: 1rem;
+}
+
+form textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+form button[type="submit"] {
+  padding: 10px 20px;
+  background-color: var(--btn_back);
+  color: var(--text_main);
+  border: 1px solid var(--btn_border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+form button[type="submit"]:hover {
+  background-color: #717175;
+}
+
+.deck-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9em;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 0.9em;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}
