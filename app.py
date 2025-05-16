@@ -190,7 +190,7 @@ def choose_question_and_choices(deck_id, k=4):
 
 def create_default_deck(user_id):
     """デフォルトのTOEICデッキを作成する"""
-    deck = Deck(name="TOEIC単語集2500", description="TOEIC頻出単語集", user_id=user_id)
+    deck = Deck(name="TOEIC単語集2500", description="TOEIC頻出単語集", category="TOEIC", user_id=user_id)
     db.session.add(deck)
     db.session.commit()
 
@@ -611,5 +611,6 @@ def get_current_deck_id():
 
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5001))
-    app.run(host="0.0.0.0", port=port)
+    # port = int(os.environ.get("PORT", 5001))
+    # app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)

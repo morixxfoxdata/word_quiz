@@ -91,10 +91,6 @@
     <script src="{{ url_for('static', filename='hamburger.js') }}"></script>
     <script>
       function deleteWord(deckId, wordId) {
-        if (!confirm("この単語を削除してもよろしいですか？")) {
-          return;
-        }
-
         fetch(`/deck/${deckId}/word/${wordId}/delete`, {
           method: "POST",
           headers: {
@@ -109,14 +105,10 @@
               if (wordElement) {
                 wordElement.remove();
               }
-              alert(data.message);
-            } else {
-              alert(data.message);
             }
           })
           .catch((error) => {
             console.error("Error:", error);
-            alert("エラーが発生しました。");
           });
       }
 
