@@ -64,7 +64,7 @@ class User(UserMixin, db.Model):
     # relationship
     wrong_words = db.relationship("WrongWord", backref="user", lazy=True)
     decks = db.relationship("Deck", backref="owner", lazy=True)
-
+    saved_sentences = db.relationship("SavedSentence", backref="user", lazy=True)
 
 class Word(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -118,7 +118,12 @@ class StudyLog(db.Model):
     total_words = db.Column(db.Integer, default=0)
     accuracy = db.Column(db.Float, default=0.0)
 
-
+class SavedSentence(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    sentence = db.Column(db.Text, nullable=False)
+    translation = db.Column(db.Text, nullable=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.now)
 # ---------------- 関数 ----------------
 
 
@@ -141,10 +146,7 @@ def generate_sentence_from_words(words):
         {', '.join(words)}
         """
     try:
-        # response = gemini_pro.generate_content(prompt)
-        response = client.models.generate_content(
-            model="gemini-1.5-flash", contents=prompt
-        )  # gemini-1.5-flash
+        response = client.models.generate_content(model="gemini-1.5-flash", contents=prompt)#gemini-1.5-flash
 
         # 改行で英文と訳文を分ける
         response_text = response.text.strip()
@@ -248,6 +250,7 @@ def login():
 def decks():
     user_decks = Deck.query.filter_by(user_id=current_user.id).all()
     return render_template("decks.html", decks=user_decks)
+
 
 
 @app.route("/create_deck", methods=["POST"])
@@ -546,6 +549,36 @@ def generate_sentence():
     )
 
 
+@app.route("/save_sentence", methods=["POST"])
+@login_required
+def save_sentence():
+    sentence = request.form.get("sentence")
+    translation = request.form.get("translation")
+    if not sentence:
+        flash("保存する文章が空です。", "error")
+        return redirect(url_for("some_form_page"))  # 元の入力ページなどへ戻す
+    # 保存処理
+    saved = SavedSentence(
+        sentence=sentence,
+        translation=translation,
+        user_id=current_user.id
+    )
+    db.session.add(saved)
+    db.session.commit()
+    # 保存後、一覧用のデータを取得してレンダリング
+    sentences = SavedSentence.query.filter_by(user_id=current_user.id)\
+                                   .order_by(SavedSentence.created_at.desc())\
+                                   .all()
+    return render_template("saved_sentences.html", sentences=sentences)
+
+@app.route("/saved_sentences")
+@login_required
+def saved_sentences():
+    sentences = SavedSentence.query.filter_by(user_id=current_user.id).order_by(SavedSentence.created_at.desc()).all()
+    return render_template("saved_sentences.html", sentences=sentences)
+
+
+
 @app.route("/study_logs")
 @login_required
 def study_logs():
@@ -624,6 +657,7 @@ def end_study_session():
 def get_current_deck_id():
     deck_id = session.get("current_deck_id")
     return jsonify({"deck_id": deck_id})
+
 
 
 if __name__ == "__main__":

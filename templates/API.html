@@ -225,13 +225,14 @@
         </div>
       </div>
       
-      <div class="button-container">
-        <a class="play-sound00 button" href="/generate_sentence"
-          ><i class="fas fa-save"></i> 保存(未実装)</a
-        >
-        <a href="/decks" id="reset-btn" class="play-sound00 reset-btn"
-          ><i class="fas fa-home"></i> トップへ</a
-        >
+      <div class="buttons">
+      <form action="{{ url_for('save_sentence') }}" method="POST">
+        <input type="hidden" name="sentence" value="{{ sentence }}">
+        <input type="hidden" name="translation" value="{{ translation }}">
+        <button type="submit" class="play-sound00 button">保存</button>
+      </form>
+
+      <button id="reset-btn" class="play-sound00 reset-btn">トップへ</button>
       </div>
     </div>
     

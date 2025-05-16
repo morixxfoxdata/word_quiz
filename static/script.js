@@ -190,6 +190,13 @@ function updateQuestion(data) {
   attachChoiceHandlers();
 }
 
+// <<<<<<< csv_iwata
+
+
+// document.addEventListener("DOMContentLoaded",()=>{
+//   // ① ← ここで取得してグローバル変数にする
+//   window.wrongCount = document.getElementById("wrong-count");
+// =======
 document.addEventListener("DOMContentLoaded", () => {
   // 初期の間違えた単語数を表示
   const initialWrongCount = document.getElementById("wrong-count").textContent;
@@ -202,6 +209,7 @@ document.addEventListener("DOMContentLoaded", () => {
         startStudySession(data.deck_id);
       }
     });
+// >>>>>>> dev
 
   attachChoiceHandlers();
 
