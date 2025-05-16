@@ -33,6 +33,11 @@
 
     <h1 class="start-title">デッキ一覧</h1>
 
+    <!-- 新規デッキ作成ボタン -->
+    <div class="add-deck-button-container">
+      <a href="{{ url_for('deck_add') }}" class="btn add-deck-btn">新規デッキを作成</a>
+    </div>
+
     <div class="deck-list">
       {% for deck in decks %}
       <div class="deck-item">

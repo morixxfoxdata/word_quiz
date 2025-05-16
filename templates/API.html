@@ -26,16 +26,24 @@
       body {
         font-family: "Helvetica Neue", sans-serif;
         padding: 1em;
-        background-color: #f9f9f9;
+        background: linear-gradient(-45deg, #000000, #0a1a2f, #1c2b3a, #000000);
+        background-size: 400% 400%;
+        animation: gradientFlow 15s ease infinite;
+        color: #e0e0e0;
       }
 
-      .container {
+      .content-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 200px);
         max-width: 700px;
         margin: 0 auto;
-        background: white;
-        padding: 2em;
-        border-radius: 12px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      .scrollable-content {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding-right: 5px;
       }
 
       h1 {
@@ -72,25 +80,45 @@
         border: 2px solid #00ffff;
         box-shadow: 0 0 20px #00ffff80;
         word-break: break-word;
-      }
-
-      .sentence-box {
-        background: #000000;
+        margin-bottom: 1.5em;
       }
 
       .button-container {
         display: flex;
         justify-content: center;
-        gap: 20px;
+        gap: 40px;
         margin-top: 2em;
         flex-wrap: wrap;
+        position: sticky;
+        bottom: 20px;
       }
 
       .button-container .button,
       .button-container .reset-btn {
-        min-width: 150px;
-        padding: 15px 30px;
+        padding: 15px 40px;
         font-size: 1.2rem;
+        border: 1px solid #fff;
+        border-radius: 10px;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .button-container .button {
+        background-color: #1a2636;
+        color: #cfd8dc;
+        box-shadow: 0 0 5px #1a263644;
+      }
+
+      .button-container .reset-btn {
+        background-color: #223344;
+        color: #dfe6e9;
+        box-shadow: 0 0 5px #22334455;
+      }
+
+      .button-container .button:hover,
+      .button-container .reset-btn:hover {
+        opacity: 0.9;
+        background-color: #717175;
       }
 
       /* メディアクエリ - モバイル対応 */
@@ -112,6 +140,10 @@
         .sentence-box {
           font-size: 1.2rem;
           padding: 0.8em;
+        }
+        
+        .content-container {
+          height: calc(100vh - 180px);
         }
       }
 
@@ -137,14 +169,17 @@
         }
 
         .button-container {
-          gap: 10px;
+          gap: 20px;
         }
 
         .button-container .button,
         .button-container .reset-btn {
-          min-width: 120px;
           padding: 12px 20px;
           font-size: 1rem;
+        }
+        
+        .content-container {
+          height: calc(100vh - 150px);
         }
       }
     </style>
@@ -170,31 +205,36 @@
       </div>
     </div>
 
-    <!-- <div class="container"> -->
     <h1>例文が生成されました</h1>
 
-    <div class="section">
-      <span class="label">あなたが間違えた英単語：</span>
-      <div class="word-list">{{ word_list | join(', ') }}</div>
-    </div>
+    <div class="content-container">
+      <div class="scrollable-content">
+        <div class="section">
+          <span class="label">あなたが間違えた英単語：</span>
+          <div class="word-list">{{ word_list | join(', ') }}</div>
+        </div>
 
-    <div class="section">
-      <span class="label">例文（英語）：</span>
-      <div class="sentence-box">{{ sentence }}</div>
-    </div>
+        <div class="section">
+          <span class="label">例文（英語）：</span>
+          <div class="sentence-box">{{ sentence }}</div>
+        </div>
 
-    <div class="section">
-      <span class="label">例文（日本語訳）：</span>
-      <div class="sentence-box">{{ translation }}</div>
+        <div class="section">
+          <span class="label">例文（日本語訳）：</span>
+          <div class="sentence-box">{{ translation }}</div>
+        </div>
+      </div>
+      
+      <div class="button-container">
+        <a class="play-sound00 button" href="/generate_sentence"
+          ><i class="fas fa-save"></i> 保存(未実装)</a
+        >
+        <a href="/decks" id="reset-btn" class="play-sound00 reset-btn"
+          ><i class="fas fa-home"></i> トップへ</a
+        >
+      </div>
     </div>
-    <div class="button-container">
-      <a class="play-sound00 button" href="/generate_sentence"
-        ><i class="fas fa-save"></i> 保存(未実装)</a
-      >
-      <a href="/decks" id="reset-btn" class="play-sound00 reset-btn"
-        ><i class="fas fa-home"></i> トップへ</a
-      >
-    </div>
+    
     <audio
       id="trans-sound"
       src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"

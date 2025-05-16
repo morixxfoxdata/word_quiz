@@ -147,7 +147,7 @@ def generate_sentence_from_words(words):
 def choose_question_and_choices(deck_id, k=4):
     all_words = Word.query.filter_by(deck_id=deck_id).all()
     if not all_words:
-        
+        flash("単語を登録してください。")
         return redirect(url_for("my_words"))
 
     # 使用済み単語の管理
@@ -251,13 +251,13 @@ def create_deck():
 def deck_test(deck_id):
     deck = Deck.query.get_or_404(deck_id)
     if deck.user_id != current_user.id:
-        
+        flash("アクセス権限がありません。")
         return redirect(url_for("decks"))
 
     # デッキ内の単語を取得
     deck_words = Word.query.filter_by(deck_id=deck_id).all()
     if not deck_words:
-        
+        flash("このデッキには単語が登録されていません。")
         return redirect(url_for("decks"))
 
     # セッションに現在のデッキIDを保存
@@ -270,7 +270,7 @@ def deck_test(deck_id):
 def deck_detail(deck_id):
     deck = Deck.query.get_or_404(deck_id)
     if deck.user_id != current_user.id:
-        
+        flash("アクセス権限がありません。")
         return redirect(url_for("decks"))
 
     # デッキに属する単語を取得
@@ -283,7 +283,7 @@ def deck_detail(deck_id):
 def add_word_to_deck(deck_id):
     deck = Deck.query.get_or_404(deck_id)
     if deck.user_id != current_user.id:
-        
+        flash("アクセス権限がありません。")
         return redirect(url_for("decks"))
 
     entry = request.form["entry"]
@@ -292,7 +292,7 @@ def add_word_to_deck(deck_id):
     word = Word(entry=entry, meaning=meaning, deck_id=deck_id)
     db.session.add(word)
     db.session.commit()
-    
+    flash("単語を追加しました。")
     return redirect(url_for("deck_detail", deck_id=deck_id))
 
 
@@ -301,7 +301,7 @@ def add_word_to_deck(deck_id):
 def delete_deck(deck_id):
     deck = Deck.query.get_or_404(deck_id)
     if deck.user_id != current_user.id:
-        
+        flash("削除権限がありません。")
         return redirect(url_for("decks"))
 
     try:
@@ -321,10 +321,10 @@ def delete_deck(deck_id):
         # デッキを削除
         db.session.delete(deck)
         db.session.commit()
-        
+        flash("デッキを削除しました。")
     except Exception as e:
         db.session.rollback()
-        
+        flash("デッキの削除中にエラーが発生しました。")
         print(f"デッキ削除エラー: {e}")
 
     return redirect(url_for("decks"))
@@ -345,7 +345,7 @@ def index():
         user_words = Word.query.filter_by(user_id=current_user.id).all()
 
     if not user_words:
-        
+        flash("単語を登録してください。")
         return redirect(url_for("my_words"))
 
     if "current_test_wrong_words" not in session:
@@ -486,7 +486,7 @@ def add_word():
     word = Word(entry=entry, meaning=meaning, user_id=current_user.id)
     db.session.add(word)
     db.session.commit()
-    
+    flash("単語を追加しました。")
     return redirect(url_for("my_words"))
 
 
