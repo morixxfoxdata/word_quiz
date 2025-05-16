@@ -1,3 +1,16 @@
+// グローバル変数の追加
+let correctCount = 0;
+let wrongCount = 0;
+let studyLogId = null;
+
+// 間違えた単語数の表示を更新する関数
+function updateWrongCount(count) {
+  const wrongCountElement = document.getElementById("wrong-count");
+  if (wrongCountElement) {
+    wrongCountElement.textContent = count;
+  }
+}
+
 // 正誤処理関数（既存の handleAnswer を前提にする）
 function handleAnswer(isCorrect) {
   const currentWord = wordCard.dataset.word;
@@ -27,7 +40,9 @@ function handleReset() {
     .then((response) => response.json())
     .then((data) => {
       if (data.status === "success") {
-        window.location.href = "/decks";
+        endStudySession().then(() => {
+          window.location.href = "/decks";
+        });
       }
     });
 }
@@ -47,32 +62,88 @@ function safePlay(audioElement) {
   }
 }
 
+// テスト開始時の処理
+function startStudySession(deckId) {
+  // まず間違えた単語のセッションをリセット
+  fetch("/reset_wrong_words", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        // 間違えた単語数を0にリセット
+        updateWrongCount(0);
+
+        // 学習セッションを開始
+        return fetch("/start_study_session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ deck_id: deckId }),
+        });
+      }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        studyLogId = data.study_log_id;
+        correctCount = 0;
+        wrongCount = 0;
+      }
+    });
+}
+
+// テスト終了時の処理
+function endStudySession() {
+  if (!studyLogId) return;
+
+  return fetch("/end_study_session", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      correct_count: correctCount,
+      wrong_count: wrongCount,
+    }),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.status === "success") {
+        studyLogId = null;
+      }
+    })
+    .catch((error) => {
+      console.error("学習ログの保存に失敗しました:", error);
+    });
+}
+
 // --- 選択肢クリック処理 ---
 function attachChoiceHandlers() {
-  const correctSound = document.getElementById("correct-sound"); //★追加
-  const wrongSound = document.getElementById("wrong-sound"); //★追加
+  const correctSound = document.getElementById("correct-sound");
+  const wrongSound = document.getElementById("wrong-sound");
 
   document.querySelectorAll(".choice-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      // 再度おせないよう
       document
         .querySelectorAll(".choice-btn")
         .forEach((b) => (b.disabled = true));
 
       const isCorrect = btn.dataset.correct === "1";
 
-      // ボタンにクラスを追加
-      btn.classList.add(isCorrect ? "correct" : "wrong");
+      if (isCorrect) {
+        correctCount++;
+      } else {
+        wrongCount++;
+      }
 
-      // 効果音
+      btn.classList.add(isCorrect ? "correct" : "wrong");
       safePlay(isCorrect ? correctSound : wrongSound);
 
-      // 正解の選択肢を強調表示
       document
         .querySelectorAll('.choice-btn[data-correct="1"]')
         .forEach((b) => b.classList.add("correct"));
 
-      // サーバへ送信
       fetch("/mark_word", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -83,15 +154,18 @@ function attachChoiceHandlers() {
       })
         .then((res) => res.json())
         .then((data) => {
-          // 10問終わり判定
-          wrongCount.textContent = data.wrongWordsCount;
+          // 間違えた単語数の表示を更新
+          updateWrongCount(data.wrongWordsCount);
+
           if (data.showWrongWords || data.isTestComplete) {
-            setTimeout(() => {
-              window.location.href = "/wrong_words";
-            }, 1000);
+            // テスト終了時に学習ログを保存してから遷移
+            endStudySession().then(() => {
+              setTimeout(() => {
+                window.location.href = "/wrong_words";
+              }, 1000);
+            });
             return;
           }
-          // １秒待って次問セット
           setTimeout(() => {
             updateQuestion(data);
           }, 1000);
@@ -117,13 +191,28 @@ function updateQuestion(data) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  // ① ← ここで取得してグローバル変数にする
-  window.wrongCount = document.getElementById("wrong-count");
+  // 初期の間違えた単語数を表示
+  const initialWrongCount = document.getElementById("wrong-count").textContent;
+  updateWrongCount(initialWrongCount);
+
+  fetch("/get_current_deck_id")
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.deck_id) {
+        startStudySession(data.deck_id);
+      }
+    });
 
   attachChoiceHandlers();
 
   const resetBtn = document.getElementById("reset-btn");
-  if (resetBtn) resetBtn.addEventListener("click", handleReset);
+  if (resetBtn) {
+    resetBtn.addEventListener("click", () => {
+      endStudySession().then(() => {
+        handleReset();
+      });
+    });
+  }
 
   // ページ遷移SE（省略）
 });
@@ -149,5 +238,21 @@ document.addEventListener("DOMContentLoaded", function () {
         }, 300);
       }
     });
+  });
+});
+
+// ページを離れる前の処理を追加
+window.addEventListener("beforeunload", (event) => {
+  if (studyLogId) {
+    endStudySession();
+  }
+});
+
+// 進捗バーの幅を設定
+document.addEventListener("DOMContentLoaded", function () {
+  const progressBars = document.querySelectorAll(".progress");
+  progressBars.forEach((bar) => {
+    const progress = bar.getAttribute("data-progress");
+    bar.style.width = `${progress}%`;
   });
 });

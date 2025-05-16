@@ -1,67 +1,167 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <title>英語例文生成結果</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-  <style>
-    :root {
-      --text_main: #e6f0ff;
-      --btn_back: #000;
-      --btn_border: #ffff;
-    }
-  
-    body {
-      font-family: "Helvetica Neue", sans-serif;
-      padding: 2em;
-      background-color: #f9f9f9;
-    }
-  
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
-      background: white;
-      padding: 2em;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-  
-    h1 {
-      text-align: center;
-      color: white;
-    }
-  
-    .section {
-      margin-top: 1.5em;
-    }
-  
-    .label {
-      font-weight: bold;
-      color: var(--text_main);
-      margin-bottom: 0.5em;
-      display: block;
-    }
-  
-    .word-list,
-    .sentence-box {
-      background: var(--btn_back);
-      color: var(--text_main);
-      padding: 1em;
-      border-radius: 10px;
-      font-size: 2rem;
-      font-weight: bold;
-      border: 2px solid #00ffff;
-      box-shadow: 0 0 20px #00ffff80;
-    }
-  
-    .sentence-box {
-      background: #000000;
-    }
-  </style>
-</head>
-<body>
-<!-- <div class="container"> --> 
-    <h1 style="color: white;">例文が生成されました</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>英語例文生成結果</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='hamburger.css') }}"
+    />
+    <style>
+      :root {
+        --text_main: #e6f0ff;
+        --btn_back: #000;
+        --btn_border: #ffff;
+      }
+
+      body {
+        font-family: "Helvetica Neue", sans-serif;
+        padding: 1em;
+        background-color: #f9f9f9;
+      }
+
+      .container {
+        max-width: 700px;
+        margin: 0 auto;
+        background: white;
+        padding: 2em;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        color: white;
+        font-size: 2.5rem;
+        margin-top: 70px;
+      }
+
+      .section {
+        margin-top: 1.5em;
+        width: 90%;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .label {
+        font-weight: bold;
+        color: var(--text_main);
+        margin-bottom: 0.5em;
+        display: block;
+        font-size: 1.2rem;
+      }
+
+      .word-list,
+      .sentence-box {
+        background: var(--btn_back);
+        color: var(--text_main);
+        padding: 1em;
+        border-radius: 10px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border: 2px solid #00ffff;
+        box-shadow: 0 0 20px #00ffff80;
+        word-break: break-word;
+      }
+
+      .sentence-box {
+        background: #000000;
+      }
+
+      .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 2em;
+        flex-wrap: wrap;
+      }
+
+      .button-container .button,
+      .button-container .reset-btn {
+        min-width: 150px;
+        padding: 15px 30px;
+        font-size: 1.2rem;
+      }
+
+      /* メディアクエリ - モバイル対応 */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2rem;
+          margin-top: 60px;
+        }
+
+        .section {
+          width: 95%;
+        }
+
+        .label {
+          font-size: 1rem;
+        }
+
+        .word-list,
+        .sentence-box {
+          font-size: 1.2rem;
+          padding: 0.8em;
+        }
+      }
+
+      @media (max-width: 480px) {
+        h1 {
+          font-size: 1.7rem;
+          margin-top: 50px;
+        }
+
+        .section {
+          margin-top: 1em;
+          width: 100%;
+        }
+
+        .label {
+          font-size: 0.9rem;
+        }
+
+        .word-list,
+        .sentence-box {
+          font-size: 1rem;
+          padding: 0.7em;
+        }
+
+        .button-container {
+          gap: 10px;
+        }
+
+        .button-container .button,
+        .button-container .reset-btn {
+          min-width: 120px;
+          padding: 12px 20px;
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ハンバーガーメニューを追加 -->
+    <div class="hamburger-menu">
+      <button class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="hamburger-content">
+        <a class="play-sound00" href="/decks">デッキ一覧</a>
+        <a class="play-sound00" href="/study_logs">学習ログ</a>
+        <a class="play-sound00" href="/logout">ログアウト</a>
+      </div>
+    </div>
+
+    <!-- <div class="container"> -->
+    <h1>例文が生成されました</h1>
 
     <div class="section">
       <span class="label">あなたが間違えた英単語：</span>
@@ -77,11 +177,34 @@
       <span class="label">例文（日本語訳）：</span>
       <div class="sentence-box">{{ translation }}</div>
     </div>
-    <div>
+    <div class="button-container">
       <a class="play-sound00 button" href="/generate_sentence">保存(未実装)</a>
-      <button id="reset-btn" class="play-sound00 reset-btn">トップへ</button>
+      <a href="/decks" id="reset-btn" class="play-sound00 reset-btn"
+        >トップへ</a
+      >
     </div>
-  <audio id="trans-sound" src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"></audio>
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
+    <audio
+      id="trans-sound"
+      src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"
+    ></audio>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='hamburger.js') }}"></script>
+    <script>
+      // トップへボタンのカスタム処理
+      document
+        .getElementById("reset-btn")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          const sound = document.getElementById("trans-sound");
+          if (sound) {
+            sound.currentTime = 0;
+            sound.play();
+          }
+
+          setTimeout(function () {
+            window.location.href = "/decks";
+          }, 300);
+        });
+    </script>
+  </body>
 </html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>学習ログ</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='deck.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='study_logs.css') }}"
+    />
+  </head>
+  <body>
+    <div class="hamburger-menu">
+      <button class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="hamburger-content">
+        <a class="play-sound00" href="/decks">デッキ一覧に戻る</a>
+        <a class="play-sound00" href="/logout">ログアウト</a>
+      </div>
+    </div>
+
+    <h1 class="start-title">学習ログ</h1>
+
+    <div class="calendar-container">
+      <div class="calendar-header">
+        <button id="prevMonth" class="calendar-nav-btn">←</button>
+        <h2 id="currentMonth"></h2>
+        <button id="nextMonth" class="calendar-nav-btn">→</button>
+      </div>
+      <div class="calendar-grid">
+        <div class="calendar-weekdays">
+          <div>日</div>
+          <div>月</div>
+          <div>火</div>
+          <div>水</div>
+          <div>木</div>
+          <div>金</div>
+          <div>土</div>
+        </div>
+        <div id="calendarDays" class="calendar-days"></div>
+      </div>
+    </div>
+
+    <div id="selectedDateLogs" class="study-logs" style="display: none">
+      <div class="logs-header">
+        <h2 id="selectedDateTitle" class="selected-date-title"></h2>
+        <button id="closeLogs" class="close-btn">×</button>
+      </div>
+      <div id="logsContainer">
+        {% for log in study_logs %}
+        <div
+          class="log-item"
+          data-date="{{ log.start_time.strftime('%Y-%m-%d') }}"
+        >
+          <div class="log-header">
+            <h3>{{ log.deck.name }}</h3>
+            <span class="log-date"
+              >{{ log.start_time.strftime('%Y-%m-%d %H:%M') }}</span
+            >
+          </div>
+          <div class="log-details">
+            <p>正解数: {{ log.correct_count }}</p>
+            <p>不正解数: {{ log.wrong_count }}</p>
+            <p>総単語数: {{ log.total_words }}</p>
+            <p>正答率: {{ "%.1f"|format(log.accuracy * 100) }}%</p>
+            <p>
+              学習時間: {% if log.end_time %} {{ ((log.end_time -
+              log.start_time).total_seconds() / 60)|round|int }}分 {% else %}
+              未完了 {% endif %}
+            </p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='calendar.js') }}"></script>
+    <script src="{{ url_for('static', filename='hamburger.js') }}"></script>
+  </body>
+</html>

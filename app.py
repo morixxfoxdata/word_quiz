@@ -51,7 +51,7 @@ login_manager.login_view = "login"
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.query.get(int(user_id))
+    return db.session.get(User, int(user_id))
 
 
 # ---------------- SQLAlchemyのモデル ----------------
@@ -88,11 +88,35 @@ class Deck(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     description = db.Column(db.String(200), nullable=True)
+    category = db.Column(db.String(50), nullable=True)
     is_active = db.Column(db.Boolean, default=True)
     created_at = db.Column(db.DateTime, default=datetime.now)
+    last_studied = db.Column(db.DateTime, nullable=True)
+    correct_count = db.Column(db.Integer, default=0)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     # relationship
     words = db.relationship("Word", backref="decks", lazy=True)
+    study_logs = db.relationship("StudyLog", backref="deck", lazy=True)
+
+    def update_study_stats(self):
+        """学習統計を更新する"""
+        if self.study_logs:
+            latest_log = max(self.study_logs, key=lambda x: x.start_time)
+            self.last_studied = latest_log.start_time
+            self.correct_count = sum(log.correct_count for log in self.study_logs)
+            db.session.commit()
+
+
+class StudyLog(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
+    deck_id = db.Column(db.Integer, db.ForeignKey("deck.id"), nullable=False)
+    start_time = db.Column(db.DateTime, default=datetime.now)
+    end_time = db.Column(db.DateTime, nullable=True)
+    correct_count = db.Column(db.Integer, default=0)
+    wrong_count = db.Column(db.Integer, default=0)
+    total_words = db.Column(db.Integer, default=0)
+    accuracy = db.Column(db.Float, default=0.0)
 
 
 # ---------------- 関数 ----------------
@@ -103,7 +127,7 @@ def generate_sentence_from_words(words):
     try:
         # response = gemini_pro.generate_content(prompt)
         response = client.models.generate_content(
-            model="", contents=prompt
+            model="gemini-1.5-flash", contents=prompt
         )  # gemini-1.5-flash
 
         # 改行で英文と訳文を分ける
@@ -261,7 +285,7 @@ def add_word_to_deck(deck_id):
     return redirect(url_for("deck_detail", deck_id=deck_id))
 
 
-@app.route("/deck/<int:deck_id>/delete", methods=["GET"])
+@app.route("/deck/<int:deck_id>/delete", methods=["POST"])
 @login_required
 def delete_deck(deck_id):
     deck = Deck.query.get_or_404(deck_id)
@@ -270,6 +294,9 @@ def delete_deck(deck_id):
         return redirect(url_for("decks"))
 
     try:
+        # デッキに関連する学習ログを削除
+        StudyLog.query.filter_by(deck_id=deck_id).delete()
+
         # デッキに属する単語を取得
         words = Word.query.filter_by(deck_id=deck_id).all()
 
@@ -312,6 +339,7 @@ def index():
 
     if "current_test_wrong_words" not in session:
         session["current_test_wrong_words"] = []
+    print(session["current_test_wrong_words"])
     return render_template(
         "index.html",
         word=word_entry,
@@ -456,26 +484,28 @@ def add_word():
 def delete_word_from_deck(deck_id, word_id):
     deck = Deck.query.get_or_404(deck_id)
     if deck.user_id != current_user.id:
-        flash("削除権限がありません。")
-        return redirect(url_for("decks"))
+        return jsonify({"status": "error", "message": "削除権限がありません。"}), 403
 
     word = Word.query.get_or_404(word_id)
     if word.deck_id != deck_id:
-        flash("この単語は指定されたデッキに属していません。")
-        return redirect(url_for("deck_detail", deck_id=deck_id))
+        return jsonify(
+            {
+                "status": "error",
+                "message": "この単語は指定されたデッキに属していません。",
+            }
+        ), 400
 
     try:
         # 関連するWrongWordレコードも削除
         WrongWord.query.filter_by(word_id=word_id).delete()
         db.session.delete(word)
         db.session.commit()
-        flash("単語を削除しました。")
-    except Exception as e:
+        return jsonify({"status": "success", "message": "単語を削除しました。"})
+    except Exception:
         db.session.rollback()
-        flash("単語の削除中にエラーが発生しました。")
-        print(f"単語削除エラー: {e}")
-
-    return redirect(url_for("deck_detail", deck_id=deck_id))
+        return jsonify(
+            {"status": "error", "message": "単語の削除中にエラーが発生しました。"}
+        ), 500
 
 
 # Generate sentence routes ------------------------------------------------------------
@@ -487,6 +517,86 @@ def generate_sentence():
     return render_template(
         "API.html", word_list=word_list, sentence=sentence, translation=translation
     )
+
+
+@app.route("/study_logs")
+@login_required
+def study_logs():
+    # 未完了の学習ログを終了させる
+    current_study_log_id = session.get("current_study_log_id")
+    if current_study_log_id:
+        study_log = db.session.get(StudyLog, current_study_log_id)
+        if study_log and not study_log.end_time:
+            study_log.end_time = datetime.now()
+            db.session.commit()
+        session.pop("current_study_log_id", None)
+
+    # 学習ログを取得
+    logs = (
+        StudyLog.query.filter_by(user_id=current_user.id)
+        .order_by(StudyLog.start_time.desc())
+        .all()
+    )
+    return render_template("study_logs.html", study_logs=logs)
+
+
+@app.route("/start_study_session", methods=["POST"])
+@login_required
+def start_study_session():
+    deck_id = request.json.get("deck_id")
+    study_log = StudyLog(user_id=current_user.id, deck_id=deck_id)
+    db.session.add(study_log)
+    db.session.commit()
+    session["current_study_log_id"] = study_log.id
+    return jsonify({"status": "success", "study_log_id": study_log.id})
+
+
+@app.route("/end_study_session", methods=["POST"])
+@login_required
+def end_study_session():
+    study_log_id = session.get("current_study_log_id")
+    if not study_log_id:
+        return jsonify(
+            {"status": "error", "message": "学習セッションが見つかりません"}
+        ), 400
+
+    study_log = db.session.get(StudyLog, study_log_id)
+    if not study_log:
+        return jsonify({"status": "error", "message": "学習ログが見つかりません"}), 404
+
+    try:
+        data = request.json
+        study_log.end_time = datetime.now()
+        study_log.correct_count = data.get("correct_count", 0)
+        study_log.wrong_count = data.get("wrong_count", 0)
+        study_log.total_words = study_log.correct_count + study_log.wrong_count
+        study_log.accuracy = (
+            study_log.correct_count / study_log.total_words
+            if study_log.total_words > 0
+            else 0
+        )
+
+        # デッキの学習統計を更新
+        deck = db.session.get(Deck, study_log.deck_id)
+        if deck:
+            deck.update_study_stats()
+
+        db.session.commit()
+        session.pop("current_study_log_id", None)
+        return jsonify({"status": "success"})
+    except Exception as e:
+        db.session.rollback()
+        print(f"学習ログの保存中にエラーが発生しました: {e}")
+        return jsonify(
+            {"status": "error", "message": "学習ログの保存に失敗しました"}
+        ), 500
+
+
+@app.route("/get_current_deck_id")
+@login_required
+def get_current_deck_id():
+    deck_id = session.get("current_deck_id")
+    return jsonify({"deck_id": deck_id})
 
 
 if __name__ == "__main__":

@@ -8,57 +8,73 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='hamburger.css') }}"
+    />
   </head>
   <body>
-    <nav class="navbar">
-      <div class="nav_container">
-        <a class="play-sound00 nav_button" id="reset-btn" href="{{url_for('decks')}}">トップへ</a>
-        <!-- <a class="play-sound00 nav_button" href="/my_words">単語リスト</a> | -->
-        <a class="play-sound00 nav_button" href="/logout">ログアウト</a>
+    <div class="hamburger-menu">
+      <button class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="hamburger-content">
+        <a class="play-sound00" href="/decks">デッキ一覧</a>
+        <a class="play-sound00" href="/study_logs">学習ログ</a>
+        <a class="play-sound00" href="/logout">ログアウト</a>
       </div>
-    </nav>
+    </div>
 
-      <h1 class="test-title">英単語テスト</h1>
-      <p>ようこそ、{{ current_user.username }}さん！</p>
+    <h1 class="test-title">英単語テスト</h1>
+    <!-- <p>ようこそ、{{ current_user.username }}さん！</p> -->
 
-      <div class="word-card">
-        <div class="question-word">{{ word }}</div>
-      </div>
+    <div class="word-card">
+      <div class="question-word">{{ word }}</div>
+    </div>
 
-      <!-- 4 択ボタン -->
-      <div id="choice-container" class="choice-container">
-        {% for jp, is_ok in choices %}
-          <!-- data-correct に True/False を埋め込む(正解は1他は0) -->
-          <button class="choice-btn"
-                  data-correct="{{ '1' if is_ok else '0' }}">{{ jp }}</button>
-        {% endfor %}
-      </div>
+    <!-- 4 択ボタン -->
+    <div id="choice-container" class="choice-container">
+      {% for jp, is_ok in choices %}
+      <!-- data-correct に True/False を埋め込む(正解は1他は0) -->
+      <button class="choice-btn" data-correct="{{ '1' if is_ok else '0' }}">
+        {{ jp }}
+      </button>
+      {% endfor %}
+    </div>
 
-
-      <div class="wrong-words-counter">
-        間違えた単語:
-        <span id="wrong-count">{{ wrong_words_count }}</span>
-        / 10
-      </div>
-      <div
-        id="wrong-words-notification"
-        class="notification"
-        style="display: none; margin-top: 1em"
-      >
-        10個の単語が貯まりました！
-      </div>
-      <div id="end-options" style="display: none">
-        <a class="play-sound00 button" href="/wrong_words">確認する</a>
-      </div>
-
+    <div class="wrong-words-counter">
+      間違えた単語:
+      <span id="wrong-count">{{ wrong_words_count }}</span>
+      / 10
+    </div>
+    <div
+      id="wrong-words-notification"
+      class="notification"
+      style="display: none; margin-top: 1em"
+    >
+      10個の単語が貯まりました！
+    </div>
+    <div id="end-options" style="display: none">
+      <a class="play-sound00 button" href="/wrong_words">確認する</a>
+    </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='hamburger.js') }}"></script>
     <!-- jsファイルで定義した関数を用いている -->
     <!-- 音声再生用 -->
-    <audio id="correct-sound" src="{{ url_for('static', filename='sounds/correct.mp3') }}"></audio>
-    <audio id="wrong-sound" src="{{ url_for('static', filename='sounds/wrong.mp3') }}"></audio>
-    <audio id="trans-sound" src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"></audio>
-
-
+    <audio
+      id="correct-sound"
+      src="{{ url_for('static', filename='sounds/correct.mp3') }}"
+    ></audio>
+    <audio
+      id="wrong-sound"
+      src="{{ url_for('static', filename='sounds/wrong.mp3') }}"
+    ></audio>
+    <audio
+      id="trans-sound"
+      src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"
+    ></audio>
   </body>
 </html>

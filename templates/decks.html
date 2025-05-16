@@ -12,43 +12,106 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='deck.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='hamburger.css') }}"
+    />
   </head>
   <body>
-    <nav class="navbar">
-      <div class="nav_container">
-        <a class="play-sound00 nav_button" href="/logout">ログアウト</a>
-        <a class="play-sound00 nav_button" href="/deck_add">デッキ追加</a>
+    <div class="hamburger-menu">
+      <button class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="hamburger-content">
+        <a class="play-sound00" href="/decks">デッキ一覧</a>
+        <a class="play-sound00" href="/study_logs">学習ログ</a>
+        <a class="play-sound00" href="/logout">ログアウト</a>
       </div>
-    </nav>
+    </div>
 
     <h1 class="start-title">デッキ一覧</h1>
+
     <div class="deck-list">
       {% for deck in decks %}
       <div class="deck-item">
-        <a href="{{ url_for('deck_test', deck_id=deck.id) }}" class="deck-link button">
-          {{ deck.name }} (単語数: {{ deck.words|length }})
+        <a href="{{ url_for('deck_test', deck_id=deck.id) }}" class="deck-link">
+          <div class="deck-info">
+            <div class="deck-header">
+              <h2>{{ deck.name }}</h2>
+              <span class="deck-category"
+                >{{ deck.category if deck.category else '一般' }}</span
+              >
+            </div>
+            <p class="deck-description">
+              {{ deck.description if deck.description else '説明はありません' }}
+            </p>
+            <div class="deck-stats">
+              <div class="stat-item">
+                <i class="fas fa-book"></i>
+                <span>単語数: {{ deck.words|length }}</span>
+              </div>
+              <div class="stat-item">
+                <i class="fas fa-calendar"></i>
+                <span>作成日: {{ deck.created_at.strftime('%Y/%m/%d') }}</span>
+              </div>
+              {% if deck.last_studied %}
+              <div class="stat-item">
+                <i class="fas fa-clock"></i>
+                <span
+                  >最終学習: {{ deck.last_studied.strftime('%Y/%m/%d') }}</span
+                >
+              </div>
+              {% endif %}
+            </div>
+            <div class="deck-progress">
+              <div class="progress-bar">
+                <div
+                  class="progress"
+                  data-progress="{{ ((deck.correct_count or 0) / deck.words|length * 100) if deck.words|length > 0 else 0 }}"
+                ></div>
+              </div>
+              <span class="progress-text"
+                >正答率: {{ "%.1f"|format((deck.correct_count or 0) /
+                deck.words|length * 100) if deck.words|length > 0 else 0
+                }}%</span
+              >
+            </div>
+          </div>
         </a>
         <div class="deck-actions">
           <a
             href="{{ url_for('deck_detail', deck_id=deck.id) }}"
-            class="edit-btn"
+            class="btn edit-btn"
             >編集</a
           >
           <a
-            href="{{ url_for('delete_deck', deck_id=deck.id) }}"
-            class="delete-btn"
-            onclick="return confirm('このデッキを削除してもよろしいですか？')"
+            href="#"
+            class="btn delete-btn"
+            onclick="deleteDeck('{{ deck.id }}'); return false;"
             >削除</a
           >
         </div>
+        <form
+          id="delete-form-{{ deck.id }}"
+          action="{{ url_for('delete_deck', deck_id=deck.id) }}"
+          method="POST"
+          style="display: none"
+        ></form>
       </div>
       {% endfor %}
     </div>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
-    <audio
-      id="trans-sound"
-      src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"
-    ></audio>
+    <script src="{{ url_for('static', filename='hamburger.js') }}"></script>
+    <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
+    <script>
+      function deleteDeck(deckId) {
+        if (confirm("このデッキを削除してもよろしいですか？")) {
+          document.getElementById("delete-form-" + deckId).submit();
+        }
+      }
+    </script>
   </body>
 </html>
