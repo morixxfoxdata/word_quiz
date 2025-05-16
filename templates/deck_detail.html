@@ -8,32 +8,52 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='deck_detail.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='hamburger.css') }}"
+    />
   </head>
   <body>
-    <nav class="navbar">
-      <div class="nav_container">
-
-        <a
-          class="play-sound00 nav_button"
-          id="reset-btn"
-          href="{{url_for('decks')}}"
-          >デッキ一覧へ</a
-        >
-        <a class="play-sound00 nav_button" href="/logout">ログアウト</a>
+    <div class="hamburger-menu">
+      <button class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="hamburger-content">
+        <a class="play-sound00" href="/decks">デッキ一覧</a>
+        <a class="play-sound00" href="/study_logs">学習ログ</a>
+        <a class="play-sound00" href="/logout">ログアウト</a>
       </div>
-    </nav>
+    </div>
+
     <h1>{{ deck.name }}</h1>
     <p>{{ deck.description }}</p>
     <div class="container">
+      <div class="deck-actions">
+        <a href="{{ url_for('deck_test', deck_id=deck.id) }}" class="button"
+          >このデッキでテストを開始</a
+        >
+      </div>
+
+      <div class="search-box">
+        <input
+          type="text"
+          id="wordSearch"
+          placeholder="単語または意味で検索..."
+          class="search-input"
+        />
+      </div>
 
       <form
         method="post"
         action="{{ url_for('add_word_to_deck', deck_id=deck.id) }}"
         class="add-word-form"
       >
-        <a href="{{ url_for('deck_test', deck_id=deck.id) }}" class="button"
-          >このデッキでテストを開始</a
-        >
         <div class="form-group">
           <label>単語: <input type="text" name="entry" required /></label>
           <label>意味: <input type="text" name="meaning" required /></label>
@@ -43,21 +63,75 @@
 
       <div class="word-list">
         {% for word in words %}
-        <div class="word-item">
+        <div
+          class="word-item"
+          id="word-{{ word.id }}"
+          data-english="{{ word.entry|lower }}"
+          data-japanese="{{ word.meaning|lower }}"
+        >
           <div class="english">{{ word.entry }}</div>
           <div class="japanese">{{ word.meaning }}</div>
-          <form
-            method="post"
-            action="{{ url_for('delete_word', word_id=word.id) }}"
-            style="display: inline"
+          <button
+            data-deck-id="{{ deck.id }}"
+            data-word-id="{{ word.id }}"
+            class="play-sound00 delete-btn"
+            onclick="deleteWord(this.dataset.deckId, this.dataset.wordId)"
           >
-            <button type="submit" class="play-sound00 wrong-btn">削除</button>
-          </form>
+            削除
+          </button>
         </div>
         {% endfor %}
       </div>
     </div>
-    <audio id="trans-sound" src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"></audio>
+    <audio
+      id="trans-sound"
+      src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"
+    ></audio>
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='hamburger.js') }}"></script>
+    <script>
+      function deleteWord(deckId, wordId) {
+        fetch(`/deck/${deckId}/word/${wordId}/delete`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.status === "success") {
+              // 成功した場合、該当の単語要素を削除
+              const wordElement = document.getElementById(`word-${wordId}`);
+              if (wordElement) {
+                wordElement.remove();
+              }
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+          });
+      }
+
+      // 検索機能の実装
+      document.addEventListener("DOMContentLoaded", function () {
+        const searchInput = document.getElementById("wordSearch");
+        const wordItems = document.querySelectorAll(".word-item");
+
+        searchInput.addEventListener("input", function () {
+          const searchTerm = this.value.toLowerCase();
+
+          wordItems.forEach((item) => {
+            const english = item.dataset.english;
+            const japanese = item.dataset.japanese;
+
+            if (english.includes(searchTerm) || japanese.includes(searchTerm)) {
+              item.style.display = "flex";
+            } else {
+              item.style.display = "none";
+            }
+          });
+        });
+      });
+    </script>
   </body>
 </html>

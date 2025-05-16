@@ -1,83 +1,231 @@
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-  <meta charset="UTF-8" />
-  <title>英語例文生成結果</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-  <style>
-    :root {
-      --text_main: #e6f0ff;
-      --btn_back: #000;
-      --btn_border: #ffff;
-    }
-  
-    body {
-      font-family: "Helvetica Neue", sans-serif;
-      padding: 2em;
-      background-color: #f9f9f9;
-    }
-  
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
-      background: white;
-      padding: 2em;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-  
-    h1 {
-      text-align: center;
-      color: white;
-    }
-  
-    .section {
-      margin-top: 1.5em;
-    }
-  
-    .label {
-      font-weight: bold;
-      color: var(--text_main);
-      margin-bottom: 0.5em;
-      display: block;
-    }
-  
-    .word-list,
-    .sentence-box {
-      background: var(--btn_back);
-      color: var(--text_main);
-      padding: 1em;
-      border-radius: 10px;
-      font-size: 2rem;
-      font-weight: bold;
-      border: 2px solid #00ffff;
-      box-shadow: 0 0 20px #00ffff80;
-    }
-  
-    .sentence-box {
-      background: #000000;
-    }
-  </style>
-</head>
-<body>
-<!-- <div class="container"> --> 
-    <h1 style="color: white;">例文が生成されました</h1>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>英語例文生成結果</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='hamburger.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --text_main: #e6f0ff;
+        --btn_back: #000;
+        --btn_border: #ffff;
+      }
 
-    <div class="section">
-      <span class="label">あなたが間違えた英単語：</span>
-      <div class="word-list">{{ word_list | join(', ') }}</div>
+      body {
+        font-family: "Helvetica Neue", sans-serif;
+        padding: 1em;
+        background: linear-gradient(-45deg, #000000, #0a1a2f, #1c2b3a, #000000);
+        background-size: 400% 400%;
+        animation: gradientFlow 15s ease infinite;
+        color: #e0e0e0;
+      }
+
+      .content-container {
+        display: flex;
+        flex-direction: column;
+        height: calc(100vh - 200px);
+        max-width: 700px;
+        margin: 0 auto;
+      }
+
+      .scrollable-content {
+        flex-grow: 1;
+        overflow-y: auto;
+        padding-right: 5px;
+      }
+
+      h1 {
+        text-align: center;
+        color: white;
+        font-size: 2.5rem;
+        margin-top: 70px;
+      }
+
+      .section {
+        margin-top: 1.5em;
+        width: 90%;
+        max-width: 700px;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
+      .label {
+        font-weight: bold;
+        color: var(--text_main);
+        margin-bottom: 0.5em;
+        display: block;
+        font-size: 1.2rem;
+      }
+
+      .word-list,
+      .sentence-box {
+        background: var(--btn_back);
+        color: var(--text_main);
+        padding: 1em;
+        border-radius: 10px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        border: 2px solid #00ffff;
+        box-shadow: 0 0 20px #00ffff80;
+        word-break: break-word;
+        margin-bottom: 1.5em;
+      }
+
+      .button-container {
+        display: flex;
+        justify-content: center;
+        gap: 40px;
+        margin-top: 2em;
+        flex-wrap: wrap;
+        position: sticky;
+        bottom: 20px;
+      }
+
+      .button-container .button,
+      .button-container .reset-btn {
+        padding: 15px 40px;
+        font-size: 1.2rem;
+        border: 1px solid #fff;
+        border-radius: 10px;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      .button-container .button {
+        background-color: #1a2636;
+        color: #cfd8dc;
+        box-shadow: 0 0 5px #1a263644;
+      }
+
+      .button-container .reset-btn {
+        background-color: #223344;
+        color: #dfe6e9;
+        box-shadow: 0 0 5px #22334455;
+      }
+
+      .button-container .button:hover,
+      .button-container .reset-btn:hover {
+        opacity: 0.9;
+        background-color: #717175;
+      }
+
+      /* メディアクエリ - モバイル対応 */
+      @media (max-width: 768px) {
+        h1 {
+          font-size: 2rem;
+          margin-top: 60px;
+        }
+
+        .section {
+          width: 95%;
+        }
+
+        .label {
+          font-size: 1rem;
+        }
+
+        .word-list,
+        .sentence-box {
+          font-size: 1.2rem;
+          padding: 0.8em;
+        }
+        
+        .content-container {
+          height: calc(100vh - 180px);
+        }
+      }
+
+      @media (max-width: 480px) {
+        h1 {
+          font-size: 1.7rem;
+          margin-top: 50px;
+        }
+
+        .section {
+          margin-top: 1em;
+          width: 100%;
+        }
+
+        .label {
+          font-size: 0.9rem;
+        }
+
+        .word-list,
+        .sentence-box {
+          font-size: 1rem;
+          padding: 0.7em;
+        }
+
+        .button-container {
+          gap: 20px;
+        }
+
+        .button-container .button,
+        .button-container .reset-btn {
+          padding: 12px 20px;
+          font-size: 1rem;
+        }
+        
+        .content-container {
+          height: calc(100vh - 150px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ハンバーガーメニューを追加 -->
+    <div class="hamburger-menu">
+      <button class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="hamburger-content">
+        <a class="play-sound00" href="/decks"
+          ><i class="fas fa-layer-group"></i> デッキ一覧</a
+        >
+        <a class="play-sound00" href="/study_logs"
+          ><i class="fas fa-history"></i> 学習ログ</a
+        >
+        <a class="play-sound00" href="/logout"
+          ><i class="fas fa-sign-out-alt"></i> ログアウト</a
+        >
+      </div>
     </div>
 
-    <div class="section">
-      <span class="label">例文（英語）：</span>
-      <div class="sentence-box">{{ sentence }}</div>
-    </div>
+    <h1>例文が生成されました</h1>
 
-    <div class="section">
-      <span class="label">例文（日本語訳）：</span>
-      <div class="sentence-box">{{ translation }}</div>
-    </div>
-    <div class="buttons">
+    <div class="content-container">
+      <div class="scrollable-content">
+        <div class="section">
+          <span class="label">あなたが間違えた英単語：</span>
+          <div class="word-list">{{ word_list | join(', ') }}</div>
+        </div>
+
+        <div class="section">
+          <span class="label">例文（英語）：</span>
+          <div class="sentence-box">{{ sentence }}</div>
+        </div>
+
+        <div class="section">
+          <span class="label">例文（日本語訳）：</span>
+          <div class="sentence-box">{{ translation }}</div>
+        </div>
+      </div>
+      
+      <div class="buttons">
       <form action="{{ url_for('save_sentence') }}" method="POST">
         <input type="hidden" name="sentence" value="{{ sentence }}">
         <input type="hidden" name="translation" value="{{ translation }}">
@@ -85,8 +233,31 @@
       </form>
 
       <button id="reset-btn" class="play-sound00 reset-btn">トップへ</button>
+      </div>
     </div>
-  <audio id="trans-sound" src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"></audio>
-  <script src="{{ url_for('static', filename='script.js') }}"></script>
-</body>
+    
+    <audio
+      id="trans-sound"
+      src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"
+    ></audio>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='hamburger.js') }}"></script>
+    <script>
+      // トップへボタンのカスタム処理
+      document
+        .getElementById("reset-btn")
+        .addEventListener("click", function (e) {
+          e.preventDefault();
+          const sound = document.getElementById("trans-sound");
+          if (sound) {
+            sound.currentTime = 0;
+            sound.play();
+          }
+
+          setTimeout(function () {
+            window.location.href = "/decks";
+          }, 300);
+        });
+    </script>
+  </body>
 </html>

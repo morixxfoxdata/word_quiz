@@ -1,12 +1,16 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>間違えた単語リスト</title>
+    <title>デッキ追加</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='deck.css') }}"
     />
     <link
       rel="stylesheet"
@@ -27,27 +31,23 @@
       </div>
     </div>
 
-    <div class="container">
-      <h1>間違えた単語リスト</h1>
-
-      <div class="wrong-words-list">
-        {% if wrong_words %} {% for word, translation in wrong_words.items() %}
-        <div class="word-item">
-          <div class="english">{{ word }}</div>
-          <div class="japanese">{{ translation }}</div>
-        </div>
-        {% endfor %} {% else %}
-        <p>間違えた単語はありません。</p>
-        {% endif %}
+    <h1 class="start-title">デッキ作成</h1>
+    <!-- デッキ作成フォーム -->
+    <form action="{{ url_for('create_deck') }}" method="POST">
+      <div>
+        <label for="name">デッキ名:</label>
+        <input type="text" id="name" name="name" required />
       </div>
-
-      <div class="buttons">
-        <a href="{{ url_for('decks') }}" class="play-sound00 reset-btn"
-          >トップへ</a
-        >
-        <a href="/generate_sentence" class="button">例文生成</a>
+      <div>
+        <label for="category">カテゴリ:</label>
+        <input type="text" id="category" name="category" placeholder="例: TOEIC, ビジネス英語, 旅行" />
       </div>
-    </div>
+      <div>
+        <label for="description">説明:</label>
+        <textarea id="description" name="description"></textarea>
+      </div>
+      <button type="submit">デッキを作成</button>
+    </form>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>
     <script src="{{ url_for('static', filename='hamburger.js') }}"></script>
