@@ -366,15 +366,22 @@ def index():
     if not user_words:
         
         return redirect(url_for("my_words"))
+    
+    if "current_question_number" not in session:
+        session["current_question_number"] = 1 
 
+    if "current_test_correct_words" not in session:
+        session["current_test_correct_words"] = []
     if "current_test_wrong_words" not in session:
         session["current_test_wrong_words"] = []
     print(session["current_test_wrong_words"])
     return render_template(
         "index.html",
         word=word_entry,
-        choices=choices,  # ← 追加
+        choices=choices,
+        question_number = session["current_question_number"],
         wrong_words_count=len(session["current_test_wrong_words"]),
+        correct_words_count=len(session["current_test_correct_words"])
     )
 
 
@@ -386,18 +393,18 @@ def mark_word():
     word_entry = data["word"]
     selected_ok = data["isCorrect"]
     deck_id = session["current_deck_id"]
-
-    if not selected_ok:
-        #     word_entry = data.get("word")
-        #     is_correct = data.get("isCorrect")
-
-        #     if not is_correct:
-        # 現在のテストセッションの間違えた単語をセッションに追加
+    
+    current_qn = session["current_question_number"]
+    if selected_ok:
+        current_test_correct_words = session.get("current_test_correct_words", [])
+        if word_entry not in current_test_correct_words:
+            current_test_correct_words.append(word_entry)
+            session["current_test_correct_words"] = current_test_correct_words
+    else:
         current_test_wrong_words = session.get("current_test_wrong_words", [])
         if word_entry not in current_test_wrong_words:
             current_test_wrong_words.append(word_entry)
             session["current_test_wrong_words"] = current_test_wrong_words
-
             # データベースにも記録
             word = Word.query.filter_by(entry=word_entry).first()
             if word:
@@ -419,14 +426,17 @@ def mark_word():
     is_test_complete = False
     if len(all_words) < 10 and len(used_words) >= len(all_words):
         is_test_complete = True
+    if session["current_question_number"] >= 20:
+        is_test_complete = True
     # ユーザーの単語から次の単語をランダムに選択
     next_entry, choices = choose_question_and_choices(deck_id)
     wrong_cnt = len(session["current_test_wrong_words"])
-
+    session["current_question_number"] += 1
     return jsonify(
         nextWord=next_entry,
         translationList=[c[0] for c in choices],  # 日本語4件
         correctnessList=[c[1] for c in choices],  # True/False4件
+        questionNumber=session["current_question_number"],
         wrongWordsCount=wrong_cnt,
         showWrongWords=wrong_cnt >= 10,
         isTestComplete=is_test_complete,
@@ -454,6 +464,9 @@ def wrong_words():
 def reset_wrong_words():
     # セッションのクリア
     session["current_test_wrong_words"] = []
+    session["current_test_correct_words"] = []
+    session["current_question_number"] = 1
+
     return jsonify({"status": "success"})
 
 

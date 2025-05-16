@@ -1,8 +1,8 @@
-"""pulled
+"""init
 
-Revision ID: 45438fdd6efa
+Revision ID: 9b6d26025190
 Revises: 
-Create Date: 2025-05-16 12:18:54.792720
+Create Date: 2025-05-16 15:24:02.521731
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '45438fdd6efa'
+revision = '9b6d26025190'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -36,6 +36,15 @@ def upgrade():
     sa.Column('last_studied', sa.DateTime(), nullable=True),
     sa.Column('correct_count', sa.Integer(), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('saved_sentence',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('sentence', sa.Text(), nullable=False),
+    sa.Column('translation', sa.Text(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), nullable=True),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -78,6 +87,7 @@ def downgrade():
     op.drop_table('wrong_word')
     op.drop_table('word')
     op.drop_table('study_log')
+    op.drop_table('saved_sentence')
     op.drop_table('deck')
     op.drop_table('user')
     # ### end Alembic commands ###
