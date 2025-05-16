@@ -123,7 +123,23 @@ class StudyLog(db.Model):
 
 
 def generate_sentence_from_words(words):
-    prompt = f"以下の単語をすべて含む、文章として自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。: {', '.join(words)}."
+    prompt = f"""
+        以下の条件に従って英文と日本語訳を生成してください。
+
+        # 条件
+        - 英文には、以下のすべての英単語を必ず含めてください。
+        - 英文は意味の通る自然な100words程度の文章にしてください。
+        - 単語のレベルは中学〜高校レベルを想定し、難しすぎる語彙や構文は避けてください。
+        - 日本語訳も自然な翻訳となるようにしてください。
+        - 出力は以下の形式で、装飾や説明を一切加えずに2行で出力してください。
+
+        # 出力フォーマット
+        [英文]
+        [日本語訳]
+
+        # 単語リスト
+        {', '.join(words)}
+        """
     try:
         # response = gemini_pro.generate_content(prompt)
         response = client.models.generate_content(
