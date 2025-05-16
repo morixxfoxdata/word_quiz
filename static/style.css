@@ -432,13 +432,13 @@ h1 {
 
 .choice-container {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   margin: 20px auto;
   max-width: 500px;
   justify-content: center;
   box-sizing: border-box;
-  max-width: 100%;
+  width: 100%;
 }
 
 .choice-btn {
@@ -455,7 +455,13 @@ h1 {
   justify-content: center;
   align-items: center;
   word-break: break-word;
+  min-width: 0;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
+  white-space: normal;
+  text-align: center;
 }
+
 .choice-btn:hover {
   background-color: #717175;
 }
@@ -500,12 +506,18 @@ h1 {
     grid-template-columns: 1fr;
     gap: 12px;
     padding: 0 15px;
+    width: 100%;
   }
 
   .choice-btn {
     width: 100%;
+    min-width: 0;
     height: 100px;
     font-size: 1.4rem;
+    overflow-wrap: break-word;
+    text-overflow: ellipsis;
+    white-space: normal;
+    text-align: center;
   }
 
   .buttons {
@@ -555,7 +567,7 @@ h1 {
 
   .choice-container {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
     padding: 0 10px;
     width: 100%;
@@ -573,6 +585,10 @@ h1 {
     justify-content: center;
     align-items: center;
     word-break: break-word;
+    overflow-wrap: break-word;
+    text-overflow: ellipsis;
+    white-space: normal;
+    text-align: center;
   }
 
   .buttons {
@@ -623,12 +639,17 @@ h1 {
   }
 
   .choice-container {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     max-width: 800px;
   }
 
   .choice-btn {
     width: 100%;
+    min-width: 0;
     height: 100px;
+    overflow-wrap: break-word;
+    text-overflow: ellipsis;
+    white-space: normal;
+    text-align: center;
   }
 }
