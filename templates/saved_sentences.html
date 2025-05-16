@@ -28,11 +28,27 @@
                 {% endfor %}
             </ul>
         </div>
-
-        <div class="buttons" style="margin-top: 2rem;">
-                <button id="reset-btn" class="play-sound00 reset-btn">トップへ</button>
-
+        <!-- style="margin-top: 2rem;" -->
+        <div class="buttons">
+            <button id="reset-btn" class="play-sound00 reset-btn">トップへ</button>
         </div>
         <script src="{{ url_for('static', filename='script.js') }}"></script>
+        <script>
+            // トップへボタンのカスタム処理
+            document
+              .getElementById("reset-btn")
+              .addEventListener("click", function (e) {
+                e.preventDefault();
+                const sound = document.getElementById("trans-sound");
+                if (sound) {
+                  sound.currentTime = 0;
+                  sound.play();
+                }
+      
+                setTimeout(function () {
+                  window.location.href = "/decks";
+                }, 300);
+              });
+          </script>
     </body>
 </html>
