@@ -137,18 +137,22 @@ h1 {
   display: inline-block; /* 表示 */
 }
 
+
 .buttons {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 40px;
-  margin-bottom: 40px;
+  margin: 40px 0; 
 }
+
 
 .correct-btn,
 .wrong-btn,
 .reset-btn,
 .button {
-  padding: 20px 90px;
+  width: 280px; 
+  padding: 20px 0;
   border: none;
   border-radius: 1px;
   font-size: 3rem;
@@ -190,6 +194,7 @@ background-color: #717175;
   box-shadow: 0 0 5px #1a263644;
   text-decoration: none;
   display: inline-block;
+  
 }
 .button:hover {
 background-color: #717175;
@@ -269,6 +274,7 @@ background-color: #717175;
 /* ナビバー全体 */
 .navbar {
   position: fixed;
+  display: flex;                    /*ログアウトと文章リストを横並びにするため追加*/
   top: 0;
   left: 0;
   width: 100%;
@@ -395,4 +401,9 @@ background-color: #717175;
   background: #723636;
 }
 
-
+.no-sentence {
+  font-size: 2.0rem;
+  color: #ccc;
+  text-align: center;
+  margin-top: 1rem;
+}

@@ -113,6 +113,8 @@ function updateQuestion(data){
   attachChoiceHandlers();
 }
 
+
+
 document.addEventListener("DOMContentLoaded",()=>{
   // ① ← ここで取得してグローバル変数にする
   window.wrongCount = document.getElementById("wrong-count");
