@@ -5,3 +5,4 @@ flask-sqlalchemy
 python-dotenv
 psycopg2-binary
 flask-migrate
+google-generativeai
