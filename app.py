@@ -141,25 +141,26 @@ class SavedSentence(db.Model):
 
 def generate_sentence_from_words(words):
 # <<<<<<< merge_0520
-    prompt = f"""
-        以下の条件に従って英文と日本語訳を生成してください。
+    prompt = f"""あなたは英語と日本語のバイリンガル文章生成AIです。
 
-        # 条件
-        - 英文には、以下のすべての英単語を必ず含めてください。
-        - 英文は意味の通る自然な100words程度の文章にしてください。
-        - 単語のレベルは中学〜高校レベルを想定し、難しすぎる語彙や構文は避けてください。
-        - 日本語訳も自然な翻訳となるようにしてください。
-        - 出力は以下の形式で、装飾や説明を一切加えずに2行で出力してください。
+    以下の指示に従ってください：
 
-        # 出力フォーマット
-        [英文]
-        [日本語訳]
+    1. 指定されたすべての英単語を英語文中に必ず含めてください。
+    2. 指定されたすべての単語は英文と日本語訳の両方で<>で囲んでください。
+    3. 英文は意味が通る自然な内容で、約100語程度にしてください。
+    4. 語彙と構文は中学〜高校レベルを想定し、難解な単語や構文は避けてください。
+    5. 日本語訳は自然な翻訳にしてください。
+    6. 出力形式は次の通りで、余計な情報は一切含めないでください：
 
-        # 単語リスト
-        {', '.join(words)}
-        """
+    英語文
+    日本語訳
 
-#     prompt = f"以下の単語をすべて含む、自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。また、その単語は英文でも訳文でも<>で囲んでください: {', '.join(words)}."
+    # 単語リスト
+    {', '.join(words)}
+    """
+
+
+    # prompt = f"以下の単語をすべて含む、自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。また、その単語は英文でも訳文でも<>で囲んでください。単語のレベルは中学〜高校レベルを想定し、難しすぎる語彙や構文は避けてください。{', '.join(words)}."
 
     try:
         response = client.models.generate_content(model="gemini-1.5-flash", contents=prompt)#gemini-1.5-flash
@@ -576,9 +577,9 @@ def delete_word_from_deck(deck_id, word_id):
 def generate_sentence():
     wrong_words = session.get("current_test_wrong_words", [])  # 正しいキーを使用
     word_list = wrong_words
-    #sentence, translation = generate_sentence_from_words(word_list)
-    sentence = "This  <sentence> is for <developing>"
-    translation = "この<文章>は<開発用>です"
+    sentence, translation = generate_sentence_from_words(word_list)
+    # sentence = "This  <sentence> is for <developing>"
+    # translation = "この<文章>は<開発用>です"
     
     sentence = highlight_and_strip(sentence)
     translation = highlight_and_strip(translation)

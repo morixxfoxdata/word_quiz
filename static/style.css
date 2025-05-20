@@ -24,7 +24,7 @@ body {
   background: linear-gradient(-45deg, #000000, #0a1a2f, #1c2b3a, #000000);
   background-size: 400% 400%;
   animation: gradientFlow 15s ease infinite;
-  color: #e0e0e0;
+  /* color: #e0e0e0; */
   font-family: "Arial", sans-serif;
   display: flex;
   flex-direction: column;
@@ -152,6 +152,10 @@ h1 {
   display: inline-block; /* 表示 */
 }
 
+.highlight {
+  color: #00ffff;  /* ← 例文の該当単語の色変えれます */
+  font-weight: bold;
+}
 
 .buttons {
   display: flex;
@@ -690,12 +694,4 @@ h1 {
   box-shadow: 0 0 20px #00ffff80;
 }
 
-.sentence-box {
-  background: #000000;
 }
-
-.highlight {
-  color: #00ffff;  /* ← 例文の該当単語の色変えれます */
-  font-weight: bold;
-}
-/* >>>>>>> Ito */
