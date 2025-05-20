@@ -1,0 +1,375 @@
+/* デッキ詳細ページのスタイル */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  background: linear-gradient(-45deg, #000000, #0a1a2f, #1c2b3a, #000000);
+  background-size: 400% 400%;
+  animation: gradientFlow 15s ease infinite;
+  color: #e0e0e0;
+  font-family: "Arial", sans-serif;
+  padding: 20px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+@keyframes gradientFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+h1 {
+  color: #e6f0ff;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 2em;
+}
+
+p {
+  color: #e6f0ff;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.container {
+  max-width: 800px;
+  width: 90%;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #1c1f26;
+  border-radius: 10px;
+  border: 1px solid #2c3e50;
+  box-shadow: 0 0 6px #0d111730;
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 40px); /* パディングを考慮 */
+  box-sizing: border-box;
+  overflow: hidden; /* コンテナ内でのスクロールを制御 */
+}
+
+.deck-actions {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.deck-actions .button {
+  padding: 15px 30px;
+  font-size: 1.2rem;
+  background-color: #000;
+  color: #e6f0ff;
+  border: 1px solid #ffffff;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.deck-actions .button:hover {
+  background-color: #717175;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.search-box {
+  margin-bottom: 15px;
+  padding: 0 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.search-input {
+  width: 100%;
+  padding: 8px 15px;
+  font-size: 0.9rem;
+  background-color: #2c3e50;
+  border: 1px solid #00ffff;
+  border-radius: 8px;
+  color: #e6f0ff;
+  transition: all 0.3s ease;
+  box-sizing: border-box;
+}
+
+.search-input:focus {
+  outline: none;
+  border-color: #00ffff;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+}
+
+.search-input::placeholder {
+  color: #717175;
+}
+
+.add-word-form {
+  margin-bottom: 15px;
+  padding: 10px;
+  background-color: #1c1f26;
+  border-radius: 8px;
+  border: 1px solid #2c3e50;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #e6f0ff;
+  flex: 1;
+  min-width: 150px;
+  font-size: 0.9rem;
+}
+
+.form-group input {
+  padding: 6px 10px;
+  background-color: #2c3e50;
+  border: 1px solid #00ffff;
+  border-radius: 4px;
+  color: #e6f0ff;
+  font-size: 0.9rem;
+  flex: 1;
+  min-width: 120px;
+}
+
+.button {
+  background-color: #000;
+  color: #e6f0ff;
+  padding: 10px 20px;
+  border: 1px solid #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: #717175;
+}
+
+.word-list {
+  display: grid;
+  gap: 15px;
+  margin-top: 20px;
+  flex: 1; /* 残りのスペースを埋める */
+  overflow-y: auto;
+  padding-right: 10px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.word-item {
+  display: flex;
+  align-items: center;
+  padding: 15px;
+  background-color: #1c1f26;
+  border: 1px solid #2c3e50;
+  border-radius: 6px;
+  transition: transform 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.word-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.english {
+  flex: 1;
+  font-weight: bold;
+  color: #00ffff;
+  font-size: 16px;
+}
+
+.japanese {
+  flex: 1;
+  color: #e6f0ff;
+  font-size: 16px;
+}
+
+.delete-btn {
+  background-color: #000;
+  color: #e6f0ff;
+  padding: 6px 12px;
+  border: 1px solid #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
+.delete-btn:hover {
+  background-color: #717175;
+}
+
+/* スクロールバーのスタイリング */
+.word-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.word-list::-webkit-scrollbar-track {
+  background: #1c1f26;
+  border-radius: 4px;
+}
+
+.word-list::-webkit-scrollbar-thumb {
+  background: #2c3e50;
+  border-radius: 4px;
+}
+
+.word-list::-webkit-scrollbar-thumb:hover {
+  background: #3c4e60;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 10px;
+    height: calc(100vh - 20px);
+  }
+
+  .deck-actions {
+    margin-bottom: 15px;
+  }
+
+  .deck-actions .button {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+
+  .search-box {
+    margin-bottom: 10px;
+    padding: 0 5px;
+  }
+
+  .add-word-form {
+    margin-bottom: 10px;
+    padding: 8px;
+  }
+
+  .form-group {
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .form-group label {
+    min-width: 120px;
+    font-size: 0.85rem;
+  }
+
+  .form-group input {
+    min-width: 100px;
+    font-size: 0.85rem;
+  }
+
+  .word-item {
+    padding: 10px;
+  }
+
+  .english,
+  .japanese {
+    font-size: 0.9rem;
+  }
+
+  .delete-btn {
+    padding: 4px 8px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding: 5px;
+  }
+
+  .container {
+    width: 100%;
+    padding: 8px;
+    height: calc(100vh - 10px);
+  }
+
+  h1 {
+    font-size: 1.3em;
+    margin: 10px 0;
+  }
+
+  p {
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+  }
+
+  .deck-actions {
+    margin-bottom: 10px;
+  }
+
+  .deck-actions .button {
+    padding: 8px 15px;
+    font-size: 0.9rem;
+  }
+
+  .search-box {
+    margin-bottom: 8px;
+  }
+
+  .search-input {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+
+  .add-word-form {
+    margin-bottom: 8px;
+    padding: 6px;
+  }
+
+  .form-group {
+    gap: 6px;
+    margin-top: 6px;
+  }
+
+  .form-group label {
+    min-width: 100px;
+    font-size: 0.8rem;
+  }
+
+  .form-group input {
+    min-width: 80px;
+    font-size: 0.8rem;
+  }
+
+  .word-item {
+    padding: 8px;
+  }
+
+  .english,
+  .japanese {
+    font-size: 0.85rem;
+  }
+
+  .delete-btn {
+    padding: 3px 6px;
+    font-size: 0.8rem;
+  }
+}
