@@ -484,7 +484,18 @@ h1 {
   background: #723636;
 }
 
+.section {
+  margin-top: 1.5em;
+}
 
+.label {
+  font-weight: bold;
+  color: var(--text_main);
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+/* <<<<<<< merge_0520 */
 .no-sentence {
   font-size: 2.0rem;
   color: #ccc;
@@ -666,3 +677,25 @@ h1 {
     text-align: center;
   }
 }
+/* ======= */
+.word-list,
+.sentence-box {
+  background: var(--btn_back);
+  color: var(--text_main);
+  padding: 1em;
+  border-radius: 10px;
+  font-size: 2rem;
+  font-weight: bold;
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 20px #00ffff80;
+}
+
+.sentence-box {
+  background: #000000;
+}
+
+.highlight {
+  color: #00ffff;  /* ← 例文の該当単語の色変えれます */
+  font-weight: bold;
+}
+/* >>>>>>> Ito */

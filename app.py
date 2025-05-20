@@ -2,6 +2,7 @@ import csv
 import os
 import random
 from datetime import datetime
+import re
 
 from dotenv import load_dotenv
 from flask import (
@@ -139,6 +140,7 @@ class SavedSentence(db.Model):
 
 
 def generate_sentence_from_words(words):
+# <<<<<<< merge_0520
     prompt = f"""
         以下の条件に従って英文と日本語訳を生成してください。
 
@@ -156,6 +158,9 @@ def generate_sentence_from_words(words):
         # 単語リスト
         {', '.join(words)}
         """
+
+#     prompt = f"以下の単語をすべて含む、自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。また、その単語は英文でも訳文でも<>で囲んでください: {', '.join(words)}."
+
     try:
         response = client.models.generate_content(model="gemini-1.5-flash", contents=prompt)#gemini-1.5-flash
 
@@ -171,6 +176,9 @@ def generate_sentence_from_words(words):
     except Exception as e:
         print("❌ Geminiエラー:", e)
         return "❗ Gemini APIの呼び出しに失敗しました。", ""
+
+def highlight_and_strip(text):
+    return re.sub(r"<(.*?)>", r'<span class="highlight">\1</span>', text)
 
 
 def choose_question_and_choices(deck_id, k=4):
@@ -568,7 +576,12 @@ def delete_word_from_deck(deck_id, word_id):
 def generate_sentence():
     wrong_words = session.get("current_test_wrong_words", [])  # 正しいキーを使用
     word_list = wrong_words
-    sentence, translation = generate_sentence_from_words(word_list)
+    #sentence, translation = generate_sentence_from_words(word_list)
+    sentence = "This  <sentence> is for <developing>"
+    translation = "この<文章>は<開発用>です"
+    
+    sentence = highlight_and_strip(sentence)
+    translation = highlight_and_strip(translation)
     return render_template(
         "API.html", word_list=word_list, sentence=sentence, translation=translation
     )
