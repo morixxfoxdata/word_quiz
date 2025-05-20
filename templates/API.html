@@ -4,83 +4,30 @@
   <meta charset="UTF-8" />
   <title>英語例文生成結果</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-  <style>
-    :root {
-      --text_main: #e6f0ff;
-      --btn_back: #000;
-      --btn_border: #ffff;
-    }
-  
-    body {
-      font-family: "Helvetica Neue", sans-serif;
-      padding: 2em;
-      background-color: #f9f9f9;
-    }
-  
-    .container {
-      max-width: 700px;
-      margin: 0 auto;
-      background: white;
-      padding: 2em;
-      border-radius: 12px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    }
-  
-    h1 {
-      text-align: center;
-      color: white;
-    }
-  
-    .section {
-      margin-top: 1.5em;
-    }
-  
-    .label {
-      font-weight: bold;
-      color: var(--text_main);
-      margin-bottom: 0.5em;
-      display: block;
-    }
-  
-    .word-list,
-    .sentence-box {
-      background: var(--btn_back);
-      color: var(--text_main);
-      padding: 1em;
-      border-radius: 10px;
-      font-size: 2rem;
-      font-weight: bold;
-      border: 2px solid #00ffff;
-      box-shadow: 0 0 20px #00ffff80;
-    }
-  
-    .sentence-box {
-      background: #000000;
-    }
-  </style>
 </head>
 <body>
-<!-- <div class="container"> --> 
-    <h1 style="color: white;">例文が生成されました</h1>
+  <h1>例文が生成されました</h1>
 
-    <div class="section">
-      <span class="label">あなたが間違えた英単語：</span>
-      <div class="word-list">{{ word_list | join(', ') }}</div>
-    </div>
+  <div class="section">
+    <span class="label">あなたが間違えた英単語：</span>
+    <div class="word-list">{{ word_list | join(', ') }}</div>
+  </div>
 
-    <div class="section">
-      <span class="label">例文（英語）：</span>
-      <div class="sentence-box">{{ sentence }}</div>
-    </div>
+  <div class="section">
+    <span class="label">例文（英語）：</span>
+    <div class="sentence-box">{{ sentence | safe }}</div>
+  </div>
 
-    <div class="section">
-      <span class="label">例文（日本語訳）：</span>
-      <div class="sentence-box">{{ translation }}</div>
-    </div>
-    <div>
-      <a class="play-sound00 button" href="/generate_sentence">保存(未実装)</a>
-      <button id="reset-btn" class="play-sound00 reset-btn">トップへ</button>
-    </div>
+  <div class="section">
+    <span class="label">例文（日本語訳）：</span>
+    <div class="sentence-box">{{ translation | safe }}</div>
+  </div>
+
+  <div>
+    <a class="play-sound00 button" href="/generate_sentence">保存(未実装)</a>
+    <button id="reset-btn" class="play-sound00 reset-btn">トップへ</button>
+  </div>
+
   <audio id="trans-sound" src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"></audio>
   <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
