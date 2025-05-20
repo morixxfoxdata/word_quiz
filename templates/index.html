@@ -30,7 +30,14 @@
 
     <h1 class="test-title">英単語テスト</h1>
     <!-- <p>ようこそ、{{ current_user.username }}さん！</p> -->
+    
+    <div class="question-progress">
+      <span class="question-label">第</span>
+      <span class="question-number" id="question-number">{{ question_number }}</span>
+      <span class="question-label">問 / 20問</span>
+    </div>
 
+    
     <div class="word-card">
       <div class="question-word">{{ word }}</div>
     </div>
@@ -45,11 +52,18 @@
       {% endfor %}
     </div>
 
+
     <div class="wrong-words-counter">
-      間違えた単語:
-      <span id="wrong-count">{{ wrong_words_count }}</span>
-      / 10
+      <div class="count-block correct">
+        正解：
+        <span class="correct-count" id="correct-count">{{ correct_words_count }}</span>問
+      </div>
+      <div class="count-block wrong">
+        不正解：
+        <span class="wrong-count" id="wrong-count">{{ wrong_words_count }}</span>問 / 10問
+      </div>
     </div>
+
     <div
       id="wrong-words-notification"
       class="notification"

@@ -1,13 +1,22 @@
 // グローバル変数の追加
+let questionNumber = 0;
 let correctCount = 0;
 let wrongCount = 0;
 let studyLogId = null;
+
 
 // 間違えた単語数の表示を更新する関数
 function updateWrongCount(count) {
   const wrongCountElement = document.getElementById("wrong-count");
   if (wrongCountElement) {
     wrongCountElement.textContent = count;
+  }
+}
+// 正解数の表示
+function updateCorrectCount(count) {
+  const correctCountElement = document.getElementById("correct-count");
+  if (correctCountElement) {
+    correctCountElement.textContent = count;
   }
 }
 
@@ -76,6 +85,8 @@ function startStudySession(deckId) {
       if (data.status === "success") {
         // 間違えた単語数を0にリセット
         updateWrongCount(0);
+        updateCorrectCount(0);
+        document.getElementById("question-number").textContent = 1;
 
         // 学習セッションを開始
         return fetch("/start_study_session", {
@@ -133,6 +144,7 @@ function attachChoiceHandlers() {
 
       if (isCorrect) {
         correctCount++;
+        updateCorrectCount(correctCount)
       } else {
         wrongCount++;
       }
@@ -154,10 +166,12 @@ function attachChoiceHandlers() {
       })
         .then((res) => res.json())
         .then((data) => {
-          // 間違えた単語数の表示を更新
+          //表示を更新
+          questionNumber = data.questionNumber;
+          document.getElementById("question-number").textContent = questionNumber;
           updateWrongCount(data.wrongWordsCount);
 
-          if (data.showWrongWords || data.isTestComplete) {
+          if (data.showWrongWords || data.isTestComplete|| questionNumber > 20) {
             // テスト終了時に学習ログを保存してから遷移
             endStudySession().then(() => {
               setTimeout(() => {
@@ -189,9 +203,7 @@ function updateQuestion(data) {
   });
   attachChoiceHandlers();
 }
-
 // <<<<<<< csv_iwata
-
 
 // document.addEventListener("DOMContentLoaded",()=>{
 //   // ① ← ここで取得してグローバル変数にする
@@ -199,8 +211,12 @@ function updateQuestion(data) {
 // =======
 document.addEventListener("DOMContentLoaded", () => {
   // 初期の間違えた単語数を表示
-  const initialWrongCount = document.getElementById("wrong-count").textContent;
+  const initialWrongCount = parseInt(document.getElementById("wrong-count").textContent) || 0;
+  const initialCorrectCount = parseInt(document.getElementById("correct-count").textContent) || 0;
+  questionNumber = parseInt(document.getElementById("question-number").textContent) || 1;
+
   updateWrongCount(initialWrongCount);
+  updateCorrectCount(initialCorrectCount);
 
   fetch("/get_current_deck_id")
     .then((response) => response.json())

@@ -24,7 +24,7 @@ body {
   background: linear-gradient(-45deg, #000000, #0a1a2f, #1c2b3a, #000000);
   background-size: 400% 400%;
   animation: gradientFlow 15s ease infinite;
-  /* color: #e0e0e0; */
+  color: #e0e0e0;
   font-family: "Arial", sans-serif;
   display: flex;
   flex-direction: column;
@@ -227,11 +227,64 @@ h1 {
   background-color: #717175;
 }
 
-.wrong-words-counter {
-  margin-bottom: 20px;
-  font-size: 2rem;
-  color: var(--text_main);
+.question-progress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin: 20px auto;
+  font-size: 1.5rem;
+  font-weight: 500;
+  padding: 10px 16px;
+  border-radius: 8px;
+  box-shadow: 0 0 6px rgba(0,0,0,0.1);
+  width: fit-content;
 }
+
+.question-number {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #badcff;                    /* 薄い青系文字色 */
+  background-color: #0d1b2a;         /* 暗め背景（宇宙船UI風） */
+  padding: 6px 14px;
+  border-radius: 8px;
+  box-shadow:
+    0 0 8px #4ec3ff,               /* 外側の青白い光 */
+    0 0 16px #4ec3ff;              /* 拡がりを出す重ね光 */
+  border: 1px solid #4ec3ff;
+  text-shadow: 0 0 1px #4ec3ff;     /* 内側の光を強調 */
+  transition: box-shadow 0.3s ease;
+}
+
+
+.wrong-words-counter {
+  display: flex;
+  justify-content: center;    /* 中央寄せ */
+  align-items: center;        /* 垂直中央（高さある場合用） */
+  gap: 40px;                  /* 左右の間隔 */
+  margin: 20px 0;
+}
+
+.count-block {
+  width: 280px;
+  font-size: 1.5rem;
+  padding: 10px 20px;
+  background-color: var(--btn_back);
+  border-radius: 8px;
+  box-shadow: 0 0 4px rgba(0,0,0,0.1);
+}
+
+/* optional 色分け */
+.count-block.correct {
+  border: 2px solid #4caf50;
+  color: #2e7d32;
+}
+
+.count-block.wrong {
+  border: 2px solid #e53935;
+  color: #b71c1c;
+}
+
 
 .notification {
   padding: 15px;
@@ -505,7 +558,7 @@ h1 {
   color: #ccc;
   text-align: center;
   margin-top: 1rem;
-
+}
 /* 単語テスト画面のレスポンシブ対応 */
 @media (max-width: 768px) {
   h1 {
