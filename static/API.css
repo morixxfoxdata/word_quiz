@@ -1,17 +1,3 @@
-/* :root {
-    --text_main: #e6f0ff;
-    --btn_back: #000;
-    --btn_border: #ffff;
-  } */
-
-  /* body {
-    font-family: "Helvetica Neue", sans-serif;
-    padding: 1em;
-    background: linear-gradient(-45deg, #000000, #0a1a2f, #1c2b3a, #000000);
-    background-size: 400% 400%;
-    animation: gradientFlow 15s ease infinite;
-    /* color: #e0e0e0; */
-  /* } */
 .content-container {
   display: flex;
   flex-direction: column;

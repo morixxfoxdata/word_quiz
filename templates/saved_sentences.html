@@ -16,6 +16,9 @@
         rel="stylesheet"
         href="{{ url_for('static', filename='hamburger.css') }}"
         />
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon.png') }}" sizes="32x32">
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon.png') }}" sizes="16x16">
+        <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/favicon.png') }}">
     </head>
     <body>
         <div class="hamburger-menu">
@@ -25,7 +28,7 @@
                 <span></span>
             </button>
             <div class="hamburger-content">
-                <a class="play-sound00" href="/decks">デッキ一覧</a>
+                <a class="play-sound00" href="/decks">単語帳一覧</a>
                 <a class="play-sound00" href="/saved_sentences">文章リスト</a>
                 <a class="play-sound00" href="/study_logs">学習ログ</a>
                 <a class="play-sound00" href="/logout">ログアウト</a>
@@ -41,7 +44,7 @@
                     <small>{{ s.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
                 </li>
                 {% else %}
-                <li class="no-sentence">保存された例文はありません。</li>
+                <li class="no-sentence">保存された例文はありません</li>
                 {% endfor %}
             </ul>
         </div>
@@ -55,22 +58,5 @@
             id="trans-sound"
             src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"
         ></audio>
-        <script>
-            // トップへボタンのカスタム処理
-            document
-              .getElementById("reset-btn")
-              .addEventListener("click", function (e) {
-                e.preventDefault();
-                const sound = document.getElementById("trans-sound");
-                if (sound) {
-                  sound.currentTime = 0;
-                  sound.play();
-                }
-      
-                setTimeout(function () {
-                  window.location.href = "/decks";
-                }, 300);
-              });
-          </script>
     </body>
 </html>

@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>デッキ一覧</title>
+    <title>単語帳一覧</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
@@ -16,6 +16,9 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='hamburger.css') }}"
     />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon.png') }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon.png') }}" sizes="16x16">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/favicon.png') }}">
   </head>
   <body>
     <div class="hamburger-menu">
@@ -25,18 +28,20 @@
         <span></span>
       </button>
       <div class="hamburger-content">
-        <a class="play-sound00" href="/decks">デッキ一覧</a>
+        <a class="play-sound00" href="/decks">単語帳一覧</a>
         <a class="play-sound00" href="/saved_sentences">文章リスト</a>
         <a class="play-sound00" href="/study_logs">学習ログ</a>
         <a class="play-sound00" href="/logout">ログアウト</a>
       </div>
     </div>
-    <h1 class="start-title">デッキ一覧</h1>
+    <h1 class="start-title">単語帳一覧</h1>
 
-    <!-- 新規デッキ作成ボタン -->
+    <!-- 新規単語帳作成ボタン -->
     <div class="add-deck-button-container">
-      <a href="{{ url_for('deck_add') }}" class="btn add-deck-btn">新規デッキを作成</a>
+      <a href="{{ url_for('deck_add') }}" class="btn add-deck-btn">新規単語帳を作成</a>
     </div>
+
+    <p class="deck-guidance">単語帳をタップしてテストを開始</p>
 
     <div class="deck-list">
       {% for deck in decks %}
@@ -113,7 +118,7 @@
     <script src="https://kit.fontawesome.com/your-font-awesome-kit.js"></script>
     <script>
       function deleteDeck(deckId) {
-        if (confirm("このデッキを削除してもよろしいですか？")) {
+        if (confirm("この単語帳を削除してもよろしいですか？")) {
           document.getElementById("delete-form-" + deckId).submit();
         }
       }

@@ -229,12 +229,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   attachChoiceHandlers();
 
+  // トップへボタンのカスタム処理
   const resetBtn = document.getElementById("reset-btn");
   if (resetBtn) {
-    resetBtn.addEventListener("click", () => {
-      endStudySession().then(() => {
-        handleReset();
-      });
+    resetBtn.addEventListener("click", function (e) {
+      e.preventDefault();
+      const sound = document.getElementById("trans-sound");
+      if (sound) {
+        sound.currentTime = 0;
+        sound.play();
+      }
+
+      setTimeout(function () {
+        window.location.href = "/decks";
+      }, 300);
     });
   }
 
