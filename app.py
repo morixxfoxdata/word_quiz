@@ -31,6 +31,8 @@ from google import genai
 from werkzeug.security import check_password_hash, generate_password_hash
 
 load_dotenv()
+print("Current working directory:", os.getcwd())
+print("Environment variables loaded:", os.getenv("DATABASE_URL"))
 api_key = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
 app = Flask(__name__)
@@ -39,9 +41,11 @@ app.secret_key = os.getenv(
 )  # セッション用のシークレットキー
 
 # PostgreSQLの接続設定
-app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
+db_url = os.getenv("DATABASE_URL")
+print("Database URL from environment:", db_url)
+app.config["SQLALCHEMY_DATABASE_URI"] = db_url
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-print("DB URL:", app.config["SQLALCHEMY_DATABASE_URI"])
+print("Final DB URL:", app.config["SQLALCHEMY_DATABASE_URI"])
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 # ログイン管理（ログインしていない場合はログイン画面にリダイレクト）
