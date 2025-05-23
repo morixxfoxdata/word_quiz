@@ -182,7 +182,7 @@ function attachChoiceHandlers() {
           }
           setTimeout(() => {
             updateQuestion(data);
-          }, 1000);
+          }, 500);
         });
     });
   });
