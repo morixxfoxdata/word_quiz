@@ -1,25 +1,27 @@
-:root {
+/* :root {
     --text_main: #e6f0ff;
     --btn_back: #000;
     --btn_border: #ffff;
-  }
+  } */
 
-  body {
+  /* body {
     font-family: "Helvetica Neue", sans-serif;
     padding: 1em;
     background: linear-gradient(-45deg, #000000, #0a1a2f, #1c2b3a, #000000);
     background-size: 400% 400%;
     animation: gradientFlow 15s ease infinite;
     /* color: #e0e0e0; */
-  }
-
-  .content-container {
-    display: flex;
-    flex-direction: column;
-    height: calc(100vh - 200px);
-    max-width: 700px;
-    margin: 0 auto;
-  }
+  /* } */
+.content-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 200px);
+  max-width: 700px;
+  width: 100%;               /* 追加！ */
+  box-sizing: border-box;    /* 追加！余白やborder分含める */
+  margin: 0 auto;
+  padding: 0 8px;            /* 追加！左右に少し余白 */
+}
 
   .scrollable-content {
     flex-grow: 1;
@@ -64,44 +66,6 @@
     margin-bottom: 1.5em;
   }
 
-  .button-container {
-    display: flex;
-    justify-content: center;
-    gap: 40px;
-    margin-top: 2em;
-    flex-wrap: wrap;
-    position: sticky;
-    bottom: 20px;
-  }
-
-  .button-container .button,
-  .button-container .reset-btn {
-    padding: 15px 40px;
-    font-size: 1.2rem;
-    border: 1px solid #fff;
-    border-radius: 10px;
-    text-decoration: none;
-    display: inline-block;
-  }
-
-  .button-container .button {
-    background-color: #1a2636;
-    color: #cfd8dc;
-    box-shadow: 0 0 5px #1a263644;
-  }
-
-  .button-container .reset-btn {
-    background-color: #223344;
-    color: #dfe6e9;
-    box-shadow: 0 0 5px #22334455;
-  }
-
-  .button-container .button:hover,
-  .button-container .reset-btn:hover {
-    opacity: 0.9;
-    background-color: #717175;
-  }
-
   /* メディアクエリ - モバイル対応 */
   @media (max-width: 768px) {
     h1 {
@@ -124,10 +88,11 @@
     }
     
     .content-container {
-      height: calc(100vh - 180px);
+    height: calc(100vh - 180px);
+    width: 100%;             /* 追加 */
+    padding: 0 4px;          /* 追加・調整 */
     }
-  }
-
+   }
   @media (max-width: 480px) {
     h1 {
       font-size: 1.7rem;
@@ -148,18 +113,11 @@
       font-size: 1rem;
       padding: 0.7em;
     }
-
-    .button-container {
-      gap: 20px;
-    }
-
-    .button-container .button,
-    .button-container .reset-btn {
-      padding: 12px 20px;
-      font-size: 1rem;
-    }
+    
     
     .content-container {
-      height: calc(100vh - 150px);
+    height: calc(100vh - 150px);
+    width: 100%;             /* 追加 */
+    padding: 0 2px;          /* 追加・調整 */
     }
   }
