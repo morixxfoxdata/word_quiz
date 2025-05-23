@@ -152,6 +152,10 @@ h1 {
   display: inline-block; /* 表示 */
 }
 
+.highlight {
+  color: #00ffff;  /* ← 例文の該当単語の色変えれます */
+  font-weight: bold;
+}
 
 .buttons {
   display: flex;

@@ -27,7 +27,6 @@
 .sentence-item strong {
   display: block;
   font-size: 1.5rem;
-  color: #00ffff;
   margin-bottom: 10px;
 }
 
@@ -64,25 +63,4 @@
   box-shadow: 0 0 10px #00ffff50;
   color: var(--text_main);
   text-align: left;
-}
-
-.sentence-item strong {
-  display: block;
-  font-size: 1.5rem;
-  color: #00ffff;
-  margin-bottom: 10px;
-}
-
-.sentence-item em {
-  display: block;
-  font-size: 1.2rem;
-  color: #ccc;
-  margin-bottom: 10px;
-}
-
-.sentence-item small {
-  display: block;
-  font-size: 0.9rem;
-  color: #888;
-  text-align: right;
 }
