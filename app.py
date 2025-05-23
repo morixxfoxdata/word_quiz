@@ -3,7 +3,6 @@ import os
 import random
 from datetime import datetime
 import re
-
 from dotenv import load_dotenv
 from flask import (
     Flask,
@@ -74,12 +73,6 @@ class Word(db.Model):
     deck_id = db.Column(db.Integer, db.ForeignKey("deck.id"), nullable=False)
     # relationship
     wrong_words = db.relationship("WrongWord", backref="word", lazy=True)
-    
-    # インデックスを追加して検索を高速化
-    __table_args__ = (
-        db.Index('idx_entry', entry),
-        db.Index('idx_deck_id', deck_id),
-    )
 
 
 class WrongWord(db.Model):
@@ -88,11 +81,6 @@ class WrongWord(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     word_id = db.Column(db.Integer, db.ForeignKey("word.id"), nullable=False)
     # word = db.relationship("Word", backref="wrong_words")
-    
-    # インデックスを追加して検索を高速化
-    __table_args__ = (
-        db.Index('idx_user_word', user_id, word_id),
-    )
 
 
 class Deck(db.Model):
@@ -181,10 +169,10 @@ def generate_sentence_from_words(words):
 def highlight_and_strip(text):
     return re.sub(r"<(.*?)>", r'<span class="highlight">\1</span>', text)
 
-
 def choose_question_and_choices(deck_id, k=4):
     all_words = Word.query.filter_by(deck_id=deck_id).all()
     if not all_words:
+        
         return redirect(url_for("my_words"))
 
     # 使用済み単語の管理
@@ -199,27 +187,13 @@ def choose_question_and_choices(deck_id, k=4):
         used_words = []
         available_words = all_words
 
-    # 間違えた単語の重み付け - N+1クエリ問題を解決
-    # 一度に全ての必要なWrongWordレコードを取得
-    word_ids = [word.id for word in available_words]
-    wrong_records = {}
-    
-    if word_ids:
-        # IN句を使って一括クエリ
-        records = WrongWord.query.filter(
-            WrongWord.user_id == current_user.id,
-            WrongWord.word_id.in_(word_ids)
-        ).all()
-        
-        # 辞書にマッピングして後でのルックアップを高速化
-        for record in records:
-            wrong_records[record.word_id] = record.count
-
-    # 重み付け確率の計算
+    # 間違えた単語の重み付け
     word_weights = []
     for word in available_words:
-        # 辞書から直接ルックアップ（データベースアクセスなし）
-        weight = wrong_records.get(word.id, 0) + 1  # 間違いがなければ重み1、あれば回数+1
+        # 間違いの記録を取得
+        wrong_record = WrongWord.query.filter_by(user_id=current_user.id, word_id=word.id).first()
+        # 間違いがない単語は重み1、ある単語はcount+1で重み付け（最低でも2倍の確率）
+        weight = (wrong_record.count + 1) if wrong_record else 1
         word_weights.append(weight)
 
     # 重み付け確率に基づいて単語を選択
@@ -399,15 +373,22 @@ def index():
     if not user_words:
         
         return redirect(url_for("my_words"))
+    
+    if "current_question_number" not in session:
+        session["current_question_number"] = 1 
 
+    if "current_test_correct_words" not in session:
+        session["current_test_correct_words"] = []
     if "current_test_wrong_words" not in session:
         session["current_test_wrong_words"] = []
     print(session["current_test_wrong_words"])
     return render_template(
         "index.html",
         word=word_entry,
-        choices=choices,  # ← 追加
+        choices=choices,
+        question_number = session["current_question_number"],
         wrong_words_count=len(session["current_test_wrong_words"]),
+        correct_words_count=len(session["current_test_correct_words"])
     )
 
 
@@ -415,52 +396,54 @@ def index():
 @login_required
 def mark_word():
     data = request.json
+    # <<<<<<< HEAD
     word_entry = data["word"]
     selected_ok = data["isCorrect"]
     deck_id = session["current_deck_id"]
-
-    if not selected_ok:
-        # 現在のテストセッションの間違えた単語をセッションに追加
+    
+    current_qn = session["current_question_number"]
+    if selected_ok:
+        current_test_correct_words = session.get("current_test_correct_words", [])
+        if word_entry not in current_test_correct_words:
+            current_test_correct_words.append(word_entry)
+            session["current_test_correct_words"] = current_test_correct_words
+    else:
         current_test_wrong_words = session.get("current_test_wrong_words", [])
         if word_entry not in current_test_wrong_words:
             current_test_wrong_words.append(word_entry)
             session["current_test_wrong_words"] = current_test_wrong_words
-
-            # データベースにも記録 - クエリ最適化
+            # データベースにも記録
             word = Word.query.filter_by(entry=word_entry).first()
             if word:
-                # UPDATE ... WHERE構文を使用して1つのクエリで更新を試みる
-                updated = db.session.execute(
-                    db.update(WrongWord)
-                    .where(WrongWord.user_id == current_user.id, WrongWord.word_id == word.id)
-                    .values(count=WrongWord.count + 1)
-                    .execution_options(synchronize_session="fetch")
-                )
-                
-                # 更新された行がなければ新規作成
-                if updated.rowcount == 0:
+                wrong_word = WrongWord.query.filter_by(
+                    user_id=current_user.id, word_id=word.id
+                ).first()
+                if wrong_word:
+                    wrong_word.count += 1
+                else:
                     wrong_word = WrongWord(
                         word_id=word.id, user_id=current_user.id, count=1
                     )
                     db.session.add(wrong_word)
-                
                 db.session.commit()
 
-    # テスト終了条件の判定
     all_words = Word.query.filter_by(deck_id=deck_id).all()
     used_words = session["used_words"]
+    # テスト終了条件の判定
     is_test_complete = False
     if len(all_words) < 10 and len(used_words) >= len(all_words):
         is_test_complete = True
-        
-    # 次の単語をランダムに選択
+    if session["current_question_number"] >= 20:
+        is_test_complete = True
+    # ユーザーの単語から次の単語をランダムに選択
     next_entry, choices = choose_question_and_choices(deck_id)
     wrong_cnt = len(session["current_test_wrong_words"])
-
+    session["current_question_number"] += 1
     return jsonify(
         nextWord=next_entry,
         translationList=[c[0] for c in choices],  # 日本語4件
         correctnessList=[c[1] for c in choices],  # True/False4件
+        questionNumber=session["current_question_number"],
         wrongWordsCount=wrong_cnt,
         showWrongWords=wrong_cnt >= 10,
         isTestComplete=is_test_complete,
@@ -488,6 +471,9 @@ def wrong_words():
 def reset_wrong_words():
     # セッションのクリア
     session["current_test_wrong_words"] = []
+    session["current_test_correct_words"] = []
+    session["current_question_number"] = 1
+
     return jsonify({"status": "success"})
 
 
