@@ -37,6 +37,17 @@
       <span class="question-label">問 / 20問</span>
     </div>
 
+    <div class="wrong-words-counter">
+      <div class="count-block correct">
+        正解：
+        <span class="correct-count" id="correct-count">{{ correct_words_count }}</span>問
+      </div>
+      <div class="count-block wrong">
+        不正解：
+        <span class="wrong-count" id="wrong-count">{{ wrong_words_count }}</span>問 / 10問
+      </div>
+    </div>
+
     
     <div class="word-card">
       <div class="question-word">{{ word }}</div>
@@ -52,17 +63,6 @@
       {% endfor %}
     </div>
 
-
-    <div class="wrong-words-counter">
-      <div class="count-block correct">
-        正解：
-        <span class="correct-count" id="correct-count">{{ correct_words_count }}</span>問
-      </div>
-      <div class="count-block wrong">
-        不正解：
-        <span class="wrong-count" id="wrong-count">{{ wrong_words_count }}</span>問 / 10問
-      </div>
-    </div>
 
     <div
       id="wrong-words-notification"

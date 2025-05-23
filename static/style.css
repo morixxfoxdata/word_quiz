@@ -289,12 +289,14 @@ h1 {
 /* optional 色分け */
 .count-block.correct {
   border: 2px solid #4caf50;
-  color: #2e7d32;
+  color: var(--text_main);
+  box-shadow: 0 0 8px 2px rgba(76, 175, 80, 0.7); /* 緑に光る */
 }
 
 .count-block.wrong {
   border: 2px solid #e53935;
-  color: #b71c1c;
+  color: var(--text_main);
+  box-shadow: 0 0 8px 2px rgba(229, 57, 53, 0.7); /* 赤に光る */
 }
 
 
@@ -434,6 +436,23 @@ h1 {
   font-size: 0.9rem;
   text-align: center;
 }
+.wrong-words-counter {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin: 10px 0;
+  flex-wrap: wrap;
+}
+
+/* スマホ用レスポンシブ対応 */
+@media (max-width:600px) {
+  .wrong-words-counter {
+    flex-direction: column;  /* スマホでは縦並び */
+    gap: 20px;                /* 間隔も調整 */
+  }
+}
+
 
 /* レスポンシブ対応 */
 @media (max-width: 480px) {
@@ -563,7 +582,7 @@ h1 {
   }
 
   .choice-container {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     padding: 0 15px;
     width: 100%;
@@ -700,7 +719,7 @@ h1 {
 
   .choice-container {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    max-width: 800px;
+    /* max-width: 800px; */
   }
 
   .choice-btn {
