@@ -157,66 +157,46 @@ h1 {
   font-weight: bold;
 }
 
+
+
+/* ボタンの定義ですよ！！！！！！！！ */
 .buttons {
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 40px;
-  margin: 40px 0; 
+  margin: 40px 0;
+  flex-wrap: wrap; /* 追加：横幅が収まらない時に折り返し */
 }
-
 
 .correct-btn,
 .wrong-btn,
 .reset-btn,
 .button {
-  width: 280px; 
+  width: 280px;
   padding: 20px 0;
   border: none;
-  border-radius: 1px;
+  border-radius: 10px; /* ここもデザイン統一 */
   font-size: 3rem;
   cursor: pointer;
   transition: background-color 0.3s;
+  margin: 0 5px; /* スマホ時に左右に余白ができるように */
+  box-sizing: border-box;
 }
 
-.correct-btn {
-  background-color: var(--btn_back);
-  color: var(--text_main);
-  border: 1px solid var(--btn_border);
-  border-radius: 10px;
-}
-.correct-btn:hover {
-  background-color: #717175;
-}
-
-.wrong-btn {
-  background-color: var(--btn_back);
-  color: var(--text_main);
-  border: 1px solid var(--btn_border);
-  border-radius: 10px;
-}
-.wrong-btn:hover {
-  background-color: #717175;
-}
-
-.reset-btn {
-  background-color: #223344; /* グレーがかった青 */
-  color: #dfe6e9; /* 落ち着いた白寄りの灰色 */
-  border: 1px solid #fff;
-  box-shadow: 0 0 5px #22334455;
-}
-
-.button {
-  background-color: #1a2636; /* 暗めの青黒系 */
-  color: #cfd8dc; /* ソフトグレー */
+.reset-btn, .button {
+  background-color: #1a2636;
+  color: #cfd8dc;
   border: 1px solid #ffff;
   box-shadow: 0 0 5px #1a263644;
   text-decoration: none;
   display: inline-block;
-  
 }
-.button:hover {
-  background-color: #717175;
+
+.correct-btn, .wrong-btn {
+  background-color: var(--btn_back);
+  color: var(--text_main);
+  border: 1px solid var(--btn_border);
 }
 
 .correct-btn:hover,
@@ -227,6 +207,38 @@ h1 {
   background-color: #717175;
 }
 
+/* スマホ対応 */
+@media (max-width: 768px) {
+  .buttons {
+    flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+  }
+  .correct-btn,
+  .wrong-btn,
+  .reset-btn,
+  .button {
+    width: 100%;
+    font-size: 2rem;
+    padding: 15px 0;
+    margin: 0 0 10px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .buttons {
+    gap: 10px;
+  }
+  .correct-btn,
+  .wrong-btn,
+  .reset-btn,
+  .button {
+    width: 100%;
+    font-size: 1.3rem;
+    padding: 10px 0;
+    margin: 0 0 8px 0;
+  }
+}
 .question-progress {
   display: flex;
   justify-content: center;
@@ -342,40 +354,7 @@ h1 {
   margin-top: 10px;
 }
 
-/* ナビバー全体 */
-.navbar {
-  position: fixed;
-  display: flex;                    /*ログアウトと文章リストを横並びにするため追加*/
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 60px;
-  background-color: #222;
-  padding: 10px 20px;
-  z-index: 1000;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-}
 
-/* ナビ内のボタン */
-.nav_container {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-}
-
-.nav_button {
-  color: white;
-  text-decoration: none;
-  font-size: 1rem;
-  background-color: #000;
-  border: 2px solid #ffffff;
-  padding: 8px 16px;
-  border-radius: 5px;
-  transition: background-color 0.3s, border-color 0.3s;
-}
-.nav_button:hover {
-  background-color: #717175;
-}
 /* ログイン・登録フォーム用のスタイル */
 .auth-form {
   width: 90%;
@@ -541,7 +520,18 @@ h1 {
   background: #723636;
 }
 
+.section {
+  margin-top: 1.5em;
+}
 
+.label {
+  font-weight: bold;
+  color: var(--text_main);
+  margin-bottom: 0.5em;
+  display: block;
+}
+
+/* <<<<<<< merge_0520 */
 .no-sentence {
   font-size: 2.0rem;
   color: #ccc;
@@ -723,3 +713,16 @@ h1 {
     text-align: center;
   }
 }
+/* ======= */
+.word-list,
+.sentence-box {
+  background: var(--btn_back);
+  color: var(--text_main);
+  padding: 1em;
+  border-radius: 10px;
+  font-size: 2rem;
+  font-weight: bold;
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 20px #00ffff80;
+}
+
