@@ -148,15 +148,16 @@ def generate_sentence_from_words(words):
 
     以下の指示に従ってください：
 
-    1. 指定されたすべての英単語を英語文中に必ず含めてください。
-    2. 指定されたすべての単語は英文と日本語訳の両方で<>で囲んでください。
-    3. 英文は意味が通る自然な内容で、約100語程度にしてください。
-    4. 語彙と構文は中学〜高校レベルを想定し、難解な単語や構文は避けてください。
-    5. 日本語訳は自然な翻訳にしてください。
-    6. 出力形式は次の通りで、余計な情報は一切含めないでください：
-
-    英語文
-    日本語訳
+    - 指定されたすべての英単語を含めた英文とその文章の日本語訳文を作成してください。
+    - 指定されたすべての英単語は<>で囲んでください。
+    - 日本語訳文中の対応する日本語訳は<>で囲んでください。
+    - 英文は意味が通る自然な内容で、約100語程度にしてください。
+    - 語彙と構文は中学〜高校レベルを想定し、難解な単語や構文は避けてください。
+    - 日本語訳は自然な翻訳にしてください。
+    - 英文と日本語訳は改行で区切ってください。
+    - 以下の例を参考にしてください。
+    This is a <pen>.
+    これは<ペン>です。
 
     # 単語リスト
     {', '.join(words)}
@@ -166,7 +167,7 @@ def generate_sentence_from_words(words):
     # prompt = f"以下の単語をすべて含む、自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。また、その単語は英文でも訳文でも<>で囲んでください。単語のレベルは中学〜高校レベルを想定し、難しすぎる語彙や構文は避けてください。{', '.join(words)}."
 
     try:
-        response = client.models.generate_content(model="gemini-1.5-flash", contents=prompt)#gemini-1.5-flash
+        response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)#gemini-1.5-flash
 
         # 改行で英文と訳文を分ける
         response_text = response.text.strip()
@@ -604,6 +605,8 @@ def generate_sentence():
     
     sentence = highlight_and_strip(sentence)
     translation = highlight_and_strip(translation)
+    print(sentence)
+    print(translation)
     return render_template(
         "API.html", word_list=word_list, sentence=sentence, translation=translation
     )
