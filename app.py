@@ -569,6 +569,8 @@ def generate_sentence():
     
     sentence = highlight_and_strip(sentence)
     translation = highlight_and_strip(translation)
+    print(sentence)
+    print(translation)
     return render_template(
         "API.html", word_list=word_list, sentence=sentence, translation=translation
     )
