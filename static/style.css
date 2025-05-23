@@ -525,9 +525,9 @@ h1 {
   text-align: center;
 }
 
-.choice-btn:hover {
+/* .choice-btn:hover {
   background-color: #717175;
-}
+} */
 
 .choice-btn.correct {
   background: #304d30; /* 元の背景色をキープ */
