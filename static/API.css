@@ -1,0 +1,176 @@
+:root {
+  --text_main: #e6f0ff;
+  --btn_back: #000;
+  --btn_border: #ffff;
+}
+
+body {
+  font-family: "Helvetica Neue", sans-serif;
+  padding: 1em;
+  background: linear-gradient(-45deg, #000000, #0a1a2f, #1c2b3a, #000000);
+  background-size: 400% 400%;
+  animation: gradientFlow 15s ease infinite;
+  color: #e0e0e0;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 200px);
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.scrollable-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  padding-right: 5px;
+}
+
+h1 {
+  text-align: center;
+  color: white;
+  font-size: 2.5rem;
+  margin-top: 70px;
+}
+
+.section {
+  margin-top: 1.5em;
+  width: 90%;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.label {
+  font-weight: bold;
+  color: var(--text_main);
+  margin-bottom: 0.5em;
+  display: block;
+  font-size: 1.2rem;
+}
+
+.word-list,
+.sentence-box {
+  background: var(--btn_back);
+  color: var(--text_main);
+  padding: 1em;
+  border-radius: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 20px #00ffff80;
+  word-break: break-word;
+  margin-bottom: 1.5em;
+}
+
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
+  margin-top: 2em;
+  flex-wrap: wrap;
+  position: sticky;
+  bottom: 20px;
+}
+
+.button-container .button,
+.button-container .reset-btn {
+  padding: 15px 40px;
+  font-size: 1.2rem;
+  border: 1px solid #fff;
+  border-radius: 10px;
+  text-decoration: none;
+  display: inline-block;
+}
+
+.button-container .button {
+  background-color: #1a2636;
+  color: #cfd8dc;
+  box-shadow: 0 0 5px #1a263644;
+}
+
+.button-container .reset-btn {
+  background-color: #223344;
+  color: #dfe6e9;
+  box-shadow: 0 0 5px #22334455;
+}
+
+.button-container .button:hover,
+.button-container .reset-btn:hover {
+  opacity: 0.9;
+  background-color: #717175;
+}
+
+/* メディアクエリ - モバイル対応 */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2rem;
+    margin-top: 60px;
+  }
+
+  .section {
+    width: 95%;
+  }
+
+  .label {
+    font-size: 1rem;
+  }
+
+  .word-list,
+  .sentence-box {
+    font-size: 1.2rem;
+    padding: 0.8em;
+  }
+  
+  .content-container {
+    height: calc(100vh - 180px);
+  }
+}
+
+@media (max-width: 480px) {
+  h1 {
+    font-size: 1.7rem;
+    margin-top: 50px;
+  }
+
+  .section {
+    margin-top: 1em;
+    width: 100%;
+  }
+
+  .label {
+    font-size: 0.9rem;
+  }
+
+  .word-list,
+  .sentence-box {
+    font-size: 1rem;
+    padding: 0.7em;
+  }
+
+  .button-container {
+    gap: 20px;
+  }
+
+  .button-container .button,
+  .button-container .reset-btn {
+    padding: 12px 20px;
+    font-size: 1rem;
+  }
+  
+  .content-container {
+    height: calc(100vh - 150px);
+  }
+} 
+@keyframes gradientFlow {
+    0% {
+      background-position: 0% 50%;
+    }
+    50% {
+      background-position: 100% 50%;
+    }
+    100% {
+      background-position: 0% 50%;
+    }
+  }
