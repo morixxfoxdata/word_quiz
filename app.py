@@ -214,7 +214,7 @@ def choose_question_and_choices(deck_id, k=4):
 
 
 def create_default_deck(user_id):
-    """デフォルトのTOEICデッキを作成する"""
+    """デフォルトのTOEIC単語帳を作成する"""
     deck = Deck(name="TOEIC単語集2500", description="TOEIC頻出単語集", category="TOEIC", user_id=user_id)
     db.session.add(deck)
     db.session.commit()
@@ -231,7 +231,7 @@ def create_default_deck(user_id):
                     db.session.add(word)
         db.session.commit()
     except Exception as e:
-        print(f"デフォルトデッキの作成中にエラーが発生しました: {e}")
+        print(f"デフォルト単語帳の作成中にエラーが発生しました: {e}")
 
 
 # ---------------- ルーティング ----------------
@@ -280,13 +280,13 @@ def deck_test(deck_id):
         
         return redirect(url_for("decks"))
 
-    # デッキ内の単語を取得
+    # 単語帳内の単語を取得
     deck_words = Word.query.filter_by(deck_id=deck_id).all()
     if not deck_words:
         
         return redirect(url_for("decks"))
 
-    # セッションに現在のデッキIDを保存
+    # セッションに現在の単語帳IDを保存
     session["current_deck_id"] = deck_id
     return redirect(url_for("index"))
 
@@ -299,7 +299,7 @@ def deck_detail(deck_id):
         
         return redirect(url_for("decks"))
 
-    # デッキに属する単語を取得
+    # 単語帳に属する単語を取得
     words = Word.query.filter_by(deck_id=deck_id).all()
     return render_template("deck_detail.html", deck=deck, words=words)
 
@@ -331,10 +331,10 @@ def delete_deck(deck_id):
         return redirect(url_for("decks"))
 
     try:
-        # デッキに関連する学習ログを削除
+        # 単語帳に関連する学習ログを削除
         StudyLog.query.filter_by(deck_id=deck_id).delete()
 
-        # デッキに属する単語を取得
+        # 単語帳に属する単語を取得
         words = Word.query.filter_by(deck_id=deck_id).all()
 
         # 各単語に関連するWrongWordレコードを削除
@@ -344,14 +344,14 @@ def delete_deck(deck_id):
         # 単語を削除
         Word.query.filter_by(deck_id=deck_id).delete()
 
-        # デッキを削除
+        # 単語帳を削除
         db.session.delete(deck)
         db.session.commit()
         
     except Exception as e:
         db.session.rollback()
         
-        print(f"デッキ削除エラー: {e}")
+        print(f"単語帳削除エラー: {e}")
 
     return redirect(url_for("decks"))
 
@@ -541,7 +541,7 @@ def delete_word_from_deck(deck_id, word_id):
         return jsonify(
             {
                 "status": "error",
-                "message": "この単語は指定されたデッキに属していません。",
+                "message": "この単語は指定された単語帳に属していません。",
             }
         ), 400
 
@@ -663,7 +663,7 @@ def end_study_session():
             else 0
         )
 
-        # デッキの学習統計を更新
+        # 単語帳の学習統計を更新
         deck = db.session.get(Deck, study_log.deck_id)
         if deck:
             deck.update_study_stats()

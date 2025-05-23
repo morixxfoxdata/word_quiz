@@ -16,6 +16,9 @@
         rel="stylesheet"
         href="{{ url_for('static', filename='hamburger.css') }}"
         />
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon.png') }}" sizes="32x32">
+        <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon.png') }}" sizes="16x16">
+        <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/favicon.png') }}">
     </head>
     <body>
         <div class="hamburger-menu">
@@ -25,7 +28,7 @@
                 <span></span>
             </button>
             <div class="hamburger-content">
-                <a class="play-sound00" href="/decks">デッキ一覧</a>
+                <a class="play-sound00" href="/decks">単語帳一覧</a>
                 <a class="play-sound00" href="/saved_sentences">文章リスト</a>
                 <a class="play-sound00" href="/study_logs">学習ログ</a>
                 <a class="play-sound00" href="/logout">ログアウト</a>

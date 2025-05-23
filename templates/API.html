@@ -4,6 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>英語例文生成結果</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon-32x32.png') }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon-16x16.png') }}" sizes="16x16">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
@@ -31,7 +34,7 @@
       </button>
       <div class="hamburger-content">
         <a class="play-sound00" href="/decks"
-          ><i class="fas fa-layer-group"></i> デッキ一覧</a
+          ><i class="fas fa-layer-group"></i>単語帳一覧</a
         >
         <a class="play-sound00" href="/saved_sentences">文章リスト</a>
         <a class="play-sound00" href="/study_logs"

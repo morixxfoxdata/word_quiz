@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>デッキ追加</title>
+    <title>単語帳追加</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
@@ -16,6 +16,9 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='hamburger.css') }}"
     />
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon.png') }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon.png') }}" sizes="16x16">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/favicon.png') }}">
   </head>
   <body>
     <div class="hamburger-menu">
@@ -25,18 +28,18 @@
         <span></span>
       </button>
       <div class="hamburger-content">
-        <a class="play-sound00" href="/decks">デッキ一覧</a>
+        <a class="play-sound00" href="/decks">単語帳一覧</a>
         <a class="play-sound00" href="/saved_sentences">文章リスト</a>
         <a class="play-sound00" href="/study_logs">学習ログ</a>
         <a class="play-sound00" href="/logout">ログアウト</a>
       </div>
     </div>
 
-    <h1 class="start-title">デッキ作成</h1>
-    <!-- デッキ作成フォーム -->
+    <h1 class="start-title">単語帳作成</h1>
+    <!-- 単語帳作成フォーム -->
     <form action="{{ url_for('create_deck') }}" method="POST">
       <div>
-        <label for="name">デッキ名:</label>
+        <label for="name">単語帳名:</label>
         <input type="text" id="name" name="name" required />
       </div>
       <div>
@@ -47,7 +50,7 @@
         <label for="description">説明:</label>
         <textarea id="description" name="description"></textarea>
       </div>
-      <button type="submit">デッキを作成</button>
+      <button type="submit">単語帳を作成</button>
     </form>
 
     <script src="{{ url_for('static', filename='script.js') }}"></script>

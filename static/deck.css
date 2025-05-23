@@ -1,4 +1,4 @@
-/* デッキ一覧のコンテナ */
+/* 単語帳一覧のコンテナ */
 .deck-list {
   margin-top: 2rem;
   width: 80%;
@@ -7,7 +7,7 @@
   margin-right: auto;
 }
 
-/* 新規デッキ作成ボタンのコンテナ */
+/* 新規単語帳作成ボタンのコンテナ */
 .add-deck-button-container {
   width: 80%;
   max-width: 800px;
@@ -28,7 +28,7 @@
   background-color: #138496;
 }
 
-/* デッキアイテム */
+/* 単語帳アイテム */
 .deck-item {
   display: flex;
   justify-content: space-between;
@@ -246,7 +246,7 @@
   }
 }
 
-/* デッキ作成フォーム */
+/* 単語帳作成フォーム */
 form {
   width: 60%;
   margin: 2rem auto;
@@ -303,3 +303,14 @@ form button[type="submit"]:hover {
   margin: 20px 0;
   font-size: 1.5em;
 }
+
+.deck-guidance {
+  text-align: center;
+  color: #d2d2d3;
+  margin: 1rem auto;
+  font-size: 1rem;
+  width: 80%;
+  max-width: 800px;
+}
+
+
