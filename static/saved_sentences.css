@@ -1,7 +1,7 @@
 /* 例文リストの全体レイアウト */
 .saved-sentences-container {
   max-width: 800px;
-  margin-top: 120px;
+  margin-top: 40px;
   margin-bottom: 50px;
   padding: 20px;
   background-color: rgba(20, 20, 20, 0.7);
@@ -51,6 +51,21 @@ ul {
   font-size: 0.9rem;
   color: #888;
   text-align: right;
+}
+@media screen and (max-width: 480px) {
+  .sentence-item strong {
+    display: block;
+    font-size: 1.2rem;
+    margin-bottom: 10px;
+  }
+  
+  /* 日本語訳 */
+  .sentence-item em {
+    display: block;
+    font-size: 1rem;
+    color: #ccc;
+    margin-bottom: 10px;
+  }
 }
 
 /* 空データ時のメッセージ（すでにあるクラスに追加でOK） */
