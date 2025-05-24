@@ -384,6 +384,20 @@ def delete_deck(deck_id):
 
     return redirect(url_for("decks"))
 
+# Delete sentence routes ------------------------------------------------------------
+@app.route('/api/sentences/<int:sentence_id>', methods=['DELETE'])
+@login_required
+def delete_sentence(sentence_id):
+    try:
+        # データベースから該当する文章を削除
+        sentence = SavedSentence.query.get_or_404(sentence_id)
+        db.session.delete(sentence)
+        db.session.commit()
+        return jsonify({'message': '削除が完了しました'}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'error': '削除に失敗しました'}), 500
+
 
 # Test routes ------------------------------------------------------------
 
