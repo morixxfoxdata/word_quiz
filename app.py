@@ -25,7 +25,7 @@ from flask_login import (
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-# import requests
+import requests
 # import google.generativeai as genai
 from google import genai
 from werkzeug.security import check_password_hash, generate_password_hash
@@ -181,6 +181,8 @@ def generate_sentence_from_words(words):
     except Exception as e:
         print("❌ Geminiエラー:", e)
         return "❗ Gemini APIの呼び出しに失敗しました。", ""
+
+
 
 def highlight_and_strip(text):
     return re.sub(r"<(.*?)>", r'<span class="highlight">\1</span>', text)
@@ -383,6 +385,24 @@ def delete_deck(deck_id):
         print(f"単語帳削除エラー: {e}")
 
     return redirect(url_for("decks"))
+
+@app.route('/translate', methods=["POST"])
+def translate():
+    DeepL_api_key = os.getenv("DEEPL_API_KEY")
+    DEEPL_URL = 'https://api-free.deepl.com/v2/translate'
+    data = request.get_json()
+    word = data.get("word", "")
+    print(f"受け取った単語: {word}")
+    params = {
+        'auth_key': DeepL_api_key,
+        'text': word,
+        'source_lang': 'EN',
+        'target_lang': 'JA'
+    }
+    response = requests.post(DEEPL_URL, data=params)
+    result = response.json()
+    return jsonify({"meaning" : result['translations'][0]['text']})
+
 
 # Delete sentence routes ------------------------------------------------------------
 @app.route('/api/sentences/<int:sentence_id>', methods=['DELETE'])

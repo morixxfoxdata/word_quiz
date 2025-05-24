@@ -151,6 +151,20 @@ p {
   min-width: 120px;
 }
 
+
+.trans_button {
+  background-color: #000;
+  color: #e6f0ff;
+  padding: 10px 20px;
+  border: 1px solid #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  transition: background-color 0.3s;
+}
+
 .button {
   background-color: #000;
   color: #e6f0ff;
