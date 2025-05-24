@@ -121,7 +121,6 @@ p {
 }
 
 .form-group {
-  display: flex;
   gap: 10px;
   align-items: center;
   flex-wrap: wrap;
@@ -138,6 +137,7 @@ p {
   flex: 1;
   min-width: 150px;
   font-size: 0.9rem;
+  margin: 0.5rem;
 }
 
 .form-group input {
