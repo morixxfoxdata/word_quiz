@@ -25,6 +25,14 @@
     <link rel="manifest" href="/static/icons/site.webmanifest">
   </head>
   <body>
+     <!-- ─── アプリロゴ / タイトルリンク ───────────────────── -->
+    <a href="/decks" class="logo-link play-sound00">
+      <!-- アイコン画像。static/icons/fabicon2.png などに保存しておく -->
+      <img src="{{ url_for('static', filename='icons/fabicon2.png') }}"
+          alt="Lexs-AI logo" class="logo-img" />
+      <!-- タイトル文字。gradient は CSS で付与 -->
+      <span class="main-title">Lexs-AI</span>
+    </a>
     <div class="hamburger-menu">
       <button class="hamburger-btn">
         <span></span>
