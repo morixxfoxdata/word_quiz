@@ -29,7 +29,9 @@
     </div>
 
     <div class="container">
+      {% if wrong_words %}
       <h1>間違えた単語リスト</h1>
+      {% endif %}
 
       <div class="wrong-words-list">
         {% if wrong_words %} {% for word, translation in wrong_words.items() %}
@@ -38,7 +40,7 @@
           <div class="japanese">{{ translation }}</div>
         </div>
         {% endfor %} {% else %}
-        <p>おめでとう！全問正解です！</p>
+        <p class="perfect-score">おめでとう！全問正解です！</p>
         {% endif %}
       </div>
 
@@ -46,8 +48,12 @@
         <a href="{{ url_for('decks') }}" class="play-sound00 reset-btn"
           >トップへ</a
         >
+        {% if wrong_words %}
         <a href="/generate_sentence" class="button">例文生成</a>
-        <a href="{{ url_for('saved_sentences') }}" class="play-sound00 button">文章リスト</a>
+        <a href="{{ url_for('saved_sentences') }}" class="play-sound00 button"
+          >文章リスト</a
+        >
+        {% endif %}
       </div>
     </div>
 
