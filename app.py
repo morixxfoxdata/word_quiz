@@ -72,7 +72,7 @@ class User(UserMixin, db.Model):
 
 class Word(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    entry = db.Column(db.String(100), nullable=False)
+    entry = db.Column(db.String(100), nullable=True)
     meaning = db.Column(db.String(200), nullable=False)
     deck_id = db.Column(db.Integer, db.ForeignKey("deck.id"), nullable=False)
     # relationship
@@ -340,15 +340,32 @@ def deck_detail(deck_id):
 def add_word_to_deck(deck_id):
     deck = Deck.query.get_or_404(deck_id)
     if deck.user_id != current_user.id:
-        
         return redirect(url_for("decks"))
 
-    entry = request.form["entry"]
-    meaning = request.form["meaning"]
-
-    word = Word(entry=entry, meaning=meaning, deck_id=deck_id)
-    db.session.add(word)
-    db.session.commit()
+    entry = request.form["entry"].strip()
+    meaning = request.form.get("meaning", "").strip()
+    
+    print(f"受け取った単語: {entry}")
+    print(f"受け取った意味: {meaning}")
+    
+    # 最低限のバリデーション
+    if not entry:
+        flash("単語を入力してください。", "error")
+        return redirect(url_for("deck_detail", deck_id=deck_id))
+    
+    if not meaning:
+        meaning = f"未入力：{entry}"
+        print(f"意味が空のため、フォールバック値を使用: {meaning}")
+    
+    try:
+        word = Word(entry=entry, meaning=meaning, deck_id=deck_id)
+        db.session.add(word)
+        db.session.commit()
+        print(f"単語を正常に保存しました: {entry} -> {meaning}")
+    except Exception as e:
+        db.session.rollback()
+        print(f"単語保存エラー: {e}")
+        flash("単語の追加に失敗しました。もう一度お試しください。", "error")
     
     return redirect(url_for("deck_detail", deck_id=deck_id))
 
@@ -386,22 +403,52 @@ def delete_deck(deck_id):
 
     return redirect(url_for("decks"))
 
-@app.route('/translate', methods=["POST"])
-def translate():
-    DeepL_api_key = os.getenv("DEEPL_API_KEY")
-    DEEPL_URL = 'https://api-free.deepl.com/v2/translate'
+def translate(word):
+    """Gemini APIを使って英単語を日本語に翻訳する関数"""
+    prompt = f"""以下の英単語を日本語に翻訳してください。
+
+要求:
+- 英単語: {word}
+- 最も一般的な日本語訳を1つだけ答えてください
+- 余計な説明や記号は不要です
+- 日本語の訳語のみを返してください
+
+例:
+apple → りんご
+book → 本
+happy → 幸せな
+"""
+    
+    try:
+        response = client.models.generate_content(
+            model="gemini-2.0-flash", 
+            contents=prompt
+        )
+        
+        if response.text:
+            translated_text = response.text.strip()
+            # 余計な文字や記号を除去
+            translated_text = re.sub(r'^[→\-\s]*', '', translated_text)
+            translated_text = re.sub(r'[→\-\s]*$', '', translated_text)
+            return translated_text if translated_text else f"翻訳未対応：{word}"
+        else:
+            return f"翻訳未対応：{word}"
+            
+    except Exception as e:
+        print(f"Gemini translation error: {e}")
+        return f"翻訳未対応：{word}"
+
+
+@app.route('/translate_api', methods=["POST"])
+def translate_api():
+    """フロントエンド用の翻訳APIエンドポイント（Gemini API使用）"""
     data = request.get_json()
     word = data.get("word", "")
     print(f"受け取った単語: {word}")
-    params = {
-        'auth_key': DeepL_api_key,
-        'text': word,
-        'source_lang': 'EN',
-        'target_lang': 'JA'
-    }
-    response = requests.post(DEEPL_URL, data=params)
-    result = response.json()
-    return jsonify({"meaning" : result['translations'][0]['text']})
+    
+    meaning = translate(word)
+    print(f"Gemini翻訳結果: {meaning}")
+    return jsonify({"meaning": meaning})
 
 
 # Delete sentence routes ------------------------------------------------------------
@@ -413,10 +460,10 @@ def delete_sentence(sentence_id):
         sentence = SavedSentence.query.get_or_404(sentence_id)
         db.session.delete(sentence)
         db.session.commit()
-        return jsonify({'message': '削除が完了しました'}), 200
+        return jsonify({'message': '文章の削除が完了しました'}), 200
     except Exception as e:
         db.session.rollback()
-        return jsonify({'error': '削除に失敗しました'}), 500
+        return jsonify({'error': '文章の削除に失敗しました'}), 500
 
 
 # Test routes ------------------------------------------------------------
