@@ -649,7 +649,6 @@ h1 {
 .logo-link{
   position: absolute;
   left: 0.25rem;
-
   display: flex;
   align-items: center;
   gap: .5rem;                /* アイコンと文字の間隔 */
@@ -668,7 +667,7 @@ h1 {
 @media (max-width: 768px) {
   h1 {
     font-size: 2.5rem;
-    margin-top: 60px;
+    /* margin-top: 60px; */
     margin-bottom: 20px;
   }
 
