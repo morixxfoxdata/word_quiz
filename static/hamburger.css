@@ -1,7 +1,7 @@
 .hamburger-menu {
   position: fixed;
-  top: 1rem;
-  right: 1rem;
+  top: 0.25rem;
+  right: 0.5rem;
   z-index: 1000;
 }
 
@@ -170,7 +170,9 @@
 }
 
 /* レスポンシブ対応 */
-@media (max-width: 768px) {
+@media (max-width: 768px) { 
+
+
   .hamburger-btn {
     width: 45px;
     height: 45px;
@@ -215,5 +217,12 @@
   .hamburger-content a {
     font-size: 1rem;
     padding: 0.7rem 0.9rem;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 4096px) and (orientation: landscape) {
+  .hamburger-menu{
+    top: 1.5rem;
+    right: 1.5rem;
   }
 }

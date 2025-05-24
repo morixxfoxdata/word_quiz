@@ -630,11 +630,25 @@ h1 {
 }
 
 /* ─────── ロゴリンク（左上固定） ───────────────── */
+
+.app-header {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw;
+  min-height: 6rem; /* タイトル高さに合わせて調整 */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1.5rem;
+  z-index: 1000;
+  background: rgba(11, 5, 25, 0.85); /* ヘッダー背景: 白・半透明 */
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+  /* 境界線やシャドウはお好みで */
+}
+
 .logo-link{
   position: absolute;
-  top: 0.5rem;
   left: 0.25rem;
-
   display: flex;
   align-items: center;
   gap: .5rem;                /* アイコンと文字の間隔 */
@@ -711,8 +725,15 @@ h1 {
   .wrong-words-list {
     width: 90%;
   }
-}
 
+  .app-header {
+    min-height: 3.5rem;
+  }
+
+  .main-title{
+    font-size: 3rem;
+  }
+}
 
 /* タブレット向けの横向きレイアウト */
 @media (min-width: 769px) and (max-width: 4096px) and (orientation: landscape) {
@@ -806,5 +827,9 @@ h1 {
   .flash-message {
     font-size: 0.85rem;
     padding: 8px 12px;
+  }
+
+  .app-header {
+    min-height: 3rem;
   }
 }
