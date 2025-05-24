@@ -208,20 +208,6 @@ h1 {
 }
 
 
-@media (max-width: 480px) {
-  .buttons {
-    gap: 10px;
-  }
-  .correct-btn,
-  .wrong-btn,
-  .reset-btn,
-  .button {
-    width: 100%;
-    font-size: 1.3rem;
-    padding: 10px 0;
-    margin: 0 0 8px 0;
-  }
-}
 .question-progress {
   display: flex;
   justify-content: center;
@@ -423,44 +409,6 @@ h1 {
   flex-wrap: wrap;
 }
 
-/* スマホ用レスポンシブ対応 */
-@media (max-width: 600px) {
-  .wrong-words-counter {
-    flex-direction: column; /* スマホでは縦並び */
-    gap: 20px; /* 間隔も調整 */
-  }
-}
-
-/* レスポンシブ対応 */
-@media (max-width: 480px) {
-  .auth-form {
-    width: 95%;
-    padding: 20px;
-  }
-
-  .auth-form label {
-    font-size: 0.85rem;
-  }
-
-  .auth-form input {
-    padding: 8px 12px;
-    font-size: 0.85rem;
-  }
-
-  .auth-form .button {
-    padding: 10px;
-    font-size: 0.85rem;
-  }
-
-  .flash-messages {
-    width: 95%;
-  }
-
-  .flash-message {
-    font-size: 0.85rem;
-    padding: 8px 12px;
-  }
-}
 
 .container {
   margin-top: 80px; /* ナビバーの高さより少し余裕を持たせる */
@@ -534,6 +482,173 @@ h1 {
   text-align: center;
   margin-top: 1rem;
 }
+
+
+.word-card {
+  width: 95%;
+  min-width: 0;
+  max-width: 100%;
+  height: 140px;
+  min-height: 140px;
+  max-height: 140px;
+  margin-bottom: 20px;
+}
+
+.word-front,
+.question-word,
+.word-back {
+  font-size: 1.1rem;
+  padding: 0 3px;
+}
+
+.choice-container {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 0 10px;
+  width: 100%;
+  max-width: 100%;
+}
+
+.choice-btn {
+  width: 100%;
+  min-width: 0;
+  height: 70px;
+  font-size: 1.1rem;
+  padding: 8px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  text-overflow: ellipsis;
+  white-space: normal;
+  text-align: center;
+}
+
+.buttons {
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.correct-btn,
+.wrong-btn,
+.reset-btn,
+.button {
+  padding: 12px 30px;
+  font-size: 1.5rem;
+}
+
+.wrong-words-counter {
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+}
+
+.notification {
+  padding: 12px;
+  font-size: 0.9rem;
+}
+
+.wrong-words-list {
+  width: 95%;
+  gap: 8px;
+}
+
+.word-item {
+  padding: 8px 12px;
+}
+
+.english {
+  font-size: 0.9rem;
+}
+
+.japanese {
+  font-size: 0.85rem;
+}
+
+
+/* ======= */
+.word-list,
+.sentence-box {
+  background: var(--btn_back);
+  color: var(--text_main);
+  padding: 1em;
+  border-radius: 10px;
+  font-size: 2rem;
+  font-weight: bold;
+  border: 2px solid #00ffff;
+  box-shadow: 0 0 20px #00ffff80;
+}
+
+
+/* 全問正解の時のやつ */
+.perfect-score {
+  font-size: 3.5rem;
+  background: linear-gradient(90deg, #b690ff, #8cd8ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  text-align: center;
+  margin: 2rem 0;
+
+  /* 改行抑制 */
+  white-space: normal;              /* 自動改行を防ぐ */
+  overflow-wrap: normal;            /* 単語途中での折返しを避ける */
+  word-break: keep-all;             /* 単語中では改行しない */
+}
+≈
+.generate-sentence {
+  background: linear-gradient(90deg, #b690ff, #8cd8ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  text-align: center;
+  margin: 2rem 0;
+
+  /* 改行抑制 */
+  white-space: normal;              /* 自動改行を防ぐ */
+  overflow-wrap: normal;            /* 単語途中での折返しを避ける */
+  word-break: keep-all;             /* 単語中では改行しない */
+}
+
+.main-title {
+  font-size: 4rem;
+  background: linear-gradient(90deg, #b690ff, #8cd8ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  margin: 0;
+}
+
+.subtitle {
+  font-size: 1.5rem;
+  background: linear-gradient(90deg, #c68eff, #9be3ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-top: 1rem;
+}
+
+/* ─────── ロゴリンク（左上固定） ───────────────── */
+.logo-link{
+  position: absolute;
+  top: 0.25rem;
+  left: 0.25rem;
+
+  display: flex;
+  align-items: center;
+  gap: .5rem;                /* アイコンと文字の間隔 */
+ 
+  font-size: 4rem;           /* ★ ここが “基準高さ” になる */
+  text-decoration: none;     /* a の下線を消す */
+  z-index: 1000;
+}
+
+.logo-link .logo-img{
+  height: 1em;               /* 親の font-size と完全一致 = 6rem */
+  width:  1em;               /* 正方形保持 */
+}
+
 /* 単語テスト画面のレスポンシブ対応 */
 @media (max-width: 768px) {
   h1 {
@@ -586,111 +701,21 @@ h1 {
   .reset-btn,
   .button {
     padding: 15px 40px;
-    font-size: 3rem;
+    font-size: 2rem;
   }
 
   .wrong-words-counter {
     font-size: 1.5rem;
-  }
+  }å
 
   .wrong-words-list {
     width: 90%;
   }
 }
 
-@media (max-width: 480px) {
-  h1 {
-    font-size: 2rem;
-    margin-top: 80px;
-    margin-bottom: 15px;
-  }
-
-  .word-card {
-    width: 95%;
-    min-width: 0;
-    max-width: 100%;
-    height: 140px;
-    min-height: 140px;
-    max-height: 140px;
-    margin-bottom: 20px;
-  }
-
-  .word-front,
-  .question-word,
-  .word-back {
-    font-size: 1.1rem;
-    padding: 0 3px;
-  }
-
-  .choice-container {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 10px;
-    padding: 0 10px;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .choice-btn {
-    width: 100%;
-    min-width: 0;
-    height: 70px;
-    font-size: 1.1rem;
-    padding: 8px;
-    box-sizing: border-box;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    text-overflow: ellipsis;
-    white-space: normal;
-    text-align: center;
-  }
-
-  .buttons {
-    gap: 15px;
-    margin-bottom: 30px;
-  }
-
-  .correct-btn,
-  .wrong-btn,
-  .reset-btn,
-  .button {
-    padding: 12px 30px;
-    font-size: 1.5rem;
-  }
-
-  .wrong-words-counter {
-    font-size: 1.3rem;
-    margin-bottom: 15px;
-  }
-
-  .notification {
-    padding: 12px;
-    font-size: 0.9rem;
-  }
-
-  .wrong-words-list {
-    width: 95%;
-    gap: 8px;
-  }
-
-  .word-item {
-    padding: 8px 12px;
-  }
-
-  .english {
-    font-size: 0.9rem;
-  }
-
-  .japanese {
-    font-size: 0.85rem;
-  }
-}
 
 /* タブレット向けの横向きレイアウト */
-@media (min-width: 769px) and (max-width: 1024px) and (orientation: landscape) {
+@media (min-width: 769px) and (max-width: 4096px) and (orientation: landscape) {
   .word-card {
     width: 50%;
   }
@@ -710,102 +735,76 @@ h1 {
     text-align: center;
   }
 }
-/* ======= */
-.word-list,
-.sentence-box {
-  background: var(--btn_back);
-  color: var(--text_main);
-  padding: 1em;
-  border-radius: 10px;
-  font-size: 2rem;
-  font-weight: bold;
-  border: 2px solid #00ffff;
-  box-shadow: 0 0 20px #00ffff80;
-}
 
-
-/* 全問正解の時のやつ */
-.perfect-score {
-  font-size: 3.5rem;
-  background: linear-gradient(90deg, #b690ff, #8cd8ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
-  text-align: center;
-  margin: 2rem 0;
-
-  /* 改行抑制 */
-  white-space: normal;              /* 自動改行を防ぐ */
-  overflow-wrap: normal;            /* 単語途中での折返しを避ける */
-  word-break: keep-all;             /* 単語中では改行しない */
-}
-
-@media (max-width: 480px) {
-  .perfect-score {
-    font-size: 2.5rem;
-  }
-}
-
-.generate-sentence {
-  background: linear-gradient(90deg, #b690ff, #8cd8ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
-  text-align: center;
-  margin: 2rem 0;
-
-  /* 改行抑制 */
-  white-space: normal;              /* 自動改行を防ぐ */
-  overflow-wrap: normal;            /* 単語途中での折返しを避ける */
-  word-break: keep-all;             /* 単語中では改行しない */
-}
-
-.main-title {
-  font-size: 6rem;
-  background: linear-gradient(90deg, #b690ff, #8cd8ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  font-weight: bold;
-  margin: 0;
-}
-
-.subtitle {
-  font-size: 1.5rem;
-  background: linear-gradient(90deg, #c68eff, #9be3ff);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  margin-top: 1rem;
-}
-@media (max-width: 480px) {
-  .main-title {
-    font-size: 3.2rem;
-  }
-  .subtitle {
-    font-size: 0.8rem;
-  }
-}
-
-/* ─────── ロゴリンク（左上固定） ───────────────── */
-.logo-link{
-  position: absolute;
-  top: 1rem;
-  left: 1rem;
-
-  display: flex;
-  align-items: center;
-  gap: .5rem;                /* アイコンと文字の間隔 */
- 
-  font-size: 6rem;           /* ★ ここが “基準高さ” になる */
-  text-decoration: none;     /* a の下線を消す */
-  z-index: 1000;
-}
-
-.logo-link .logo-img{
-  height: 1em;               /* 親の font-size と完全一致 = 6rem */
-  width:  1em;               /* 正方形保持 */
-}
 
 /* ─── スマホ幅で自動縮小 ─────────────────────────── */
 @media (max-width: 480px){
   .logo-link{ font-size: 3.2rem; }  /* → icon & 文字とも 3.2rem */
+  .buttons {
+    gap: 10px;
+  }
+  .correct-btn,
+  .wrong-btn,
+  .reset-btn,
+  .button {
+    font-size: 1.3rem;
+    padding: 10px 0;
+    margin: 0 0 8px 0;
+  }
+  .perfect-score {
+    font-size: 2.5rem;
+  }
+  .main-title {
+    font-size: 2.5rem;
+  }
+  .subtitle {
+    font-size: 0.8rem;
+  }
+  h1 {
+    font-size: 2rem;
+    margin-top: 80px;
+    margin-bottom: 15px;
+  }
+  .word-card {
+    width: 95%;
+    min-width: 0;
+    max-width: 100%;
+    height: 140px;
+    min-height: 140px;
+    max-height: 140px;
+    margin-bottom: 20px;
+  }
+  .word-front,
+  .question-word,
+  .word-back {
+    font-size: 1.1rem;
+    padding: 0 3px;
+  }
+  h1 {
+    font-size: 2rem;
+    margin-top: 80px;
+    margin-bottom: 15px;
+  }
+  .auth-form {
+    width: 95%;
+    padding: 20px;
+  }
+  .auth-form label {
+    font-size: 0.85rem;
+  }
+  .auth-form input {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+  .auth-form .button {
+    padding: 10px;
+    font-size: 0.85rem;
+  }
+  .flash-messages {
+    width: 95%;
+  }
+  .flash-message {
+    font-size: 0.85rem;
+    padding: 8px 12px;
+  }
 }
