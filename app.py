@@ -528,14 +528,40 @@ def reset_wrong_words():
 
 
 # Auth routes ------------------------------------------------------------
+def validate_password(password):
+    """
+    パスワードの要件をチェックする関数
+    - 最低8文字以上
+    - 英字と数字を含む
+    - 大文字と小文字を含む
+    """
+    if len(password) < 8:
+        return False, "パスワードは8文字以上必要です。"
+
+    if not re.search(r'[a-zA-Z]', password):
+        return False, "パスワードには英字を含める必要があります。"
+    
+    if not re.search(r'[0-9]', password):
+        return False, "パスワードには数字を含める必要があります。"
+    
+    return True, ""
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
+        
+        # パスワードのバリデーション
+        is_valid, error_message = validate_password(password)
+        if not is_valid:
+            flash(error_message)
+            return redirect(url_for("register"))
+        
         if User.query.filter_by(username=username).first():
             flash("ユーザー名は既に使われています。")
             return redirect(url_for("register"))
+        
         hashed_pw = generate_password_hash(password)
         user = User(username=username, password=hashed_pw)
         db.session.add(user)
