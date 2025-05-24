@@ -207,23 +207,6 @@ h1 {
   background-color: #717175;
 }
 
-/* スマホ対応 */
-@media (max-width: 768px) {
-  .buttons {
-    flex-direction: column;
-    gap: 20px;
-    align-items: stretch;
-  }
-  .correct-btn,
-  .wrong-btn,
-  .reset-btn,
-  .button {
-    width: 100%;
-    font-size: 2rem;
-    padding: 15px 0;
-    margin: 0 0 10px 0;
-  }
-}
 
 @media (max-width: 480px) {
   .buttons {
@@ -593,7 +576,8 @@ h1 {
     text-align: center;
   }
 
-  .buttons {
+ .buttons {
+    flex-direction: column;
     gap: 20px;
   }
 
@@ -602,7 +586,7 @@ h1 {
   .reset-btn,
   .button {
     padding: 15px 40px;
-    font-size: 1.8rem;
+    font-size: 3rem;
   }
 
   .wrong-words-counter {
@@ -763,7 +747,6 @@ h1 {
 }
 
 .generate-sentence {
-  font-size: 3.0rem;
   background: linear-gradient(90deg, #b690ff, #8cd8ff);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -804,15 +787,17 @@ h1 {
 
 /* ─────── ロゴリンク（左上固定） ───────────────── */
 .logo-link{
-  position: fixed;           /* 画面左上に張り付け */
+  position: absolute;
   top: 1rem;
   left: 1rem;
+
   display: flex;
   align-items: center;
   gap: .5rem;                /* アイコンと文字の間隔 */
+ 
   font-size: 6rem;           /* ★ ここが “基準高さ” になる */
   text-decoration: none;     /* a の下線を消す */
-  z-index: 1000;             /* ハンバーガーより前面に */
+  z-index: 1000;
 }
 
 .logo-link .logo-img{
