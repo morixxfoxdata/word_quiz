@@ -656,25 +656,32 @@ def saved_sentences():
 
 
 
-@app.route("/study_logs")
+@app.route('/study_logs')
 @login_required
 def study_logs():
-    # 未完了の学習ログを終了させる
-    current_study_log_id = session.get("current_study_log_id")
-    if current_study_log_id:
-        study_log = db.session.get(StudyLog, current_study_log_id)
-        if study_log and not study_log.end_time:
-            study_log.end_time = datetime.now()
-            db.session.commit()
-        session.pop("current_study_log_id", None)
+    user_id = current_user.id
+    logs = StudyLog.query.filter_by(user_id=user_id).order_by(StudyLog.start_time.desc()).all()
 
-    # 学習ログを取得
-    logs = (
-        StudyLog.query.filter_by(user_id=current_user.id)
-        .order_by(StudyLog.start_time.desc())
-        .all()
+    # 統計値の計算
+    total_study_time = sum(
+        int(((log.end_time - log.start_time).total_seconds() / 60)) if log.end_time else 0
+        for log in logs
     )
-    return render_template("study_logs.html", study_logs=logs)
+    total_words = sum(log.total_words for log in logs)
+    average_accuracy = sum(log.accuracy for log in logs) / len(logs) if logs else 0
+    study_days = len(set(log.start_time.date() for log in logs))
+
+    recent_logs = logs[:5]  # 直近5件
+
+    return render_template(
+        'study_logs.html',
+        total_study_time=total_study_time,
+        total_words=total_words,
+        average_accuracy=average_accuracy,
+        study_days=study_days,
+        recent_logs=recent_logs,
+        study_logs=logs  # カレンダー用
+    )
 
 
 @app.route("/start_study_session", methods=["POST"])

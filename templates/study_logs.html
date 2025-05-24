@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>学習ログ</title>
+    <title>学習ダッシュボード</title>
     <link
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
@@ -50,25 +50,71 @@
       </div>
     </div>
 
-    <h1 class="start-title">学習ログ</h1>
+    <h1 class="start-title">学習ダッシュボード</h1>
 
-    <div class="calendar-container">
-      <div class="calendar-header">
-        <button id="prevMonth" class="calendar-nav-btn">←</button>
-        <h2 id="currentMonth"></h2>
-        <button id="nextMonth" class="calendar-nav-btn">→</button>
-      </div>
-      <div class="calendar-grid">
-        <div class="calendar-weekdays">
-          <div>日</div>
-          <div>月</div>
-          <div>火</div>
-          <div>水</div>
-          <div>木</div>
-          <div>金</div>
-          <div>土</div>
+    <div class="dashboard-container">
+      <div class="stats-overview">
+        <div class="stat-card">
+          <h3>総学習時間</h3>
+          <p class="stat-value">{{ total_study_time }}分</p>
         </div>
-        <div id="calendarDays" class="calendar-days"></div>
+        <div class="stat-card">
+          <h3>総単語数</h3>
+          <p class="stat-value">{{ total_words }}</p>
+        </div>
+        <div class="stat-card">
+          <h3>平均正答率</h3>
+          <p class="stat-value">{{ "%.1f"|format(average_accuracy * 100) }}%</p>
+        </div>
+        <div class="stat-card">
+          <h3>学習日数</h3>
+          <p class="stat-value">{{ study_days }}日</p>
+        </div>
+      </div>
+
+      <div class="main-content">
+        <div class="recent-logs">
+          <h2>最近の学習</h2>
+          <div class="logs-list">
+            {% for log in recent_logs %}
+            <div class="log-item">
+              <div class="log-header">
+                <h3>{{ log.deck.name }}</h3>
+                <span class="log-date">{{ log.start_time.strftime('%Y-%m-%d %H:%M') }}</span>
+              </div>
+              <div class="log-details">
+                <p>正解数: {{ log.correct_count }}</p>
+                <p>不正解数: {{ log.wrong_count }}</p>
+                <p>正答率: {{ "%.1f"|format(log.accuracy * 100) }}%</p>
+                <p>学習時間: {% if log.end_time %} {{ ((log.end_time - log.start_time).total_seconds() / 60)|round|int }}分 {% else %} 未完了 {% endif %}</p>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="compact-calendar">
+          <h2>学習カレンダー</h2>
+          <div class="calendar-container">
+            <div class="calendar-header">
+              <button id="prevMonth" class="calendar-nav-btn">←</button>
+              <h2 id="currentMonth"></h2>
+              <button id="nextMonth" class="calendar-nav-btn">→</button>
+            </div>
+            <div class="calendar-grid">
+              <div class="calendar-weekdays">
+                <div>日</div>
+                <div>月</div>
+                <div>火</div>
+                <div>水</div>
+                <div>木</div>
+                <div>金</div>
+                <div>土</div>
+              </div>
+              <div id="calendarDays" class="calendar-days"></div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -79,26 +125,17 @@
       </div>
       <div id="logsContainer">
         {% for log in study_logs %}
-        <div
-          class="log-item"
-          data-date="{{ log.start_time.strftime('%Y-%m-%d') }}"
-        >
+        <div class="log-item" data-date="{{ log.start_time.strftime('%Y-%m-%d') }}">
           <div class="log-header">
             <h3>{{ log.deck.name }}</h3>
-            <span class="log-date"
-              >{{ log.start_time.strftime('%Y-%m-%d %H:%M') }}</span
-            >
+            <span class="log-date">{{ log.start_time.strftime('%Y-%m-%d %H:%M') }}</span>
           </div>
           <div class="log-details">
             <p>正解数: {{ log.correct_count }}</p>
             <p>不正解数: {{ log.wrong_count }}</p>
             <p>総単語数: {{ log.total_words }}</p>
             <p>正答率: {{ "%.1f"|format(log.accuracy * 100) }}%</p>
-            <p>
-              学習時間: {% if log.end_time %} {{ ((log.end_time -
-              log.start_time).total_seconds() / 60)|round|int }}分 {% else %}
-              未完了 {% endif %}
-            </p>
+            <p>学習時間: {% if log.end_time %} {{ ((log.end_time - log.start_time).total_seconds() / 60)|round|int }}分 {% else %} 未完了 {% endif %}</p>
           </div>
         </div>
         {% endfor %}
