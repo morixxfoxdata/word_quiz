@@ -739,10 +739,23 @@ h1 {
   box-shadow: 0 0 20px #00ffff80;
 }
 
+
+/* 全問正解の時のやつ */
 .perfect-score {
-  font-size: 1.5rem;
+  font-size: 3.5rem;
   color: #4caf50;
   text-align: center;
   font-weight: bold;
   margin: 2rem 0;
+
+  /* 改行抑制 */
+  white-space: normal;              /* 自動改行を防ぐ */
+  overflow-wrap: normal;            /* 単語途中での折返しを避ける */
+  word-break: keep-all;             /* 単語中では改行しない */
+}
+
+@media (max-width: 480px) {
+  .perfect-score {
+    font-size: 2.5rem;
+  }
 }
