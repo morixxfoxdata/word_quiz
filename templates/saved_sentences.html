@@ -28,27 +28,30 @@
         <link rel="manifest" href="/static/icons/site.webmanifest">
     </head>
     <body>
-         <!-- ─── アプリロゴ / タイトルリンク ───────────────────── -->
+        <!-- ─── アプリロゴ / タイトルリンク ───────────────────── -->
+        <header class="app-header">
         <a href="/decks" class="logo-link play-sound00">
-        <!-- アイコン画像。static/icons/fabicon2.png などに保存しておく -->
-        <img src="{{ url_for('static', filename='icons/fabicon2.png') }}"
-            alt="Lexs-AI logo" class="logo-img" />
-        <!-- タイトル文字。gradient は CSS で付与 -->
-        <span class="main-title">Lexs-AI</span>
+            <!-- アイコン画像。static/icons/fabicon2.png などに保存しておく -->
+            <img src="{{ url_for('static', filename='icons/fabicon2.png') }}"
+                alt="Lexs-AI logo" class="logo-img" />
+            <!-- タイトル文字。gradient は CSS で付与 -->
+            <span class="main-title">Lexs-AI</span>
         </a>
+        <!-- ─────────────────────────────────────────────── -->
         <div class="hamburger-menu">
             <button class="hamburger-btn">
-                <span></span>
-                <span></span>
-                <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
             </button>
             <div class="hamburger-content">
-                <a class="play-sound00" href="/decks">単語帳一覧</a>
-                <a class="play-sound00" href="/saved_sentences">文章リスト</a>
-                <a class="play-sound00" href="/study_logs">学習ログ</a>
-                <a class="play-sound00" href="/logout">ログアウト</a>
+            <a class="play-sound00" href="/decks">単語帳一覧</a>
+            <a class="play-sound00" href="/saved_sentences">文章リスト</a>
+            <a class="play-sound00" href="/study_logs">学習ログ</a>
+            <a class="play-sound00" href="/logout">ログアウト</a>
             </div>
         </div>
+        </header>
         <h1>保存された例文</h1>
         <div class="saved-sentences-container">
             <ul>
