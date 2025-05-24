@@ -39,22 +39,22 @@ function handleAnswer(isCorrect) {
 }
 
 // 🔁 リセット処理関数
-function handleReset() {
-  fetch("/reset_wrong_words", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data.status === "success") {
-        endStudySession().then(() => {
-          window.location.href = "/decks";
-        });
-      }
-    });
-}
+// function handleReset() {
+//   fetch("/reset_wrong_words", {
+//     method: "POST",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//   })
+//     .then((response) => response.json())
+//     .then((data) => {
+//       if (data.status === "success") {
+//         endStudySession().then(() => {
+//           window.location.href = "/decks";
+//         });
+//       }
+//     });
+// }
 
 // 音声を安定させる
 function safePlay(audioElement) {
@@ -182,7 +182,7 @@ function attachChoiceHandlers() {
           }
           setTimeout(() => {
             updateQuestion(data);
-          }, 1000);
+          }, 500);
         });
     });
   });
@@ -229,22 +229,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   attachChoiceHandlers();
 
-  // トップへボタンのカスタム処理
-  const resetBtn = document.getElementById("reset-btn");
-  if (resetBtn) {
-    resetBtn.addEventListener("click", function (e) {
-      e.preventDefault();
-      const sound = document.getElementById("trans-sound");
-      if (sound) {
-        sound.currentTime = 0;
-        sound.play();
-      }
+  // // トップへボタンのカスタム処理
+  // const resetBtn = document.getElementById("reset-btn");
+  // if (resetBtn) {
+  //   resetBtn.addEventListener("click", function (e) {
+  //     e.preventDefault();
+  //     const sound = document.getElementById("trans-sound");
+  //     if (sound) {
+  //       sound.currentTime = 0;
+  //       sound.play();
+  //     }
 
-      setTimeout(function () {
-        window.location.href = "/decks";
-      }, 300);
-    });
-  }
+      // setTimeout(function () {
+      //   window.location.href = "/decks";
+      // }, 300);
+  //   });
+  // }
 
   // ページ遷移SE（省略）
 });
