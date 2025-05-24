@@ -743,9 +743,11 @@ h1 {
 /* 全問正解の時のやつ */
 .perfect-score {
   font-size: 3.5rem;
-  color: #4caf50;
-  text-align: center;
+  background: linear-gradient(90deg, #b690ff, #8cd8ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   font-weight: bold;
+  text-align: center;
   margin: 2rem 0;
 
   /* 改行抑制 */
@@ -760,6 +762,20 @@ h1 {
   }
 }
 
+.generate-sentence {
+  font-size: 3.0rem;
+  background: linear-gradient(90deg, #b690ff, #8cd8ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+  text-align: center;
+  margin: 2rem 0;
+
+  /* 改行抑制 */
+  white-space: normal;              /* 自動改行を防ぐ */
+  overflow-wrap: normal;            /* 単語途中での折返しを避ける */
+  word-break: keep-all;             /* 単語中では改行しない */
+}
 
 .main-title {
   font-size: 6rem;
