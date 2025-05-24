@@ -19,6 +19,7 @@
         <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon.png') }}" sizes="32x32">
         <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon.png') }}" sizes="16x16">
         <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/favicon.png') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     </head>
     <body>
         <div class="hamburger-menu">
@@ -41,7 +42,12 @@
                 <li class="sentence-item">
                     <strong>{{ s.sentence | safe }}</strong>
                     <em>{{ s.translation | safe }}</em>
-                    <small>{{ s.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                    <div class="sentence-item-footer">
+                        <small>{{ s.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        <button class="delete-btn" data-sentence-id="{{ s.id }}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
                 </li>
                 {% else %}
                 <li class="no-sentence">保存された例文はありません</li>
