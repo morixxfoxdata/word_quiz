@@ -777,3 +777,11 @@ h1 {
   -webkit-text-fill-color: transparent;
   margin-top: 1rem;
 }
+@media (max-width: 480px) {
+  .main-title {
+    font-size: 3.2rem;
+  }
+  .subtitle {
+    font-size: 0.8rem;
+  }
+}
