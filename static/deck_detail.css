@@ -121,7 +121,6 @@ p {
 }
 
 .form-group {
-  display: flex;
   gap: 10px;
   align-items: center;
   flex-wrap: wrap;
@@ -138,6 +137,7 @@ p {
   flex: 1;
   min-width: 150px;
   font-size: 0.9rem;
+  margin: 0.5rem;
 }
 
 .form-group input {
@@ -149,6 +149,20 @@ p {
   font-size: 0.9rem;
   flex: 1;
   min-width: 120px;
+}
+
+
+.trans_button {
+  background-color: #000;
+  color: #e6f0ff;
+  padding: 10px 20px;
+  border: 1px solid #ffffff;
+  border-radius: 4px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  transition: background-color 0.3s;
 }
 
 .button {
