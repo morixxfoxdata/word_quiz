@@ -785,3 +785,26 @@ h1 {
     font-size: 0.8rem;
   }
 }
+
+/* ─────── ロゴリンク（左上固定） ───────────────── */
+.logo-link{
+  position: fixed;           /* 画面左上に張り付け */
+  top: 1rem;
+  left: 1rem;
+  display: flex;
+  align-items: center;
+  gap: .5rem;                /* アイコンと文字の間隔 */
+  font-size: 6rem;           /* ★ ここが “基準高さ” になる */
+  text-decoration: none;     /* a の下線を消す */
+  z-index: 1000;             /* ハンバーガーより前面に */
+}
+
+.logo-link .logo-img{
+  height: 1em;               /* 親の font-size と完全一致 = 6rem */
+  width:  1em;               /* 正方形保持 */
+}
+
+/* ─── スマホ幅で自動縮小 ─────────────────────────── */
+@media (max-width: 480px){
+  .logo-link{ font-size: 3.2rem; }  /* → icon & 文字とも 3.2rem */
+}
