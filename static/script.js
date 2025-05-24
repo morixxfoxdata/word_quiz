@@ -288,3 +288,35 @@ document.addEventListener("DOMContentLoaded", function () {
     bar.style.width = `${progress}%`;
   });
 });
+
+
+document.addEventListener('DOMContentLoaded', function() {
+  const deleteButtons = document.querySelectorAll('.delete-btn');
+  
+  deleteButtons.forEach(button => {
+      button.addEventListener('click', async function() {
+          const sentenceId = this.dataset.sentenceId;
+          
+          if (confirm('この文章を削除してもよろしいですか？')) {
+              try {
+                  const response = await fetch(`/api/sentences/${sentenceId}`, {
+                      method: 'DELETE',
+                      headers: {
+                          'Content-Type': 'application/json',
+                      }
+                  });
+                  
+                  if (response.ok) {
+                      // 削除成功時は該当の要素をDOMから削除
+                      this.closest('.sentence-item').remove();
+                  } else {
+                      alert('削除に失敗しました。');
+                  }
+              } catch (error) {
+                  console.error('Error:', error);
+                  alert('エラーが発生しました。');
+              }
+          }
+      });
+  });
+});
