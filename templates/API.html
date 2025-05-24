@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>英語例文生成結果</title>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon-32x32.png') }}" sizes="32x32">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='icons/favicon-16x16.png') }}" sizes="16x16">
+    <link rel="apple-touch-icon" href="{{ url_for('static', filename='icons/apple-touch-icon.png') }}">
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='hamburger.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='API.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+  </head>
+  <body>
+    <!-- ハンバーガーメニューを追加 -->
+    <div class="hamburger-menu">
+      <button class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="hamburger-content">
+        <a class="play-sound00" href="/decks"
+          ><i class="fas fa-layer-group"></i>単語帳一覧</a
+        >
+        <a class="play-sound00" href="/saved_sentences">文章リスト</a>
+        <a class="play-sound00" href="/study_logs"
+          ><i class="fas fa-history"></i> 学習ログ</a
+        >
+        <a class="play-sound00" href="/logout"
+          ><i class="fas fa-sign-out-alt"></i> ログアウト</a
+        >
+      </div>
+    </div>
+
+    <h1>例文が生成されました</h1>
+
+    <div class="content-container">
+      <div class="scrollable-content">
+        <div class="section">
+          <span class="label">あなたが間違えた英単語：</span>
+          <div class="word-list">{{ word_list | join(', ') }}</div>
+        </div>
+
+        <div class="section">
+          <span class="label">例文（英語）：</span>
+          <div class="sentence-box">{{ sentence | safe }}</div>
+        </div>
+
+        <div class="section">
+          <span class="label">例文（日本語訳）：</span>
+          <div class="sentence-box">{{ translation | safe }}</div>
+        </div>
+      </div>
+      
+      <div class="buttons">
+        <form action="{{ url_for('save_sentence') }}" method="POST">
+          <input type="hidden" name="sentence" value="{{ sentence }}">
+          <input type="hidden" name="translation" value="{{ translation }}">
+          <button type="submit" class="play-sound00 button">保存</button>
+        </form>
+
+        <a href="{{ url_for('decks') }}" class="play-sound00 reset-btn">トップへ</a>
+      </div>
+    </div>
+    
+    <audio
+      id="trans-sound"
+      src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"
+    ></audio>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='hamburger.js') }}"></script>
+  </body>
+</html>

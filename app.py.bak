@@ -2,7 +2,7 @@ import csv
 import os
 import random
 from datetime import datetime
-import re
+
 from dotenv import load_dotenv
 from flask import (
     Flask,
@@ -31,8 +31,6 @@ from google import genai
 from werkzeug.security import check_password_hash, generate_password_hash
 
 load_dotenv()
-print("Current working directory:", os.getcwd())
-print("Environment variables loaded:", os.getenv("DATABASE_URL"))
 api_key = os.getenv("GEMINI_API_KEY")
 client = genai.Client(api_key=api_key)
 app = Flask(__name__)
@@ -41,11 +39,9 @@ app.secret_key = os.getenv(
 )  # セッション用のシークレットキー
 
 # PostgreSQLの接続設定
-db_url = os.getenv("DATABASE_URL")
-print("Database URL from environment:", db_url)
-app.config["SQLALCHEMY_DATABASE_URI"] = db_url
+app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv("DATABASE_URL")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-print("Final DB URL:", app.config["SQLALCHEMY_DATABASE_URI"])
+print("DB URL:", app.config["SQLALCHEMY_DATABASE_URI"])
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 # ログイン管理（ログインしていない場合はログイン画面にリダイレクト）
@@ -68,7 +64,7 @@ class User(UserMixin, db.Model):
     # relationship
     wrong_words = db.relationship("WrongWord", backref="user", lazy=True)
     decks = db.relationship("Deck", backref="owner", lazy=True)
-    saved_sentences = db.relationship("SavedSentence", backref="user", lazy=True)
+
 
 class Word(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -77,12 +73,6 @@ class Word(db.Model):
     deck_id = db.Column(db.Integer, db.ForeignKey("deck.id"), nullable=False)
     # relationship
     wrong_words = db.relationship("WrongWord", backref="word", lazy=True)
-    
-    # インデックスを追加して検索を高速化
-    __table_args__ = (
-        db.Index('idx_entry', entry),
-        db.Index('idx_deck_id', deck_id),
-    )
 
 
 class WrongWord(db.Model):
@@ -91,11 +81,6 @@ class WrongWord(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
     word_id = db.Column(db.Integer, db.ForeignKey("word.id"), nullable=False)
     # word = db.relationship("Word", backref="wrong_words")
-    
-    # インデックスを追加して検索を高速化
-    __table_args__ = (
-        db.Index('idx_user_word', user_id, word_id),
-    )
 
 
 class Deck(db.Model):
@@ -133,41 +118,17 @@ class StudyLog(db.Model):
     total_words = db.Column(db.Integer, default=0)
     accuracy = db.Column(db.Float, default=0.0)
 
-class SavedSentence(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    sentence = db.Column(db.Text, nullable=False)
-    translation = db.Column(db.Text, nullable=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("user.id"), nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.now)
+
 # ---------------- 関数 ----------------
 
 
 def generate_sentence_from_words(words):
-# <<<<<<< merge_0520
-    prompt = f"""あなたは英語と日本語のバイリンガル文章生成AIです。
-
-    以下の指示に従ってください：
-
-    - 指定されたすべての英単語を含めた英文とその文章の日本語訳文を作成してください。
-    - 指定されたすべての英単語は<>で囲んでください。
-    - 日本語訳文中の対応する日本語訳は<>で囲んでください。
-    - 英文は意味が通る自然な内容で、約100語程度にしてください。
-    - 語彙と構文は中学〜高校レベルを想定し、難解な単語や構文は避けてください。
-    - 日本語訳は自然な翻訳にしてください。
-    - 英文と日本語訳は改行で区切ってください。
-    - 以下の例を参考にしてください。
-    This is a <pen>.
-    これは<ペン>です。
-
-    # 単語リスト
-    {', '.join(words)}
-    """
-
-
-    # prompt = f"以下の単語をすべて含む、自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。また、その単語は英文でも訳文でも<>で囲んでください。単語のレベルは中学〜高校レベルを想定し、難しすぎる語彙や構文は避けてください。{', '.join(words)}."
-
+    prompt = f"以下の単語をすべて含む、文章として自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。: {', '.join(words)}."
     try:
-        response = client.models.generate_content(model="gemini-2.0-flash", contents=prompt)#gemini-1.5-flash
+        # response = gemini_pro.generate_content(prompt)
+        response = client.models.generate_content(
+            model="gemini-1.5-flash", contents=prompt
+        )  # gemini-1.5-flash
 
         # 改行で英文と訳文を分ける
         response_text = response.text.strip()
@@ -182,12 +143,11 @@ def generate_sentence_from_words(words):
         print("❌ Geminiエラー:", e)
         return "❗ Gemini APIの呼び出しに失敗しました。", ""
 
-def highlight_and_strip(text):
-    return re.sub(r"<(.*?)>", r'<span class="highlight">\1</span>', text)
 
 def choose_question_and_choices(deck_id, k=4):
     all_words = Word.query.filter_by(deck_id=deck_id).all()
     if not all_words:
+        flash("単語を登録してください。")
         return redirect(url_for("my_words"))
 
     # 使用済み単語の管理
@@ -202,27 +162,13 @@ def choose_question_and_choices(deck_id, k=4):
         used_words = []
         available_words = all_words
 
-    # 間違えた単語の重み付け - N+1クエリ問題を解決
-    # 一度に全ての必要なWrongWordレコードを取得
-    word_ids = [word.id for word in available_words]
-    wrong_records = {}
-    
-    if word_ids:
-        # IN句を使って一括クエリ
-        records = WrongWord.query.filter(
-            WrongWord.user_id == current_user.id,
-            WrongWord.word_id.in_(word_ids)
-        ).all()
-        
-        # 辞書にマッピングして後でのルックアップを高速化
-        for record in records:
-            wrong_records[record.word_id] = record.count
-
-    # 重み付け確率の計算
+    # 間違えた単語の重み付け
     word_weights = []
     for word in available_words:
-        # 辞書から直接ルックアップ（データベースアクセスなし）
-        weight = wrong_records.get(word.id, 0) + 1  # 間違いがなければ重み1、あれば回数+1
+        # 間違いの記録を取得
+        wrong_record = WrongWord.query.filter_by(user_id=current_user.id, word_id=word.id).first()
+        # 間違いがない単語は重み1、ある単語はcount+1で重み付け（最低でも2倍の確率）
+        weight = (wrong_record.count + 1) if wrong_record else 1
         word_weights.append(weight)
 
     # 重み付け確率に基づいて単語を選択
@@ -244,7 +190,7 @@ def choose_question_and_choices(deck_id, k=4):
 
 def create_default_deck(user_id):
     """デフォルトのTOEIC単語帳を作成する"""
-    deck = Deck(name="TOEIC単語集2500", description="TOEIC頻出単語集", category="TOEIC", user_id=user_id)
+    deck = Deck(name="TOEIC単語集2500", description="TOEIC頻出単語集", user_id=user_id)
     db.session.add(deck)
     db.session.commit()
 
@@ -288,7 +234,6 @@ def decks():
     return render_template("decks.html", decks=user_decks)
 
 
-
 @app.route("/create_deck", methods=["POST"])
 @login_required
 def create_deck():
@@ -306,13 +251,13 @@ def create_deck():
 def deck_test(deck_id):
     deck = Deck.query.get_or_404(deck_id)
     if deck.user_id != current_user.id:
-        
+        flash("アクセス権限がありません。")
         return redirect(url_for("decks"))
 
     # 単語帳内の単語を取得
     deck_words = Word.query.filter_by(deck_id=deck_id).all()
     if not deck_words:
-        
+        flash("この単語帳には単語が登録されていません。")
         return redirect(url_for("decks"))
 
     # セッションに現在の単語帳IDを保存
@@ -325,7 +270,7 @@ def deck_test(deck_id):
 def deck_detail(deck_id):
     deck = Deck.query.get_or_404(deck_id)
     if deck.user_id != current_user.id:
-        
+        flash("アクセス権限がありません。")
         return redirect(url_for("decks"))
 
     # 単語帳に属する単語を取得
@@ -338,7 +283,7 @@ def deck_detail(deck_id):
 def add_word_to_deck(deck_id):
     deck = Deck.query.get_or_404(deck_id)
     if deck.user_id != current_user.id:
-        
+        flash("アクセス権限がありません。")
         return redirect(url_for("decks"))
 
     entry = request.form["entry"]
@@ -347,7 +292,7 @@ def add_word_to_deck(deck_id):
     word = Word(entry=entry, meaning=meaning, deck_id=deck_id)
     db.session.add(word)
     db.session.commit()
-    
+    flash("単語を追加しました。")
     return redirect(url_for("deck_detail", deck_id=deck_id))
 
 
@@ -356,7 +301,7 @@ def add_word_to_deck(deck_id):
 def delete_deck(deck_id):
     deck = Deck.query.get_or_404(deck_id)
     if deck.user_id != current_user.id:
-        
+        flash("削除権限がありません。")
         return redirect(url_for("decks"))
 
     try:
@@ -376,10 +321,10 @@ def delete_deck(deck_id):
         # 単語帳を削除
         db.session.delete(deck)
         db.session.commit()
-        
+        flash("単語帳を削除しました。")
     except Exception as e:
         db.session.rollback()
-        
+        flash("単語帳の削除中にエラーが発生しました。")
         print(f"単語帳削除エラー: {e}")
 
     return redirect(url_for("decks"))
@@ -400,24 +345,17 @@ def index():
         user_words = Word.query.filter_by(user_id=current_user.id).all()
 
     if not user_words:
-        
+        flash("単語を登録してください。")
         return redirect(url_for("my_words"))
-    
-    if "current_question_number" not in session:
-        session["current_question_number"] = 1 
 
-    if "current_test_correct_words" not in session:
-        session["current_test_correct_words"] = []
     if "current_test_wrong_words" not in session:
         session["current_test_wrong_words"] = []
     print(session["current_test_wrong_words"])
     return render_template(
         "index.html",
         word=word_entry,
-        choices=choices,
-        question_number = session["current_question_number"],
+        choices=choices,  # ← 追加
         wrong_words_count=len(session["current_test_wrong_words"]),
-        correct_words_count=len(session["current_test_correct_words"])
     )
 
 
@@ -425,61 +363,51 @@ def index():
 @login_required
 def mark_word():
     data = request.json
+    # <<<<<<< HEAD
     word_entry = data["word"]
     selected_ok = data["isCorrect"]
     deck_id = session["current_deck_id"]
-    
-    current_qn = session["current_question_number"]
-    if selected_ok:
-        current_test_correct_words = session.get("current_test_correct_words", [])
-        if word_entry not in current_test_correct_words:
-            current_test_correct_words.append(word_entry)
-            session["current_test_correct_words"] = current_test_correct_words
-    else:
+
+    if not selected_ok:
+        #     word_entry = data.get("word")
+        #     is_correct = data.get("isCorrect")
+
+        #     if not is_correct:
+        # 現在のテストセッションの間違えた単語をセッションに追加
         current_test_wrong_words = session.get("current_test_wrong_words", [])
         if word_entry not in current_test_wrong_words:
             current_test_wrong_words.append(word_entry)
             session["current_test_wrong_words"] = current_test_wrong_words
 
-            # データベースにも記録 - クエリ最適化
-
+            # データベースにも記録
             word = Word.query.filter_by(entry=word_entry).first()
             if word:
-                # UPDATE ... WHERE構文を使用して1つのクエリで更新を試みる
-                updated = db.session.execute(
-                    db.update(WrongWord)
-                    .where(WrongWord.user_id == current_user.id, WrongWord.word_id == word.id)
-                    .values(count=WrongWord.count + 1)
-                    .execution_options(synchronize_session="fetch")
-                )
-                
-                # 更新された行がなければ新規作成
-                if updated.rowcount == 0:
+                wrong_word = WrongWord.query.filter_by(
+                    user_id=current_user.id, word_id=word.id
+                ).first()
+                if wrong_word:
+                    wrong_word.count += 1
+                else:
                     wrong_word = WrongWord(
                         word_id=word.id, user_id=current_user.id, count=1
                     )
                     db.session.add(wrong_word)
-                
                 db.session.commit()
 
-    # テスト終了条件の判定
     all_words = Word.query.filter_by(deck_id=deck_id).all()
     used_words = session["used_words"]
+    # テスト終了条件の判定
     is_test_complete = False
     if len(all_words) < 10 and len(used_words) >= len(all_words):
-        is_test_complete = True
-
-    if session["current_question_number"] >= 20:
         is_test_complete = True
     # ユーザーの単語から次の単語をランダムに選択
     next_entry, choices = choose_question_and_choices(deck_id)
     wrong_cnt = len(session["current_test_wrong_words"])
-    session["current_question_number"] += 1
+
     return jsonify(
         nextWord=next_entry,
         translationList=[c[0] for c in choices],  # 日本語4件
         correctnessList=[c[1] for c in choices],  # True/False4件
-        questionNumber=session["current_question_number"],
         wrongWordsCount=wrong_cnt,
         showWrongWords=wrong_cnt >= 10,
         isTestComplete=is_test_complete,
@@ -507,9 +435,6 @@ def wrong_words():
 def reset_wrong_words():
     # セッションのクリア
     session["current_test_wrong_words"] = []
-    session["current_test_correct_words"] = []
-    session["current_question_number"] = 1
-
     return jsonify({"status": "success"})
 
 
@@ -561,7 +486,7 @@ def add_word():
     word = Word(entry=entry, meaning=meaning, user_id=current_user.id)
     db.session.add(word)
     db.session.commit()
-    
+    flash("単語を追加しました。")
     return redirect(url_for("my_words"))
 
 
@@ -600,46 +525,9 @@ def generate_sentence():
     wrong_words = session.get("current_test_wrong_words", [])  # 正しいキーを使用
     word_list = wrong_words
     sentence, translation = generate_sentence_from_words(word_list)
-    # sentence = "This  <sentence> is for <developing>"
-    # translation = "この<文章>は<開発用>です"
-    
-    sentence = highlight_and_strip(sentence)
-    translation = highlight_and_strip(translation)
-    print(sentence)
-    print(translation)
     return render_template(
         "API.html", word_list=word_list, sentence=sentence, translation=translation
     )
-
-
-@app.route("/save_sentence", methods=["POST"])
-@login_required
-def save_sentence():
-    sentence = request.form.get("sentence")
-    translation = request.form.get("translation")
-    if not sentence:
-        flash("保存する文章が空です。", "error")
-        return redirect(url_for("some_form_page"))  # 元の入力ページなどへ戻す
-    # 保存処理
-    saved = SavedSentence(
-        sentence=sentence,
-        translation=translation,
-        user_id=current_user.id
-    )
-    db.session.add(saved)
-    db.session.commit()
-    # 保存後、一覧用のデータを取得してレンダリング
-    sentences = SavedSentence.query.filter_by(user_id=current_user.id)\
-                                   .order_by(SavedSentence.created_at.desc())\
-                                   .all()
-    return render_template("saved_sentences.html", sentences=sentences)
-
-@app.route("/saved_sentences")
-@login_required
-def saved_sentences():
-    sentences = SavedSentence.query.filter_by(user_id=current_user.id).order_by(SavedSentence.created_at.desc()).all()
-    return render_template("saved_sentences.html", sentences=sentences)
-
 
 
 @app.route("/study_logs")
@@ -722,8 +610,6 @@ def get_current_deck_id():
     return jsonify({"deck_id": deck_id})
 
 
-
 if __name__ == "__main__":
-    # port = int(os.environ.get("PORT", 5001))
-    # app.run(host="0.0.0.0", port=port)
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5001))
+    app.run(host="0.0.0.0", port=port)

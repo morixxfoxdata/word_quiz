@@ -1,0 +1,316 @@
+/* 単語帳一覧のコンテナ */
+.deck-list {
+  margin-top: 2rem;
+  width: 80%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 新規単語帳作成ボタンのコンテナ */
+.add-deck-button-container {
+  width: 80%;
+  max-width: 800px;
+  margin: 1.5rem auto;
+  text-align: center;
+}
+
+.add-deck-btn {
+  background-color: #17a2b8;
+  color: #fff;
+  font-size: 1rem;
+  padding: 10px 24px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.add-deck-btn:hover {
+  background-color: #138496;
+}
+
+/* 単語帳アイテム */
+.deck-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  padding: 20px;
+  margin-bottom: 1.5rem;
+  background-color: #1c1f26;
+  border-radius: 10px;
+  border: 1px solid #2c3e50;
+  box-shadow: 0 0 6px #0d111730;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.deck-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.deck-link {
+  flex-grow: 1;
+  text-decoration: none;
+  color: inherit;
+  transition: opacity 0.3s;
+}
+
+.deck-link:hover {
+  opacity: 0.8;
+}
+
+.deck-info {
+  flex-grow: 1;
+}
+
+.deck-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.deck-header h2 {
+  color: #00ffff;
+  margin: 0;
+  font-size: 1.4rem;
+}
+
+.deck-category {
+  background-color: #2c3e50;
+  color: #00ffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.8rem;
+}
+
+.deck-description {
+  color: #717175;
+  margin: 0.5rem 0;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.deck-stats {
+  display: flex;
+  gap: 1.5rem;
+  margin: 1rem 0;
+}
+
+.stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #717175;
+  font-size: 0.9rem;
+}
+
+.stat-item i {
+  color: #00ffff;
+}
+
+.deck-progress {
+  margin-top: 1rem;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 6px;
+  background-color: #2c3e50;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background-color: #00ffff;
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  display: block;
+  margin-top: 0.5rem;
+  color: #717175;
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+.deck-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-left: 1rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 8px 20px;
+  border-radius: 8px;
+  font-weight: bold;
+  text-align: center;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.edit-btn {
+  background-color: #3578e5;
+  color: #fff;
+}
+
+.edit-btn:hover {
+  background-color: #0056b3;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .deck-list {
+    width: 90%;
+  }
+
+  .add-deck-button-container {
+    width: 90%;
+  }
+
+  .deck-item {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .deck-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .deck-actions {
+    width: 100%;
+    justify-content: center;
+    margin-left: 0;
+  }
+
+  .start-title {
+    font-size: 1.3em;
+    margin: 15px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .deck-list {
+    width: 95%;
+  }
+
+  .add-deck-button-container {
+    width: 95%;
+  }
+
+  .add-deck-btn {
+    width: 100%;
+    padding: 12px 0;
+  }
+
+  .deck-item {
+    padding: 15px;
+  }
+
+  .deck-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .deck-description {
+    font-size: 0.8rem;
+  }
+
+  .stat-item {
+    font-size: 0.8rem;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .start-title {
+    font-size: 1.2em;
+    margin: 10px 0;
+  }
+}
+
+/* 単語帳作成フォーム */
+form {
+  width: 60%;
+  margin: 2rem auto;
+  padding: 20px;
+  background-color: #1c1f26;
+  border-radius: 5px;
+  border: 1px solid #2c3e50;
+  box-shadow: 0 0 6px #0d111730;
+}
+
+form div {
+  margin-bottom: 1rem;
+}
+
+form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  color: var(--text_main);
+}
+
+form input[type="text"],
+form textarea {
+  width: 100%;
+  padding: 8px 12px;
+  background-color: #2c3e50;
+  border: 1px solid #00ffff;
+  border-radius: 4px;
+  color: var(--text_main);
+  font-size: 1rem;
+}
+
+form textarea {
+  height: 100px;
+  resize: vertical;
+}
+
+form button[type="submit"] {
+  padding: 10px 20px;
+  background-color: var(--btn_back);
+  color: var(--text_main);
+  border: 1px solid var(--btn_border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+form button[type="submit"]:hover {
+  background-color: #717175;
+}
+
+.start-title {
+  color: #e6f0ff;
+  text-align: center;
+  margin: 20px 0;
+  font-size: 3em;
+}
+
+.deck-guidance {
+  text-align: center;
+  color: #d2d2d3;
+  margin: 1rem auto;
+  font-size: 1rem;
+  width: 80%;
+  max-width: 800px;
+}
+
+

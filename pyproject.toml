@@ -1,9 +1,25 @@
 [project]
 name = "word-quiz"
 version = "0.1.0"
-description = "Add your description here"
+description = "Flask word quiz app"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.11"
 dependencies = [
-    "flask>=3.1.0",
+    "pandas>=2.2.3",
+    "Flask-Login>=0.6.3",
+    "Flask-SQLAlchemy>=3.1.1",
+    "psycopg2-binary>=2.9.10",
+    "python-dotenv>=1.1.0",
+    "flask-migrate>=4.1.0",
+    "requests>=2.32.3",
+    "google>=3.0.0",
+    "google-genai>=1.14.0",
+    "gunicorn>=23.0.0",
 ]
+
+[tool.setuptools]
+py-modules = ["app"]
+
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"

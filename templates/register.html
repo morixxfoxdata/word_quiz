@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ユーザー登録</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <header>
+        <h1>英単語学習アプリ</h1>
+      </header>
+
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <div class="flash-messages">
+        {% for message in messages %}
+        <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+      </div>
+      {% endif %} {% endwith %}
+
+      <form method="post" class="auth-form">
+        <div class="form-group">
+          <label
+            >ユーザー名: <input type="text" name="username" required
+          /></label>
+          <label
+            >パスワード: <input type="password" name="password" required
+          /></label>
+          <button type="submit" class="play-sound00 button">登録</button>
+          <a href="/" class="play-sound00 button">ログインはこちら</a>
+        </div>
+      </form>
+    </div>
+    <audio
+      id="trans-sound"
+      src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"
+    ></audio>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+  </body>
+</html>

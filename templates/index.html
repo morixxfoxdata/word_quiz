@@ -8,44 +8,88 @@
       rel="stylesheet"
       href="{{ url_for('static', filename='style.css') }}"
     />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='hamburger.css') }}"
+    />
   </head>
   <body>
-    <div class="container">
-      <h1>英単語学習</h1>
-
-      <div
-        class="word-card"
-        id="word-card"
-        data-word="{{ word }}"
-        data-translation="{{ translation }}"
-      >
-        <div class="word-front">{{ word }}</div>
-        <div class="word-back">{{ translation }}</div>
-      </div>
-
-      <div class="buttons">
-        <button id="correct-btn" class="correct-btn">○</button>
-        <button id="wrong-btn" class="wrong-btn">×</button>
-      </div>
-
-      <div class="wrong-words-counter">
-        間違えた単語:
-        <span id="wrong-count"
-          >{{ session.get('wrong_words', [])|length }}</span
-        >
-        / 10
-      </div>
-
-      <div
-        id="wrong-words-notification"
-        class="notification"
-        style="display: none"
-      >
-        10個の単語が貯まりました！
-        <a href="{{ url_for('wrong_words') }}" class="button">確認する</a>
+    <div class="hamburger-menu">
+      <button class="hamburger-btn">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="hamburger-content">
+        <a class="play-sound00" href="/decks">単語帳一覧</a>
+        <a class="play-sound00" href="/saved_sentences">文章リスト</a>
+        <a class="play-sound00" href="/study_logs">学習ログ</a>
+        <a class="play-sound00" href="/logout">ログアウト</a>
       </div>
     </div>
 
+    <!-- <h1 class="test-title">英単語テスト</h1> -->
+    <!-- <p>ようこそ、{{ current_user.username }}さん！</p> -->
+    
+    <div class="question-progress">
+      <span class="question-label">第</span>
+      <span class="question-number" id="question-number">{{ question_number }}</span>
+      <span class="question-label">問 / 20問</span>
+    </div>
+
+    <div class="wrong-words-counter">
+      <div class="count-block correct">
+        正解：
+        <span class="correct-count" id="correct-count">{{ correct_words_count }}</span>問
+      </div>
+      <div class="count-block wrong">
+        不正解：
+        <span class="wrong-count" id="wrong-count">{{ wrong_words_count }}</span>問 / 10問
+      </div>
+    </div>
+
+    
+    <div class="word-card">
+      <div class="question-word">{{ word }}</div>
+    </div>
+
+    <!-- 4 択ボタン -->
+    <div id="choice-container" class="choice-container">
+      {% for jp, is_ok in choices %}
+      <!-- data-correct に True/False を埋め込む(正解は1他は0) -->
+      <button class="choice-btn" data-correct="{{ '1' if is_ok else '0' }}">
+        {{ jp }}
+      </button>
+      {% endfor %}
+    </div>
+
+
+    <div
+      id="wrong-words-notification"
+      class="notification"
+      style="display: none; margin-top: 1em"
+    >
+      10個の単語が貯まりました！
+    </div>
+    <div id="end-options" style="display: none">
+      <a class="play-sound00 button" href="/wrong_words">確認する</a>
+    </div>
+
     <script src="{{ url_for('static', filename='script.js') }}"></script>
+    <script src="{{ url_for('static', filename='hamburger.js') }}"></script>
+    <!-- jsファイルで定義した関数を用いている -->
+    <!-- 音声再生用 -->
+    <audio
+      id="correct-sound"
+      src="{{ url_for('static', filename='sounds/correct.mp3') }}"
+    ></audio>
+    <audio
+      id="wrong-sound"
+      src="{{ url_for('static', filename='sounds/wrong.mp3') }}"
+    ></audio>
+    <audio
+      id="trans-sound"
+      src="{{ url_for('static', filename='sounds/page_trans.mp3') }}"
+    ></audio>
   </body>
 </html>

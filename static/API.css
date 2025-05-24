@@ -1,0 +1,109 @@
+.content-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 200px);
+  max-width: 700px;
+  width: 100%;               /* 追加！ */
+  box-sizing: border-box;    /* 追加！余白やborder分含める */
+  margin: 0 auto;
+  padding: 0 8px;            /* 追加！左右に少し余白 */
+}
+
+  .scrollable-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding-right: 5px;
+  }
+
+  h1 {
+    text-align: center;
+    color: white;
+    font-size: 2.5rem;
+    margin-top: 70px;
+  }
+
+  .section {
+    margin-top: 1.5em;
+    width: 90%;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .label {
+    font-weight: bold;
+    color: var(--text_main);
+    margin-bottom: 0.5em;
+    display: block;
+    font-size: 1.2rem;
+  }
+
+  .word-list,
+  .sentence-box {
+    background: var(--btn_back);
+    color: var(--text_main);
+    padding: 1em;
+    border-radius: 10px;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: 2px solid #00ffff;
+    box-shadow: 0 0 20px #00ffff80;
+    word-break: break-word;
+    margin-bottom: 1.5em;
+  }
+
+  /* メディアクエリ - モバイル対応 */
+  @media (max-width: 768px) {
+    h1 {
+      font-size: 2rem;
+      margin-top: 60px;
+    }
+
+    .section {
+      width: 95%;
+    }
+
+    .label {
+      font-size: 1rem;
+    }
+
+    .word-list,
+    .sentence-box {
+      font-size: 1.2rem;
+      padding: 0.8em;
+    }
+    
+    .content-container {
+    height: calc(100vh - 180px);
+    width: 100%;             /* 追加 */
+    padding: 0 4px;          /* 追加・調整 */
+    }
+   }
+  @media (max-width: 480px) {
+    h1 {
+      font-size: 1.7rem;
+      margin-top: 50px;
+    }
+
+    .section {
+      margin-top: 1em;
+      width: 100%;
+    }
+
+    .label {
+      font-size: 0.9rem;
+    }
+
+    .word-list,
+    .sentence-box {
+      font-size: 1rem;
+      padding: 0.7em;
+    }
+    
+    
+    .content-container {
+    height: calc(100vh - 150px);
+    width: 100%;             /* 追加 */
+    padding: 0 2px;          /* 追加・調整 */
+    }
+  }
