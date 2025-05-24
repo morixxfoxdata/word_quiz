@@ -93,20 +93,19 @@ h1 {
   max-width: 100%;
 }
 
-.word-front,
-.question-word,
-.word-back {
+
+.question-word {
+  font-size: 2rem;
   margin-top: 0;
   position: absolute;
-  width: 100%;
-  height: 100%;
+  width: 35rem;
+  height: 95%;
   backface-visibility: hidden;
   transition: transform 0.6s;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 10px;
-  font-size: 2rem;
   font-weight: bold;
   border: 2px solid #00ffff;
   box-shadow: 0 0 20px #00ffff80;
@@ -426,28 +425,33 @@ h1 {
   justify-content: center;
   box-sizing: border-box;
   width: 100%;
+  padding: 0 10px;
 }
 
+
 .choice-btn {
-  padding: 15px;
   width: 100%;
-  height: 120px;
-  font-size: 1.8rem;
+  min-width: 0;
+  height: 70px;
+  font-size: 1.4rem;
   border-radius: 8px;
   background: var(--btn_back);
   color: var(--text_main);
   border: 1px solid var(--btn_border);
   transition: 0.2s;
+
+  padding: 8px;
+  box-sizing: border-box;
   display: flex;
   justify-content: center;
   align-items: center;
   word-break: break-word;
-  min-width: 0;
   overflow-wrap: break-word;
   text-overflow: ellipsis;
   white-space: normal;
   text-align: center;
 }
+
 
 /* .choice-btn:hover {
   background-color: #717175;
@@ -493,39 +497,6 @@ h1 {
   min-height: 140px;
   max-height: 140px;
   margin-bottom: 20px;
-}
-
-.word-front,
-.question-word,
-.word-back {
-  font-size: 1.1rem;
-  padding: 0 3px;
-}
-
-.choice-container {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
-  padding: 0 10px;
-  width: 100%;
-  max-width: 100%;
-}
-
-.choice-btn {
-  width: 100%;
-  min-width: 0;
-  height: 70px;
-  font-size: 1.1rem;
-  padding: 8px;
-  box-sizing: border-box;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  word-break: break-word;
-  overflow-wrap: break-word;
-  text-overflow: ellipsis;
-  white-space: normal;
-  text-align: center;
 }
 
 .buttons {
@@ -684,8 +655,7 @@ h1 {
   .word-front,
   .question-word,
   .word-back {
-    font-size: 1.5rem;
-    padding: 0 6px;
+    width: 95%;
   }
 
   .choice-container {
@@ -796,11 +766,9 @@ h1 {
     max-height: 140px;
     margin-bottom: 20px;
   }
-  .word-front,
-  .question-word,
-  .word-back {
-    font-size: 1.1rem;
-    padding: 0 3px;
+  
+  .question-word {
+    width: 95%;
   }
   h1 {
     font-size: 2rem;
