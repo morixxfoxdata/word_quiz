@@ -1,3 +1,7 @@
+body{
+  padding-top: 5rem;
+}
+
 /* 単語帳一覧のコンテナ */
 .deck-list {
   margin-top: 2rem;
@@ -172,79 +176,6 @@
   background-color: #c82333;
 }
 
-/* レスポンシブ対応 */
-@media (max-width: 768px) {
-  .deck-list {
-    width: 90%;
-  }
-
-  .add-deck-button-container {
-    width: 90%;
-  }
-
-  .deck-item {
-    flex-direction: column;
-    gap: 1rem;
-  }
-
-  .deck-stats {
-    flex-direction: column;
-    gap: 0.5rem;
-  }
-
-  .deck-actions {
-    width: 100%;
-    justify-content: center;
-    margin-left: 0;
-  }
-
-  .start-title {
-    font-size: 1.3em;
-    margin: 15px 0;
-  }
-}
-
-@media (max-width: 480px) {
-  .deck-list {
-    width: 95%;
-  }
-
-  .add-deck-button-container {
-    width: 95%;
-  }
-
-  .add-deck-btn {
-    width: 100%;
-    padding: 12px 0;
-  }
-
-  .deck-item {
-    padding: 15px;
-  }
-
-  .deck-header h2 {
-    font-size: 1.2rem;
-  }
-
-  .deck-description {
-    font-size: 0.8rem;
-  }
-
-  .stat-item {
-    font-size: 0.8rem;
-  }
-
-  .edit-btn,
-  .delete-btn {
-    padding: 6px 12px;
-    font-size: 0.8rem;
-  }
-
-  .start-title {
-    font-size: 1.2em;
-    margin: 10px 0;
-  }
-}
 
 /* 単語帳作成フォーム */
 form {
@@ -314,3 +245,78 @@ form button[type="submit"]:hover {
 }
 
 
+
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .deck-list {
+    width: 90%;
+  }
+
+  .add-deck-button-container {
+    width: 90%;
+  }
+
+  .deck-item {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .deck-stats {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .deck-actions {
+    width: 100%;
+    justify-content: center;
+    margin-left: 0;
+  }
+
+  .start-title {
+    font-size: 2.5rem;
+    margin: 15px 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .deck-list {
+    width: 95%;
+  }
+
+  .add-deck-button-container {
+    width: 95%;
+  }
+
+  .add-deck-btn {
+    width: 100%;
+    padding: 12px 0;
+  }
+
+  .deck-item {
+    padding: 15px;
+  }
+
+  .deck-header h2 {
+    font-size: 1.2rem;
+  }
+
+  .deck-description {
+    font-size: 0.8rem;
+  }
+
+  .stat-item {
+    font-size: 0.8rem;
+  }
+
+  .edit-btn,
+  .delete-btn {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .start-title {
+    font-size: 2.5rem;
+    margin: 10px 0;
+  }
+}
