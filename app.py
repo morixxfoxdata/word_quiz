@@ -399,7 +399,7 @@ def delete_deck(deck_id):
     except Exception as e:
         db.session.rollback()
         
-        print(f"単語帳削除エラー: {e}")
+        # print(f"単語帳削除エラー: {e}")
 
     return redirect(url_for("decks"))
 
