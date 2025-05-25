@@ -602,15 +602,8 @@ def validate_password(password):
     - 英字と数字を含む
     - 大文字と小文字を含む
     """
-    if len(password) < 8:
-        return False, "パスワードは8文字以上必要です。"
-
-    if not re.search(r'[a-zA-Z]', password):
-        return False, "パスワードには英字を含める必要があります。"
-    
-    if not re.search(r'[0-9]', password):
-        return False, "パスワードには数字を含める必要があります。"
-    
+    if len(password) < 4:
+        return False, "パスワードは4文字以上必要です。"    
     return True, ""
 
 @app.route("/register", methods=["GET", "POST"])
