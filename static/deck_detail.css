@@ -244,6 +244,40 @@ p {
   background: #3c4e60;
 }
 
+
+.deck-header {
+  /* ヘッダー下に中央寄せ。下のform等とかぶらないよう余白も調整 */
+  margin: 2.5rem auto 1rem auto;
+  padding: 0.5rem 1rem;
+  max-width: 600px;
+  text-align: center;
+}
+
+.deck-header h1 {
+  font-size: 2.5rem;
+  color:  #00ffff;
+  margin: 0;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-shadow: 0 2px 12px #111a, 0 0 10px #8cd8ff40; /* ふんわり発光系 */
+}
+
+.deck-header p {
+  font-size: 1.2rem;
+  color: #b4e3fc;
+  margin-top: 0.6rem;
+  margin-bottom: 0;
+  font-weight: 400;
+}
+
+  
+
+@media (min-width: 769px) and (max-width: 4160px) {
+  .deck-header{ 
+    margin:5.0rem auto 1rem auto;
+  }
+}
+
 /* レスポンシブデザイン */
 @media (max-width: 768px) {
   .container {
@@ -374,3 +408,4 @@ p {
     font-size: 0.8rem;
   }
 }
+
