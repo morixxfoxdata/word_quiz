@@ -313,8 +313,10 @@
 
 /* Utility classes */
 .start-title {
-  margin-top: 80px;
-  margin-bottom: 30px;
+  margin: 8.0rem auto 1rem;
+  padding: 0.5rem 1rem;
+  max-width: 600px;
+  text-align: center;
   color: var(--text_main);
 }
 
@@ -382,9 +384,8 @@
   }
 
   .start-title {
+    margin: 5rem auto 0 auto;
     font-size: 2.5rem;
-    margin-top: 60px;
-    margin-bottom: 20px;
   }
 
   .no-logs-message {
@@ -474,7 +475,8 @@
   }
 
   .start-title {
-    font-size: 1.2rem;
+    margin: 2.5rem auto 1rem;
+    font-size: 2.5rem;
     margin-top: 80px;
     margin-bottom: 15px;
   }
