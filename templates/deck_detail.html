@@ -50,8 +50,12 @@
       </div>
     </header>
 
-    <h1>{{ deck.name }}</h1>
-    <p>{{ deck.description }}</p>
+    <div class="deck-header">
+      <h1>{{ deck.name }}</h1>
+      <p>{{ deck.description }}</p>
+    </div>
+    
+
     <div class="container">
       <div class="deck-actions">
         <a href="{{ url_for('deck_test', deck_id=deck.id) }}" class="button"
