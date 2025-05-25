@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
                   }
               } catch (error) {
                   console.error('Error:', error);
-                  alert('エラーが発生しました。');
+                  // alert('エラーが発生しました。');
               }
           }
       });
