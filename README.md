@@ -1,14 +1,42 @@
-# word_quiz
+# Lexs-AI
+Lexs-AI は、英単語の学習をサポートする革新的な英語学習Webアプリ。
+単語の意味を覚えるだけでなく、その単語を使った自然な英文をAIが自動生成し、実践的な理解を深めることができる。
 
-# やるべきこと
+**サービスURL** : https://word-quiz-yc0i.onrender.com
+※ユーザ-名とパスワードの登録が必要
 
-ルートディレクトリに.envファイルを作成し以下の情報を登録しておく。
-ダブルクォーテーションは不要です。
-- GEMINI_API_KEY="your api key"
-- SECRET_KEY=your_secret_keys
-- DATABASE_URL="DATABASE_URL"
+**動作紹介ムービー** : https://youtu.be/KWuDLSS8ywU
 
-### pgAdminからrender上のクラウドDBを参照するためのTips
-https://zenn.dev/nyaru_tech/articles/2336d629c7828f
+## 参加メンバー
+小西隆一 : Ryuichi-K-create
+小森紀輝 : morixxfoxdata
+岩田卓也 : TakuyaIW
+伊藤結人 : Kindaiyuito
 
-API無効にしてあるから、使う時はapp.pyの該当箇所を参照。
+## 主な機能
+🎮 <ins>4択クイズ形式のテスト機能<ins>
+-実践的なクイズで知識をチェック。正解数・不正解数のカウントも対応。
+
+📊 <ins>出題のパーソナライズ<ins>
+-間違えた単語を記録し、出題頻度を自動調整。効率的に弱点を克服。
+
+🧠 <ins>単語から英文を自動生成<ins>
+-学習中の単語を使った自然な英文をAIが生成。文脈ごとの理解が深まる。
+
+📚 <ins>単語帳モード<ins>
+-自分専用の単語リストを作成・編集可能。復習に最適。
+
+📈 <ins>学習ダッシュボード機能<ins>
+-学習履歴・学習進捗・正答率を可視化。
+
+
+## 🛠 使用技術（Tech Stack）
+| Category            | Technology Stack                                          |
+|---------------------|-----------------------------------------------------------|
+| Frontend            | HTML, CSS, JavaScript                                     |
+| Backend             | Python, Flask                                             |
+| Infrastructure      | Render (Hosting & Server)                                 |
+| Database            | PostgreSQL                                                |
+| API Integration     | Gemini API                                                |
+| Deployment          | GitHub + Render                                           |
+| CI/CD               | GitHub Actions  　　　　　　　　　　　　                      |
