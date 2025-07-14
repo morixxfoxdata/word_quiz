@@ -8,7 +8,6 @@ Lexs-AI は、英単語の学習をサポートする革新的な英語学習Web
 **動作紹介ムービー**\
 [![Watch the video](https://img.youtube.com/vi/KWuDLSS8ywU/hqdefault.jpg)](https://www.youtube.com/watch?v=KWuDLSS8ywU)
 
-
 ## 参加メンバー:チーム[magi]
 小西隆一 : Ryuichi-K-create\
 小森紀輝 : morixxfoxdata\
@@ -44,4 +43,20 @@ Lexs-AI は、英単語の学習をサポートする革新的な英語学習Web
 
 ## 🏆 受賞歴
 ### 技育CAMP2025　ハッカソン vol.3 - 努力賞受賞
-![Lexs-AI Logo](assets/努力賞_magi.png)
+<p align="center">
+  <img src="assets/努力賞_magi.png" alt="Lexs-AI" width="300">
+</p>
+
+### 発表スライド
+<p align="center">
+  <img src="assets/slide1.png" alt="slide1" width="300">
+</p>
+<p align="center">
+  <img src="assets/slide2.png" alt="slide2" width="300">
+</p>
+<p align="center">
+  <img src="assets/slide3.png" alt="slide3" width="300">
+</p>
+<p align="center">
+  <img src="assets/slide4.png" alt="slide4" width="300">
+</p>
