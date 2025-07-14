@@ -5,7 +5,7 @@ Lexs-AI は、英単語の学習をサポートする革新的な英語学習Web
 **サービスURL** : https://word-quiz-yc0i.onrender.com
 ※ユーザ-名とパスワードの登録が必要
 
-**動作紹介ムービー**
+**動作紹介ムービー**\
 [![Watch the video](https://img.youtube.com/vi/KWuDLSS8ywU/hqdefault.jpg)](https://www.youtube.com/watch?v=KWuDLSS8ywU)
 
 
@@ -13,7 +13,7 @@ Lexs-AI は、英単語の学習をサポートする革新的な英語学習Web
 小西隆一 : Ryuichi-K-create\
 小森紀輝 : morixxfoxdata\
 岩田卓也 : TakuyaIW\
-伊藤結人 : Kindaiyuito\
+伊藤結人 : Kindaiyuito
 
 ## 主な機能
 🎮 <ins>4択クイズ形式のテスト機能<ins>\
@@ -43,5 +43,5 @@ Lexs-AI は、英単語の学習をサポートする革新的な英語学習Web
 | CI/CD               | GitHub Actions  　　　　　　　　　　　　                      |
 
 ## 🏆 受賞歴
-# 技育CAMP2025　ハッカソン vol.3 - 努力賞受賞
-![Lexs-AI Logo](assets/努力賞_magi.pdf)
+### 技育CAMP2025　ハッカソン vol.3 - 努力賞受賞
+![Lexs-AI Logo](assets/努力賞_magi.png)
