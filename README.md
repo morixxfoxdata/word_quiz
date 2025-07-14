@@ -17,19 +17,31 @@ Lexs-AI は、英単語の学習をサポートする革新的な英語学習Web
 ## 主な機能
 🎮 <ins>4択クイズ形式のテスト機能<ins>\
 -実践的なクイズで知識をチェック。正解数・不正解数のカウントも対応。
-
+<p align="center">
+  <img src="assets/test.png" alt="test" width="300">
+</p>
 📊 <ins>出題のパーソナライズ<ins>\
 -間違えた単語を記録し、出題頻度を自動調整。効率的に弱点を克服。
-
+<p align="center">
+  <img src="assets/wrongList.png" alt="wrongList" width="300">
+</p>
 🧠 <ins>単語から英文を自動生成<ins>\
 -学習中の単語を使った自然な英文をAIが生成。文脈ごとの理解が深まる。
+<p align="center">
+  <img src="assets/sentence1.png" alt="sentence1" width="300">
+  <img src="assets/sentence2.png" alt="sentence2" width="300">
+</p>
 
 📚 <ins>単語帳モード<ins>\
 -自分専用の単語リストを作成・編集可能。復習に最適。
-
+<p align="center">
+  <img src="assets/wordList.png" alt="wordList" width="300">
+</p>
 📈 <ins>学習ダッシュボード機能<ins>\
 -学習履歴・学習進捗・正答率を可視化。
-
+<p align="center">
+  <img src="assets/wrongList.png" alt="wrongList" width="300">
+</p>
 
 ## 🛠 使用技術（Tech Stack）
 | Category            | Technology Stack                                          |
