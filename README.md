@@ -53,7 +53,7 @@ TOEICなどの英語試験対策に取り組む中で、従来の英単語学習
 ### 📈 学習ダッシュボード機能
 -学習履歴・学習進捗・正答率を可視化。
 <p align="center">
-  <img src="assets/wrongList.png" alt="wrongList" width="300">
+  <img src="assets/log.png" alt="log" width="300">
 </p>
 
 ## 🛠 使用技術（Tech Stack）
