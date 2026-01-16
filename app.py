@@ -167,7 +167,7 @@ def generate_sentence_from_words(words):
     # prompt = f"以下の単語をすべて含む、自然な英文を作成し、改行で英文と訳文の2行を無加工で返してください。また、その単語は英文でも訳文でも<>で囲んでください。単語のレベルは中学〜高校レベルを想定し、難しすぎる語彙や構文は避けてください。{', '.join(words)}."
 
     try:
-        response = client.models.generate_content(model="gemini-3-flash", contents=prompt)#gemini-1.5-flash
+        response = client.models.generate_content(model="gemini-2.5-flash", contents=prompt)#gemini-1.5-flash
 
         # 改行で英文と訳文を分ける
         response_text = response.text.strip()
@@ -421,7 +421,7 @@ happy → 幸せな
     
     try:
         response = client.models.generate_content(
-            model="gemini-3-flash", 
+            model="gemini-2.5-flash", 
             contents=prompt
         )
         
